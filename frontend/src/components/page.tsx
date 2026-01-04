@@ -14,7 +14,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { GetVersion } from "../../wailsjs/go/main/App";
-import { WindowIsMaximised, WindowMinimise, WindowHide,  WindowUnmaximise, WindowMaximise } from "../../wailsjs/runtime";
+import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime";
 
 function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
@@ -83,14 +83,16 @@ function PageContent() {
 
     return (
         <main className="min-h-screen bg-background p-6 md:p-10">
-            <div className="fixed top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 border flex items-center gap-1">
+            {/* Draggable title bar */}
+            <div className="fixed z-10 top-0 left-0 right-0 h-10 cursor-grab" style={{ '--wails-draggable': 'drag' } as React.CSSProperties}></div>
+            <div className="fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
                 <button onClick={() => WindowMinimise()}>
                     <img src="/minimize.png" alt="minimize" className="h-5 shadow-md hover:shadow-lg" />
                 </button>
                 <button onClick={() => handleWindowScreen()}>
                     <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md hover:shadow-lg" />
                 </button>
-                <button onClick={() => WindowHide()}>
+                <button onClick={() => Quit()}>
                     <img src="/close.png" alt="close" className="h-5 shadow-md hover:shadow-lg" />
                 </button>
             </div>
