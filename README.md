@@ -5,7 +5,7 @@
 <h1>Clipussy</h1>
 </div>
 
-A creative and stylish clipboard manager built with Wails that helps you keep track of your copied content with a unique paper-aesthetic interface.
+A creative and stylish clipboard manager built with Wails, designed to keep track of everything you copy through a clean, paper-aesthetic interface. It automatically records every clipboard change in real time, storing your copy history so you can easily revisit, reuse, and manage past content whenever you need it.
 
 ![Clipussy Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
@@ -23,9 +23,12 @@ Get the Windows installer from the latest release and start managing your clipbo
 - 🔄 **Automatic Clipboard Monitoring** - Automatically captures everything you copy
 - 📌 **Pin Important Clips** - Keep your most-used clips at the top
 - 🔍 **Fast Search** - Quickly find clips with Ctrl+F
+- <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
 - 🎨 **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
+- <img width="1894" height="994" alt="showcase-1" src="https://github.com/user-attachments/assets/ad3eb87b-12bc-4fc4-9636-05ce75044db4" />
 - 🗑️ **Easy Management** - Copy, pin, and delete clips with intuitive controls
-- 🔊 **Sound Effects** - Audible feedback for actions (toggleable)
+- <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
+- 🔊 **Sound Effects** - Audible feedback for actions
 - 💾 **Persistent Storage** - SQLite database keeps your clips safe
 - 🎯 **Smart Cleanup** - Automatically maintains the 100 most recent clips
 
