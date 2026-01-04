@@ -14,13 +14,27 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { GetVersion } from "../../wailsjs/go/main/App";
+import { WindowIsMaximised, WindowMinimise, WindowHide,  WindowUnmaximise, WindowMaximise } from "../../wailsjs/runtime";
 
 function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [version, setVersion] = useState("")
+    const [fullScreen, setFullScreen] = useState<boolean>()
     const { clips } = useClips()
     const searchInputRef = useRef<HTMLInputElement>(null)
     const tl = gsap.timeline();
+
+
+    const handleWindowScreen = async () => {
+        const isMax = await WindowIsMaximised();
+        if (isMax) {
+            WindowUnmaximise();
+            setFullScreen(false);
+        } else {
+            WindowMaximise();
+            setFullScreen(true);
+        }
+    }
 
     useGSAP(() => {
         tl.to('.paper-curtain-1', { left: "-53vw", duration: 1.5, ease: "steps(12)", onStart: () => playSound('paper-curtain-sound.mp3', true, 1) })
@@ -69,6 +83,17 @@ function PageContent() {
 
     return (
         <main className="min-h-screen bg-background p-6 md:p-10">
+            <div className="fixed top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 border flex items-center gap-1">
+                <button onClick={() => WindowMinimise()}>
+                    <img src="/minimize.png" alt="minimize" className="h-5 shadow-md hover:shadow-lg" />
+                </button>
+                <button onClick={() => handleWindowScreen()}>
+                    <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md hover:shadow-lg" />
+                </button>
+                <button onClick={() => WindowHide()}>
+                    <img src="/close.png" alt="close" className="h-5 shadow-md hover:shadow-lg" />
+                </button>
+            </div>
             <img src="/paper-curtain.png" className="paper-curtain-1 h-screen fixed w-[53vw] left-0 top-0 bottom-0 z-10 " />
             <img src="/paper-curtain.png" className="paper-curtain-2 h-screen fixed w-[53vw] -right-8 top-0 bottom-0 z-10 " />
             {/* // pussy cat image */}
@@ -89,7 +114,7 @@ function PageContent() {
                             </DialogTrigger>
                             <DialogContent className="!bg-[transparent] shadow-none border-0 pt-9">
                                 <div className="absolute h-[calc(100%+2rem)] w-full -z-1">
-                                    <img src="/dialog-bg.png" alt="" className=" h-full w-full"/>
+                                    <img src="/dialog-bg.png" alt="" className=" h-full w-full" />
                                 </div>
                                 <DialogHeader>
                                     <DialogTitle className="text-2xl font-serif italic">About Clipussy</DialogTitle>

@@ -122,6 +122,10 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 .page {
@@ -202,7 +206,10 @@
   outline: none;
   box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-  padding: 1rem;
+
+  &:not(.no-padding) {
+    padding: 1rem;
+  }
 
   /*
       Above is shorthand for:
