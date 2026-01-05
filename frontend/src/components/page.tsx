@@ -84,7 +84,7 @@ function PageContent() {
     return (
         <main className="min-h-screen bg-background p-6 md:p-10">
             {/* Draggable title bar */}
-            <div className="fixed z-10 top-0 left-0 right-0 h-10 cursor-grab" style={{ '--wails-draggable': 'drag' } as React.CSSProperties}></div>
+            <div className="fixed z-10 top-1 left-0 right-0 h-10 cursor-grab" style={{ '--wails-draggable': 'drag' } as React.CSSProperties}></div>
             <div className="fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
                 <button onClick={() => WindowMinimise()}>
                     <img src="/minimize.png" alt="minimize" className="h-5 shadow-md hover:shadow-lg" />
