@@ -74,10 +74,11 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             ref={cardRef}
             className={"hand-drawn lined thin p-3 bg-[#F9F5E6] relative group"}
         >   {/* Header with icon and timestamp */}
-            {type == "pinned" && <div className="h-10 -top-5 right-0 absolute">
-                <img src={"pin.png"} alt="pin-img" className="h-full" />
-                <div className="absolute h-6 w-5 rounded-full shadow-lg/80 top-2 right-3" />
-            </div>}
+            {type == "pinned" &&
+                <div className="h-10 -top-5 right-[40%] absolute">
+                    <img src={"pin.png"} alt="pin-img" className="h-full" />
+                    <div className="absolute h-6 w-5 rounded-full shadow-lg/80 top-2 right-3" />
+                </div>}
             <div className="mb-3 flex items-start justify-between">
                 <span className="text-xl"></span>
                 <span className="text-xs text-muted-foreground md:hidden">{formatTime(clip.createdAt)}</span>
