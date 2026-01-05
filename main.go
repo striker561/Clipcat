@@ -22,7 +22,7 @@ func main() {
 		Title:     "Clipussy",
 		Width:     600,
 		Height:    450,
-		MinWidth:  600,
+		MinWidth:  300,
 		Frameless: true,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
