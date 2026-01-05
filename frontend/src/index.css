@@ -403,3 +403,24 @@ body:after {
     animation-timing-function: ease-out;
   }
 }
+
+@media screen and (max-width: 600px) {
+  .page {
+    padding: 1.4rem 0rem 8rem 2rem;
+  }
+
+  .pussy {
+    &:hover {
+      cursor: default;
+      opacity: .4;
+    }
+  }
+
+  .info {
+    display: none;
+  }
+
+  .margin {
+    left: 2.3rem;
+  }
+}
