@@ -406,7 +406,7 @@ body:after {
 
 @media screen and (max-width: 600px) {
   .page {
-    padding: 1.4rem 0rem 8rem 2rem;
+    padding: 3rem 0rem 8rem 2rem;
   }
 
   .pussy {
@@ -426,5 +426,16 @@ body:after {
 }
 
 .hard-to-read {
-  filter:blur(3px) /* Adjust the pixel value for desired blur level */
+  filter: blur(3px)
+    /* Adjust the pixel value for desired blur level */
+}
+
+.setting-dialog {
+  & .settings-bg {
+    position: absolute;
+    inset: 0;
+    height: 105%;
+    width: 100%;
+    z-index: -1;
+  }
 }

@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react"
 import { Search } from "lucide-react"
-import ClipCard from "./ui/clip-card"
+import ClipCard from "./clip-card"
 import { useClips } from "../context/ClipContext"
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { playSound } from "@/helpers/playSound";
-import AboutDialog from "./ui/about-dialog";
-import WindowControls from "./ui/window-controls";
+import AboutDialog from "./about-dialog";
+import WindowControls from "./window-controls";
 import { GetVersion } from "../../wailsjs/go/main/App";
 
 function PageContent() {

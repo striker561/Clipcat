@@ -10,6 +10,8 @@ interface ClipContextType {
     getClips: () => Promise<void>
     soundOn: boolean
     setSoundOn: React.Dispatch<React.SetStateAction<boolean>>
+    hideContent: boolean
+    setHideContent: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -17,6 +19,7 @@ const ClipContext = createContext<ClipContextType | undefined>(undefined)
 export function ClipProvider({ children }: { children: ReactNode }) {
     const [clips, setClips] = useState<{ pinned: Clip[]; recent: Clip[] }>({ pinned: [], recent: [] })
     const [soundOn, setSoundOn] = useState<boolean>(true)
+    const [hideContent, setHideContent] = useState<boolean>(false)
 
     const getClips = async () => {
         return GetClips().then((data) => {
@@ -38,7 +41,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     }, [])
 
     return (
-        <ClipContext.Provider value={{ clips, setClips, getClips, soundOn, setSoundOn }}>
+        <ClipContext.Provider value={{ clips, setClips, getClips, soundOn, setSoundOn, hideContent, setHideContent }}>
             {children}
         </ClipContext.Provider>
     )

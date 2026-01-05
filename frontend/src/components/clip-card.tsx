@@ -1,7 +1,7 @@
 import { Copy, Pin, Trash2 } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
-import type { Clip } from '../../../types/clip'
-import { TogglePin, Delete } from "../../../wailsjs/go/main/App"
+import type { Clip } from '../../types/clip'
+import { TogglePin, Delete } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
 import { playSound } from "@/helpers/playSound"
 import { formatTime } from "@/helpers/formatTime"
