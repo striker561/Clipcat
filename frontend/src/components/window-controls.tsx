@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime/runtime";
 import { useClips } from "@/context/ClipContext";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
     const { soundOn, setSoundOn } = useClips();
     const { hideContent, setHideContent } = useClips();
+    const settingBtnRef = useRef<HTMLButtonElement>(null);
+    const settingDialogRef = useRef<HTMLDivElement>(null);
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
     const MenuSwitch = (isOn: boolean, toggleFunction: () => void): React.JSX.Element => {
         return (
@@ -13,12 +18,72 @@ export default function WindowControls() {
                 {isOn ? <img src="/on.png" alt="" className='block h-full' /> : <img src="/off.png" alt="" className='block h-full' />}
             </button>
         );
-    }
+    };
 
+    useGSAP(() => {
+        gsap.set(
+            settingDialogRef.current, {
+            display: "none"
+        })
+    }, [])
+
+    const tl = gsap.timeline();
+
+    const handleSettingsClick = () => {
+        if (!dialogOpen) {
+            setDialogOpen(true)
+            tl.to(settingBtnRef.current, {
+                y: 5,
+                rotation: -2,
+                duration: .3,
+                ease: "power2.out"
+            }).set(
+                settingDialogRef.current, {
+                display: "block"
+            }).fromTo(
+                settingDialogRef.current, {
+                opacity: 0,
+                y: -15,
+                rotation: -3,
+                scale: 0.92
+            }, {
+                opacity: 1,
+                y: 0,
+                rotation: 0,
+                scale: 1,
+                duration: 0.5,
+                ease: "back.out(1.2)"
+            }
+            )
+        } else {
+            setDialogOpen(false)
+            tl.to(
+                settingDialogRef.current, {
+                opacity: 0,
+                y: -10,
+                rotation: 2,
+                scale: 0.95,
+                duration: 0.35,
+                ease: "power2.in"
+            }
+            )
+                .to(settingBtnRef.current, {
+                    y: 0,
+                    rotation: 0,
+                    duration: .3,
+                    ease: "elastic.out(1, 0.5)"
+                }).set(
+                    settingDialogRef.current, {
+                    display: "none",
+                    rotation: 0,
+                    scale: 1
+                })
+        }
+    }
     const Separator = () => {
         return (
             <div>
-                <img src="/seperator.png" alt="" className=" w-125" />
+                <img src="/seperator.png" alt="" className="w-125" />
             </div>
         );
     };
@@ -51,11 +116,11 @@ export default function WindowControls() {
 
     return (
         <div className="flex flex-row-reverse items-center fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 gap-6">
-            <div className="mt-1 relative">
-                <button>
+            <div className="mt-1 relative z-10">
+                <button onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
-                <div className="setting-dialog p-4 absolute h-fit min-w-40 aspect-square right-0 top-5 shadow-md/30">
+                <div ref={settingDialogRef} className="setting-dialog p-4 absolute h-fit min-w-40 aspect-square right-0 top-5">
                     <h2 className="text-lg text-center">Settings</h2>
                     <Separator />
                     <div className="flex items-center gap-3 justify-between py-2">

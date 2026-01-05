@@ -17,11 +17,57 @@ function PageContent() {
     const tl = gsap.timeline();
 
     useGSAP(() => {
-        tl.to('.paper-curtain-1', { left: "-53vw", duration: 1.5, ease: "steps(12)", onStart: () => playSound('paper-curtain-sound.mp3', soundOn, 1) })
-            .to('.paper-curtain-2', { right: '-53vw', duration: 1.5, ease: "steps(9)", }, '-=1.5')
-            .from('.pussy', { y: '100%', xPercent: -100, ease: "steps(12)" }, "-=0.5")
+        tl.to('.paper-curtain-1', {
+            left: "-53vw",
+            duration: 1.5,
+            ease: "steps(12)",
+            rotation: -2,
+            onStart: () => playSound('paper-curtain-sound.mp3', soundOn, 1)
+        })
+            .to('.paper-curtain-2', {
+                right: '-53vw',
+                duration: 1.5,
+                ease: "steps(9)",
+                rotation: 2,
+            }, '-=1.5')
+            .to('.paper-curtain-1', {
+                rotation: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            }, '-=0.3')
+            .to('.paper-curtain-2', {
+                rotation: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            }, '-=0.3')
+            .from('.pussy', {
+                y: '120%',
+                x: '-20%',
+                rotation: -15,
+                scale: 0.8,
+                ease: "steps(12)"
+            }, "-=0.7")
+            .to('.pussy', {
+                rotation: 0,
+                scale: 1,
+                x: '0%',
+                duration: 0.4,
+                ease: "elastic.out(1, 0.6)"
+            }, '-=0.2')
+            .from('h1, .torn-input', {
+                opacity: 0,
+                y: 20,
+                rotation: -1,
+                duration: 0.5,
+                stagger: 0.15,
+                ease: "back.out(1.5)"
+            }, '-=0.5')
+            .to('h1, .torn-input', {
+                rotation: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            })
     })
-
     useEffect(() => {
         GetVersion().then(setVersion).catch(err => console.error("Failed to get version:", err))
     }, [])
