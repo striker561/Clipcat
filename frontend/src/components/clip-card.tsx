@@ -15,7 +15,7 @@ interface ClipCardProps {
 export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
-    const { getClips, soundOn, clips, setClips } = useClips()
+    const { getClips, soundOn, clips, setClips, hideContent } = useClips()
 
 
     useEffect(() => {
@@ -85,7 +85,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
             {/* Content */}
             <div className="mb-4 flex-1 overflow-hidden">
-                <p className="line-clamp-4 text-sm text-foreground md:line-clamp-8">{clip.content}</p>
+                <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8 ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
             </div>
 
             {/* Footer with time and actions */}
