@@ -154,6 +154,7 @@ body:after {
   bottom: 0;
   background: #000000;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 80%);
+  pointer-events: none;
 }
 
 .page {
