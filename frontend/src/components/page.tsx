@@ -6,28 +6,15 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { playSound } from "@/helpers/playSound";
 import AboutDialog from "./ui/about-dialog";
+import WindowControls from "./ui/window-controls";
 import { GetVersion } from "../../wailsjs/go/main/App";
-import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime";
 
 function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [version, setVersion] = useState("")
-    const [fullScreen, setFullScreen] = useState<boolean>()
     const { clips, soundOn } = useClips()
     const searchInputRef = useRef<HTMLInputElement>(null)
     const tl = gsap.timeline();
-
-
-    const handleWindowScreen = async () => {
-        const isMax = await WindowIsMaximised();
-        if (isMax) {
-            WindowUnmaximise();
-            setFullScreen(false);
-        } else {
-            WindowMaximise();
-            setFullScreen(true);
-        }
-    }
 
     useGSAP(() => {
         tl.to('.paper-curtain-1', { left: "-53vw", duration: 1.5, ease: "steps(12)", onStart: () => playSound('paper-curtain-sound.mp3', soundOn, 1) })
@@ -78,17 +65,7 @@ function PageContent() {
         <main className=" bg-background p-6 md:p-10">
             {/* Draggable title bar */}
             <div className="fixed z-10 top-1 left-0 right-0 h-10 cursor-grab" style={{ '--wails-draggable': 'drag' } as React.CSSProperties}></div>
-            <div className="fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
-                <button onClick={() => WindowMinimise()}>
-                    <img src="/minimize.png" alt="minimize" className="h-5 shadow-md hover:shadow-lg" />
-                </button>
-                <button onClick={() => handleWindowScreen()}>
-                    <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md hover:shadow-lg" />
-                </button>
-                <button onClick={() => Quit()}>
-                    <img src="/close.png" alt="close" className="h-5 shadow-md hover:shadow-lg" />
-                </button>
-            </div>
+            <WindowControls />
             <img src="/paper-curtain.png" className="paper-curtain-1 h-screen fixed w-[53vw] left-0 top-0 bottom-0 z-10 " />
             <img src="/paper-curtain.png" className="paper-curtain-2 h-screen fixed w-[53vw] -right-8 top-0 bottom-0 z-10 " />
             {/* // pussy cat image */}

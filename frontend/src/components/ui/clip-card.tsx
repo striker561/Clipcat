@@ -16,7 +16,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, clips, setClips } = useClips()
-    // const { getClips, soundOn } = useClips()
+
 
     useEffect(() => {
         const updateRowSpan = () => {
@@ -34,6 +34,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         return () => window.removeEventListener('resize', updateRowSpan)
     }, [clip.content])
 
+
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(clip.content)
@@ -47,13 +48,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     const handlePin = async () => {
         const clipId = Number(clip.id.replace('clip_', ''))
-
-        // i want a different sound for pinning vs unpinning
-        // when pinning, a louder sound 
-        // when unpinning, a softer sound
-        
         playSound("/sounds/clipboard-slap.mp3", soundOn, 1)
-
         await TogglePin(clipId).catch((err) => {
             console.error("Failed to toggle pin:", err)
         }).finally(() => {
@@ -63,10 +58,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     const handleDelete = async () => {
         const clipId = Number(clip.id.replace('clip_', ''))
-
         playSound("/sounds/paper-rip.mp3", soundOn, .5)
-
-
         if (clips.pinned.length <= 1 && clips.recent.length <= 1) {
             setClips({ pinned: [], recent: [] })
         }
@@ -84,7 +76,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         >   {/* Header with icon and timestamp */}
             {type == "pinned" && <div className="h-10 -top-5 right-0 absolute">
                 <img src={"pin.png"} alt="pin-img" className="h-full" />
-                <div className="absolute h-6 w-5 rounded-full shadow-lg/80 top-2 right-3"/>
+                <div className="absolute h-6 w-5 rounded-full shadow-lg/80 top-2 right-3" />
             </div>}
             <div className="mb-3 flex items-start justify-between">
                 <span className="text-xl"></span>
