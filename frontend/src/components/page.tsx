@@ -5,14 +5,7 @@ import { useClips } from "../context/ClipContext"
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { playSound } from "@/helpers/playSound";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import AboutDialog from "./ui/about-dialog";
 import { GetVersion } from "../../wailsjs/go/main/App";
 import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime";
 
@@ -108,46 +101,7 @@ function PageContent() {
                 <div className="mb-10 flex sm:flex-row flex-row-reverse items-center gap-8 justify-between">
                     <div className="flex items-center gap-2">
                         <h1 className="font-serif text-3xl font-bold italic text-foreground md:text-5xl sm:block hidden">Clipussy</h1>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <button className="heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold" title="About">
-                                    ⓘ
-                                </button>
-                            </DialogTrigger>
-                            <DialogContent className="!bg-[transparent] shadow-none border-0 pt-9">
-                                <div className="absolute h-[calc(100%+2rem)] w-full -z-1">
-                                    <img src="/dialog-bg.png" alt="" className=" h-full w-full" />
-                                </div>
-                                <DialogHeader>
-                                    <DialogTitle className="text-2xl font-serif italic">About Clipussy</DialogTitle>
-                                    <DialogDescription className="text-base pt-4 space-y-3">
-                                        <p>
-                                            <strong>Clipussy</strong> is a creative clipboard manager that helps you keep track of your copied content with style.
-                                        </p>
-                                        <p>
-                                            Created with 💜 by <strong>Onyekwelu Jesse</strong> (
-                                            <a
-                                                href="https://github.com/d3uceY"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-600 hover:underline"
-                                            >
-                                                @d3uceY
-                                            </a>
-                                            )
-                                        </p>
-                                        <p className="text-sm text-muted-foreground pt-2">
-                                            Built with Wails, React, TypeScript, and Go
-                                        </p>
-                                        {version && (
-                                            <p className="text-xs text-muted-foreground pt-1">
-                                                Version: {version}
-                                            </p>
-                                        )}
-                                    </DialogDescription>
-                                </DialogHeader>
-                            </DialogContent>
-                        </Dialog>
+                        <AboutDialog version={version} />
                     </div>
                     <div className="relative w-full max-w-md torn-input">
                         <div className="tape-1 absolute -top-3 left-0 h-12 w-4 bg-yellow-200/40 rotate-45 rounded-sm shadow-sm"></div>
