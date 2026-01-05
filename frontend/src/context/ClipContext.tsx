@@ -18,8 +18,8 @@ const ClipContext = createContext<ClipContextType | undefined>(undefined)
 
 export function ClipProvider({ children }: { children: ReactNode }) {
     const [clips, setClips] = useState<{ pinned: Clip[]; recent: Clip[] }>({ pinned: [], recent: [] })
-    const [soundOn, setSoundOn] = useState<boolean>(true)
-    const [hideContent, setHideContent] = useState<boolean>(false)
+    const [soundOn, setSoundOn] = useState<boolean>(localStorage.getItem("soundOn") === "true" || false)
+    const [hideContent, setHideContent] = useState<boolean>(localStorage.getItem("hideContent") === "true" || false)
 
     const getClips = async () => {
         return GetClips().then((data) => {

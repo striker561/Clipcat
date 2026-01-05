@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime/runtime";
-
 import { useClips } from "@/context/ClipContext";
 
 export default function WindowControls() {
@@ -19,18 +18,24 @@ export default function WindowControls() {
     const Separator = () => {
         return (
             <div>
-                <img src="/seperator.png" alt="" className=" w-[500px]" />
+                <img src="/seperator.png" alt="" className=" w-125" />
             </div>
         );
     };
 
 
     const toggleSound = () => {
-        setSoundOn(!soundOn);
+        setSoundOn((prev) => {
+            localStorage.setItem("soundOn", (!prev).toString());
+            return !prev;
+        });
     }
 
     const toggleHideContent = () => {
-        setHideContent(!hideContent);
+        setHideContent((prev) => {
+            localStorage.setItem("hideContent", (!prev).toString());
+            return !prev;
+        });
     }
 
     const handleWindowScreen = async () => {
@@ -62,7 +67,7 @@ export default function WindowControls() {
                         <p className="text-base p-0!">Hide Clipboard Content</p>
                         {MenuSwitch(hideContent, toggleHideContent)}
                     </div>
-                    <img src="/menu-clean.png" alt="" className="settings-bg"/>
+                    <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>
             </div>
 
