@@ -20,7 +20,7 @@ function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [version, setVersion] = useState("")
     const [fullScreen, setFullScreen] = useState<boolean>()
-    const { clips } = useClips()
+    const { clips, soundOn } = useClips()
     const searchInputRef = useRef<HTMLInputElement>(null)
     const tl = gsap.timeline();
 
@@ -37,7 +37,7 @@ function PageContent() {
     }
 
     useGSAP(() => {
-        tl.to('.paper-curtain-1', { left: "-53vw", duration: 1.5, ease: "steps(12)", onStart: () => playSound('paper-curtain-sound.mp3', true, 1) })
+        tl.to('.paper-curtain-1', { left: "-53vw", duration: 1.5, ease: "steps(12)", onStart: () => playSound('paper-curtain-sound.mp3', soundOn, 1) })
             .to('.paper-curtain-2', { right: '-53vw', duration: 1.5, ease: "steps(9)", }, '-=1.5')
             .from('.pussy', { y: '100%', xPercent: -100, ease: "steps(12)" }, "-=0.5")
     })

@@ -37,7 +37,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(clip.content)
-            playSound("/sounds/paper-copy.wav", soundOn, .3)
+            playSound("/sounds/paper-copy.wav", soundOn, 1)
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
         } catch (err) {
@@ -51,8 +51,8 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         // i want a different sound for pinning vs unpinning
         // when pinning, a louder sound 
         // when unpinning, a softer sound
-        const clipSoundLevel = clip.isPinned ? .4 : 1;
-        playSound("/sounds/clipboard-slap.mp3", soundOn, clipSoundLevel)
+        
+        playSound("/sounds/clipboard-slap.mp3", soundOn, 1)
 
         await TogglePin(clipId).catch((err) => {
             console.error("Failed to toggle pin:", err)
@@ -64,7 +64,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const handleDelete = async () => {
         const clipId = Number(clip.id.replace('clip_', ''))
 
-        playSound("/sounds/paper-rip.mp3", soundOn, .1)
+        playSound("/sounds/paper-rip.mp3", soundOn, .5)
 
 
         if (clips.pinned.length <= 1 && clips.recent.length <= 1) {
