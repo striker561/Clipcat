@@ -130,13 +130,30 @@
 
   /* Hide scrollbar for IE, Edge and Firefox */
   * {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   button {
     @apply cursor-pointer;
   }
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body:after {
+  content: '';
+  position: fixed;
+  height: 10vh;
+  width: 100%;
+  bottom: 0;
+  background: #000000;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 80%);
 }
 
 .page {
@@ -194,6 +211,7 @@
   line-height: 20px;
 }
 
+/* this for the mansory grid layout */
 .free-form-grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -209,6 +227,8 @@
   /* Each item can span multiple rows based on content */
 }
 
+
+/* this is for the handdraw style boxes */
 .hand-drawn {
   transition: all 0.5s ease;
   color: #41403e;
@@ -277,6 +297,8 @@
 }
 
 
+
+/* this is for the heartbeat animation used on the info button */
 .heartbeat {
   -webkit-animation: heartbeat 1.5s ease-in-out infinite both;
   animation: heartbeat 1.5s ease-in-out infinite both;

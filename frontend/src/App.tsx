@@ -4,9 +4,9 @@ function App() {
 
   return (
     <>
-    <div className="page min-h-screen">
+    <main className="page min-h-screen main">
       <Page />
-    </div>
+    </main>
     </>
   )
 }
