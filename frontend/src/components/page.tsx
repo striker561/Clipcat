@@ -107,7 +107,7 @@ function PageContent() {
                 {/* Header */}
                 <div className="mb-10 flex items-center gap-8 justify-between">
                     <div className="flex items-center gap-2">
-                        <h1 className="font-serif text-4xl font-bold italic text-foreground md:text-5xl">Clipussy</h1>
+                        <h1 className="font-serif text-3xl font-bold italic text-foreground md:text-5xl">Clipussy</h1>
                         <Dialog>
                             <DialogTrigger asChild>
                                 <button className="heartbeat text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold" title="About">
@@ -158,7 +158,7 @@ function PageContent() {
                             placeholder="Search (Ctrl+F)"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full px-4 pt-2 text-foreground placeholder-gray-500 focus:outline-none"
+                            className="w-full px-4 pt-2 text-foreground placeholder-gray-500 focus:outline-none shadow-xl"
                         />
                         <Search className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#c0bdbd]" />
                     </div>
