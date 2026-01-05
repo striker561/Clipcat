@@ -424,3 +424,7 @@ body:after {
     left: 2.3rem;
   }
 }
+
+.hard-to-read {
+  filter:blur(3px) /* Adjust the pixel value for desired blur level */
+}
