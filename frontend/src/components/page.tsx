@@ -12,7 +12,7 @@ import { GetVersion } from "../../wailsjs/go/main/App";
 function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
     const [version, setVersion] = useState("")
-    const { clips, soundOn } = useClips()
+    const { clips, soundOn, hideContent } = useClips()
     const searchInputRef = useRef<HTMLInputElement>(null)
     const tl = gsap.timeline();
 
@@ -107,6 +107,52 @@ function PageContent() {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [])
 
+    const pussyCatTimeline = gsap.timeline();
+
+    useEffect(() => {
+        if (hideContent) {
+            pussyCatTimeline.fromTo(".pussy img:first-child", {
+                y: '0%',
+                x: '0%',
+            }, {
+                y: '120%',
+                x: '-120%',
+                duration: 0.25,
+                ease: "elastic.out(1, 0.6)"
+            })
+                .fromTo(".pussy img:last-child", {
+                    y: '120%',
+                    x: '-120%',
+                },
+                    {
+                        y: '0%',
+                        x: '0%',
+                        duration: 0.25,
+                        ease: "elastic.out(1, 0.6)"
+                    })
+        } else {
+            pussyCatTimeline.fromTo(".pussy img:last-child", {
+                y: '0%',
+                x: '0%',
+            },
+                {
+                    y: '120%',
+                    x: '-120%',
+                    duration: 0.25,
+                    ease: "elastic.out(1, 0.6)"
+                })
+                .fromTo(".pussy img:first-child", {
+                    y: '120%',
+                    x: '-120%',
+                }, {
+                    y: '0%',
+                    x: '0%',
+                    duration: 0.25,
+                    ease: "elastic.out(1, 0.6)"
+                })
+        }
+    }, [hideContent])
+
     return (
         <main className=" bg-background p-6 md:p-10">
             {/* Draggable title bar */}
@@ -116,7 +162,13 @@ function PageContent() {
             <img src="/paper-curtain.png" className="paper-curtain-2 h-screen fixed w-[53vw] -right-8 top-0 bottom-0 z-10 " />
             {/* // pussy cat image */}
             <div className="h-[20vh] min-h-25 max-h-50 pussy fixed bottom-0 -left-6 z-1">
-                <img src="/pussy.png" alt="pussy" className="block h-full" />
+                {
+                    !hideContent ?
+                        (<img src="/pussy.png" alt="pussy" className="block h-full" />)
+                        :
+                        (<img src="/pussy-hide.png" alt="pussy" className="block h-full" />)
+                }
+
             </div>
             <div className="margin"></div>
             <div className="mx-auto max-w-6xl">
