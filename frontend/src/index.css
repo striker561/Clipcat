@@ -409,12 +409,7 @@ body:after {
     padding: 3rem 0rem 8rem 2rem;
   }
 
-  .pussy {
-    &:hover {
-      cursor: default;
-      opacity: .4;
-    }
-  }
+
 
   .info {
     display: none;
@@ -437,5 +432,12 @@ body:after {
     height: 105%;
     width: 100%;
     z-index: -1;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-height: 700px) {
+
+  .pussy {
+    max-height: 100px;
   }
 }
