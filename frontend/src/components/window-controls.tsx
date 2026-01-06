@@ -3,6 +3,7 @@ import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Qu
 import { useClips } from "@/context/ClipContext";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { playSound } from "@/helpers/playSound";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -33,10 +34,11 @@ export default function WindowControls() {
         if (!dialogOpen) {
             setDialogOpen(true)
             tl.to(settingBtnRef.current, {
-                y: 5,
+                y: 10,
                 rotation: -2,
                 duration: .3,
-                ease: "power2.out"
+                ease: "power2.out",
+                onStart: () => playSound('/sounds/crank.mp3', soundOn, 1)
             }).set(
                 settingDialogRef.current, {
                 display: "block"
@@ -45,16 +47,16 @@ export default function WindowControls() {
                 opacity: 0,
                 y: -15,
                 rotation: -3,
-                scale: 0.92
+                scale: 0.92,
             }, {
                 opacity: 1,
-                y: 0,
+                y: 5,
                 rotation: 0,
                 scale: 1,
                 duration: 0.5,
-                ease: "back.out(1.2)"
-            }
-            )
+                ease: "back.out(1.2)",
+                onStart: () => playSound('/sounds/paper-collect.mp3', soundOn, 1)
+            })
         } else {
             setDialogOpen(false)
             tl.to(
@@ -64,19 +66,22 @@ export default function WindowControls() {
                 rotation: 2,
                 scale: 0.95,
                 duration: 0.35,
-                ease: "power2.in"
+                ease: "power2.in",
+                onStart: () => playSound('/sounds/paper-collect.mp3', soundOn, 1)
             }
             )
                 .to(settingBtnRef.current, {
                     y: 0,
                     rotation: 0,
                     duration: .3,
-                    ease: "elastic.out(1, 0.5)"
+                    ease: "elastic.out(1, 0.5)",
+                    onStart: () => playSound('/sounds/crank.mp3', soundOn, 1)
+
                 }).set(
                     settingDialogRef.current, {
                     display: "none",
                     rotation: 0,
-                    scale: 1
+                    scale: 1,
                 })
         }
     }
