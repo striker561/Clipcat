@@ -154,6 +154,8 @@ function PageContent() {
         }
     }, [hideContent])
 
+  
+
     return (
         <main className=" bg-background p-6 md:p-10">
             {/* Draggable title bar */}
@@ -167,9 +169,9 @@ function PageContent() {
                     (<img src="/pussy-nothing.png" alt="pussy" className="block h-full pussy-nothing" />)
                     :
                     !hideContent ?
-                        (<img src="/pussy.png" alt="pussy" className="block h-full" />)
+                        (<img src="/pussy.png" alt="pussy" className="block h-full pussy-1" />)
                         :
-                        (<img src="/pussy-hide.png" alt="pussy" className="block h-full" />)
+                        (<img src="/pussy-hide.png" alt="pussy" className="block h-full pussy-2" />)
                 }
             </div>
             <div className="margin"></div>
