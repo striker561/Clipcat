@@ -8,14 +8,19 @@ import { playSound } from "@/helpers/playSound";
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
     const { soundOn, setSoundOn } = useClips();
-    const { hideContent, setHideContent } = useClips();
+    const { hideContent, setHideContent, clips } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
-    const MenuSwitch = (isOn: boolean, toggleFunction: () => void): React.JSX.Element => {
+    const MenuSwitch = (isOn: boolean, toggleFunction: () => void, disabled = false): React.JSX.Element => {
+        const handleToggleFunction = () => {
+            if (!disabled) {
+                toggleFunction();
+            }
+        }
         return (
-            <button onClick={toggleFunction} className="menu-switch-container block h-6 shrink-0">
+            <button onClick={handleToggleFunction} className="menu-switch-container block h-6 shrink-0 disabled:opacity-50" disabled={disabled}>
                 {isOn ? <img src="/on.png" alt="" className='block h-full' /> : <img src="/off.png" alt="" className='block h-full' />}
             </button>
         );
@@ -85,6 +90,7 @@ export default function WindowControls() {
                 })
         }
     }
+
     const Separator = () => {
         return (
             <div>
@@ -119,6 +125,10 @@ export default function WindowControls() {
         }
     };
 
+    const hasClips = () => {
+        return clips.recent.length > 0 || clips.pinned.length > 0;
+    }
+
     return (
         <div className="flex flex-row-reverse items-center fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 gap-6">
             <div className="mt-1 relative z-10">
@@ -135,7 +145,7 @@ export default function WindowControls() {
                     <Separator />
                     <div className="flex items-center gap-3 justify-between py-2">
                         <p className="text-base p-0!">Hide Clipboard Content</p>
-                        {MenuSwitch(hideContent, toggleHideContent)}
+                        {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                     </div>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>

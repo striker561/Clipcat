@@ -68,6 +68,7 @@ function PageContent() {
                 ease: "power2.out"
             })
     })
+
     useEffect(() => {
         GetVersion().then(setVersion).catch(err => console.error("Failed to get version:", err))
     }, [])
@@ -109,7 +110,7 @@ function PageContent() {
 
     const pussyCatTimeline = gsap.timeline();
 
-    useEffect(() => {
+    useGSAP(() => {
         if (hideContent) {
             pussyCatTimeline.fromTo(".pussy img:first-child", {
                 y: '0%',
@@ -162,20 +163,21 @@ function PageContent() {
             <img src="/paper-curtain.png" className="paper-curtain-2 h-screen fixed w-[53vw] -right-8 top-0 bottom-0 z-10 " />
             {/* // pussy cat image */}
             <div className="h-[20vh] min-h-25 max-h-50 pussy fixed bottom-0 -left-6 z-1">
-                {
+                {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 ?
+                    (<img src="/pussy-nothing.png" alt="pussy" className="block h-full pussy-nothing" />)
+                    :
                     !hideContent ?
                         (<img src="/pussy.png" alt="pussy" className="block h-full" />)
                         :
                         (<img src="/pussy-hide.png" alt="pussy" className="block h-full" />)
                 }
-
             </div>
             <div className="margin"></div>
             <div className="mx-auto max-w-6xl">
                 {/* Header */}
                 <div className="mb-10 flex sm:flex-row flex-row-reverse items-center gap-8 justify-between">
                     <div className="flex items-center gap-2">
-                        <h1 className="font-serif text-3xl font-bold italic text-foreground md:text-5xl sm:block hidden">Clipussy</h1>
+                        <h1 className="font-serif text-xl font-bold italic text-foreground sm:block hidden">About</h1>
                         <AboutDialog version={version} />
                     </div>
                     <div className="relative w-full max-w-md torn-input">
