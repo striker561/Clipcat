@@ -95,18 +95,3 @@ func getAppDataDir() (string, error) {
 
 	return appDir, err
 }
-
-func (a *App) viewClipDialog(content string) error {
-	_, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type:          runtime.InfoDialog,
-		Title:         "clip content",
-		Message:       content,
-		DefaultButton: "Ok",
-	})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}

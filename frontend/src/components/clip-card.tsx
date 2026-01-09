@@ -5,6 +5,7 @@ import { TogglePin, Delete } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
 import { playSound } from "@/helpers/playSound"
 import { formatTime } from "@/helpers/formatTime"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
 
 interface ClipCardProps {
@@ -14,6 +15,7 @@ interface ClipCardProps {
 
 export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
+    const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, clips, setClips, hideContent } = useClips()
 
@@ -69,6 +71,10 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         })
     }
 
+    const handleViewClip = () => {
+        setDialogOpen(true)
+    }
+
     return (
         <div
             ref={cardRef}
@@ -85,7 +91,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             {/* Content */}
-            <div className="mb-4 flex-1 overflow-hidden">
+            <div className="mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform" onClick={handleViewClip}>
                 <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8 ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
             </div>
 
@@ -120,6 +126,18 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                     </button>
                 </div>
             </div>
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[80vh]">
+                    <DialogHeader>
+                        <DialogTitle>Clip Content</DialogTitle>
+                        <DialogDescription>Created {formatTime(clip.createdAt)}</DialogDescription>
+                    </DialogHeader>
+                    <div className="overflow-y-auto max-h-[60vh] pr-4">
+                        <p className="whitespace-pre-wrap break-words text-sm">{clip.content}</p>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
