@@ -128,13 +128,18 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[80vh]">
-                    <DialogHeader>
-                        <DialogTitle>Clip Content</DialogTitle>
-                        <DialogDescription>Created {formatTime(clip.createdAt)}</DialogDescription>
-                    </DialogHeader>
-                    <div className="overflow-y-auto max-h-[60vh] pr-4">
-                        <p className="whitespace-pre-wrap break-words text-sm">{clip.content}</p>
+                <DialogContent className="max-w-2xl bg-[#C6A47D] border-0 h-[90vh]! max-h-[500px]">
+                    <img src="/clip.png" className="absolute h-[20%] top-[-11%] left-0 right-0 mx-auto z-10" alt="" />
+                    <div className="page overflow-x-scroll">
+                        <div className="margin"></div>
+                        <DialogHeader className="pt-2 pb-0!">
+                            <DialogTitle>Clip Content</DialogTitle>
+                            <DialogDescription>Created {formatTime(clip.createdAt)}</DialogDescription>
+                            <img src="/seperator.png" alt="" className="w-full -mt-6" />
+                        </DialogHeader>
+                        <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
+                            <p className="whitespace-pre-wrap break-words text-sm">{clip.content}</p>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
