@@ -128,17 +128,22 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="max-w-2xl bg-[#C6A47D] border-0 h-[90vh]! max-h-[500px]">
-                    <img src="/clip.png" className="absolute h-[20%] top-[-11%] left-0 right-0 mx-auto z-10" alt="" />
-                    <div className="page overflow-x-scroll">
+                <DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-[500px]">
+                    {/* clip image */}
+                    <div className="w-fit absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
+                        <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
+                        <img src="/clip.png" className="h-full" alt="" />
+                    </div>
+
+                    <div className="page rounded-none overflow-x-scroll shadow-md/50">
                         <div className="margin"></div>
-                        <DialogHeader className="pt-2 pb-0!">
+                        <DialogHeader className="pt-7 pb-0!">
                             <DialogTitle>Clip Content</DialogTitle>
                             <DialogDescription>Created {formatTime(clip.createdAt)}</DialogDescription>
                             <img src="/seperator.png" alt="" className="w-full -mt-6" />
                         </DialogHeader>
                         <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
-                            <p className="whitespace-pre-wrap break-words text-sm">{clip.content}</p>
+                            <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
                         </div>
                     </div>
                 </DialogContent>
