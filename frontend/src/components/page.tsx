@@ -132,20 +132,23 @@ function PageContent() {
                         ease: "elastic.out(1, 0.6)"
                     })
         } else {
-            pussyCatTimeline.fromTo(".pussy img:last-child", {
-                y: '0%',
-                x: '0%',
-            },
+            pussyCatTimeline.fromTo(".pussy img:last-child",
+                {
+                    y: '0%',
+                    x: '0%',
+                },
                 {
                     y: '120%',
                     x: '-120%',
                     duration: 0.25,
                     ease: "elastic.out(1, 0.6)"
                 })
-                .fromTo(".pussy img:first-child", {
-                    y: '120%',
-                    x: '-120%',
-                }, {
+                .fromTo(".pussy img:first-child",
+                    {
+                        y: '120%',
+                        x: '-120%',
+                    }, 
+                    {
                     y: '0%',
                     x: '0%',
                     duration: 0.25,
@@ -154,15 +157,17 @@ function PageContent() {
         }
     }, [hideContent])
 
-  
+
 
     return (
         <main className=" bg-background p-6 md:p-10">
+
             {/* Draggable title bar */}
             <div className="fixed z-10 top-1 left-0 right-0 h-10 cursor-grab" style={{ '--wails-draggable': 'drag' } as React.CSSProperties}></div>
             <WindowControls />
             <img src="/paper-curtain.png" className="paper-curtain-1 h-screen fixed w-[53vw] left-0 top-0 bottom-0 z-10 " />
             <img src="/paper-curtain.png" className="paper-curtain-2 h-screen fixed w-[53vw] -right-8 top-0 bottom-0 z-10 " />
+
             {/* // pussy cat image */}
             <div className="h-[20vh] min-h-25 max-h-50 pussy fixed bottom-0 -left-6 z-1">
                 {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 ?
