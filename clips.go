@@ -12,12 +12,39 @@ type Clip struct {
 	CreatedAt string `json:"createdAt"`
 }
 
+// get the storage limit from the database
+func getStorageLimit() (int, error) {
+	query := `SELECT limit_count FROM clip_storage_limit WHERE id = 0`
+	var limit int
+	err := DB.QueryRow(query).Scan(&limit)
+	if err != nil {
+		// If no limit is set, insert default of 100 and return it
+		insertQuery := `INSERT OR IGNORE INTO clip_storage_limit (id, limit_count) VALUES (0, 100)`
+		_, insertErr := DB.Exec(insertQuery)
+		if insertErr != nil {
+			return 100, fmt.Errorf("failed to initialize storage limit: %v", insertErr)
+		}
+		return 100, nil
+	}
+	return limit, nil
+}
 
+// update the storage limit in the database
+func updateStorageLimit(newLimit int) error {
+	if newLimit < 1 {
+		return fmt.Errorf("storage limit must be at least 1")
+	}
+
+	query := `INSERT OR REPLACE INTO clip_storage_limit (id, limit_count) VALUES (0, ?)`
+	_, err := DB.Exec(query, newLimit)
+	if err != nil {
+		return fmt.Errorf("failed to update storage limit: %v", err)
+	}
+	return nil
+}
 
 // this gets all clips
 func getClips() ([]Clip, error) {
-	// we want to limit the amount of clips to only hundred, the LIMIT was not added because i
-	// already trim out some clips every time a new one is inserted. check addClip()
 	query := `SELECT id, content, type, pinned, created_at FROM clips ORDER BY pinned DESC, created_at DESC`
 	rows, err := DB.Query(query)
 	if err != nil {
@@ -59,16 +86,22 @@ func addClip(content string, clipType string) error {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
 
-	// Delete old clips, keeping only the 100 most recent (prioritizing pinned)
+	// Get the storage limit from database
+	limit, err := getStorageLimit()
+	if err != nil {
+		return fmt.Errorf("failed to get storage limit: %v", err)
+	}
+
+	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
 	deleteQuery := `
 		DELETE FROM clips
 		WHERE id NOT IN (
 			SELECT id FROM clips
 			ORDER BY pinned DESC, created_at DESC
-			LIMIT 100
+			LIMIT ?
 		)
 	`
-	_, err = DB.Exec(deleteQuery)
+	_, err = DB.Exec(deleteQuery, limit)
 	if err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}

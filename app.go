@@ -83,6 +83,16 @@ func (a *App) Delete(clipID int) error {
 	return deleteClip(clipID)
 }
 
+// GetStorageLimit returns the current storage limit
+func (a *App) GetStorageLimit() (int, error) {
+	return getStorageLimit()
+}
+
+// UpdateStorageLimit updates the storage limit
+func (a *App) UpdateStorageLimit(newLimit int) error {
+	return updateStorageLimit(newLimit)
+}
+
 // get app data directory
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()

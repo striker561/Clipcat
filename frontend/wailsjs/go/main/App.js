@@ -10,10 +10,18 @@ export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
 
+export function GetStorageLimit() {
+  return window['go']['main']['App']['GetStorageLimit']();
+}
+
 export function GetVersion() {
   return window['go']['main']['App']['GetVersion']();
 }
 
 export function TogglePin(arg1) {
   return window['go']['main']['App']['TogglePin'](arg1);
+}
+
+export function UpdateStorageLimit(arg1) {
+  return window['go']['main']['App']['UpdateStorageLimit'](arg1);
 }
