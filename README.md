@@ -11,11 +11,11 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 ![Clipussy Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipussy v0.2.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)]((https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy.exe))
+[![Download Clipussy v0.2.1 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipussy/releases/download/v0.2.1/Clipussy.exe)
 
-**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy.exe)**
+**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.1/Clipussy.exe)**
 
-> Windows 10/11 (64-bit) | Version 0.2.0
+> Windows 10/11 (64-bit) | Version 0.2.1
 
 
 
@@ -29,9 +29,11 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 - <img width="1894" height="994" alt="showcase-1" src="https://github.com/user-attachments/assets/ad3eb87b-12bc-4fc4-9636-05ce75044db4" />
 - 🗑️ **Easy Management** - Copy, pin, and delete clips with intuitive controls
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
+- �️ **Full Content View** - Click any clip to view complete content in a scrollable dialog
+- 🚫 **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
 - 🔊 **Sound Effects** - Audible feedback for actions
 - 💾 **Persistent Storage** - SQLite database keeps your clips safe
-- 🎯 **Smart Cleanup** - Automatically maintains the 100 most recent clips
+- 🎯 **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
 
 ## 🛠️ Technologies Used
 
@@ -164,15 +166,23 @@ CREATE TABLE clips (
     content TEXT NOT NULL,
     type TEXT NOT NULL,
     pinned BOOLEAN DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
+    created_at DATETIME
+);
+
+CREATE TABLE clip_storage_limit (
+    id INTEGER PRIMARY KEY CHECK (id = 0),
+    limit_count INTEGER DEFAULT 100
+);
 ```
 
 **Key Operations** (`clips.go`)
 - `getClips()` - Fetches all clips ordered by pinned status, then by date
-- `addClip()` - Inserts new clip and maintains 100-clip limit
+- `clipExists()` - Checks if content already exists to prevent duplicates
+- `addClip()` - Inserts new clip (skips duplicates) and maintains dynamic clip limit
 - `togglePinClip()` - Toggles pinned status by ID
 - `deleteClip()` - Removes clip from database
+- `getStorageLimit()` - Retrieves current storage limit from database
+- `updateStorageLimit()` - Updates the maximum number of clips to store
 
 ### Frontend Implementation
 
@@ -255,9 +265,22 @@ Windows: %APPDATA%\clipussy\db\gyatt.db
 ## 🎨 Customization
 
 ### Changing Clip Limit
-Edit `clips.go`, line 64:
-```go
-LIMIT 100  // Change this number
+The storage limit is now dynamic and stored in the database. You can update it programmatically:
+
+**From Frontend:**
+```typescript
+import { GetStorageLimit, UpdateStorageLimit } from './wailsjs/go/main/App'
+
+// Get current limit
+const limit = await GetStorageLimit()
+
+// Set new limit
+await UpdateStorageLimit(200)
+```
+
+**Or manually in the database:**
+```sql
+INSERT OR REPLACE INTO clip_storage_limit (id, limit_count) VALUES (0, 200);
 ```
 
 ### Adjusting Sound Volume
