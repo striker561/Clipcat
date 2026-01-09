@@ -1,11 +1,12 @@
 package main
 
 import (
+	"Clipussy/internal/clipboard"
 	"context"
 	"fmt"
 	"os"
 	"path/filepath"
-	"Clipussy/internal/clipboard"
+
 	clip "github.com/atotto/clipboard"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -16,7 +17,6 @@ import (
 type App struct {
 	ctx context.Context
 }
-
 
 // NewApp creates a new App application struct
 func NewApp() *App {
