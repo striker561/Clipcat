@@ -33,6 +33,11 @@ func createTables() {
   pinned BOOLEAN DEFAULT 0,
   created_at DATETIME
 );
+
+  CREATE TABLE IF NOT EXISTS clip_storage_limit (
+    id INTEGER PRIMARY KEY CHECK (id = 0),
+	limit_count INTEGER DEFAULT 100
+);
     `
 	_, err := DB.Exec(query)
 	if err != nil {
