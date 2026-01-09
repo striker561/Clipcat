@@ -78,10 +78,31 @@ func getClips() ([]Clip, error) {
 	return clips, nil
 }
 
+// check if a clip with the same content already exists in the database
+func clipExists(content string) (bool, error) {
+	query := `SELECT COUNT(*) FROM clips WHERE content = ?`
+	var count int
+	err := DB.QueryRow(query, content).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check if clip exists: %v", err)
+	}
+	return count > 0, nil
+}
+
 // this adds a new clip typeshit
 func addClip(content string, clipType string) error {
+	// Check if content already exists
+	exists, err := clipExists(content)
+	if err != nil {
+		return fmt.Errorf("failed to check for duplicate: %v", err)
+	}
+	if exists {
+		// Content already exists, skip insertion
+		return nil
+	}
+
 	query := `INSERT INTO clips (content, type, created_at) VALUES (?, ?, datetime('now'))`
-	_, err := DB.Exec(query, content, clipType)
+	_, err = DB.Exec(query, content, clipType)
 	if err != nil {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
