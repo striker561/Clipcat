@@ -7,12 +7,13 @@
 
 A creative and stylish clipboard manager built with Wails, designed to keep track of everything you copy through a clean, paper-aesthetic interface. It automatically records every clipboard change in real time, storing your copy history so you can easily revisit, reuse, and manage past content whenever you need it.
 
+## ⬇️ Download
 ![Clipussy Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipussy v0.2.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy-amd64-installer.exe)
+[![Download Clipussy v0.2.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)]((https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy.exe))
 
-**[⬇️ Clipussy-amd64-installer.exe](https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy-amd64-installer.exe)**
+**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.0/Clipussy.exe)**
 
 > Windows 10/11 (64-bit) | Version 0.2.0
 
