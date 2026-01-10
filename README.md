@@ -17,6 +17,23 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 
 > Windows 10/11 (64-bit) | Version 0.2.1
 
+### ⚠️ Windows SmartScreen Warning
+
+When running the app for the first time, Windows SmartScreen may show a warning because the app is not yet code-signed. This is normal for open-source applications.
+
+**To run the app:**
+1. Click "More info" on the SmartScreen warning
+2. Click "Run anyway"
+
+Or alternatively:
+1. Right-click the downloaded .exe file
+2. Select "Properties"
+3. Check "Unblock" at the bottom
+4. Click "Apply" → "OK"
+5. Run the executable
+
+The app is safe and [open source](https://github.com/d3uceY/Clipussy) - you can verify the code yourself!
+
 
 
 ## ✨ Features
