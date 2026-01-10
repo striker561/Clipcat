@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime/runtime";
 import { useClips } from "@/context/ClipContext";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { playSound } from "@/helpers/playSound";
+import { UpdateStorageLimit, GetStorageLimit } from "../../wailsjs/go/main/App";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -12,6 +13,40 @@ export default function WindowControls() {
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const [limit, setLimit] = useState(100)
+
+    // Load initial limit from Wails on component mount
+    useEffect(() => {
+        const loadLimit = async () => {
+            try {
+                const currentLimit = await GetStorageLimit();
+                setLimit(currentLimit);
+            } catch (error) {
+                console.error("Failed to load storage limit:", error);
+            }
+        };
+        loadLimit();
+    }, []);
+
+    const incrementLimit = async () => {
+        const newLimit = Math.min(limit + 50, 500);
+        setLimit(newLimit);
+        try {
+            await UpdateStorageLimit(newLimit);
+        } catch (error) {
+            console.error("Failed to update storage limit:", error);
+        }
+    };
+
+    const decrementLimit = async () => {
+        const newLimit = Math.max(limit - 50, 100);
+        setLimit(newLimit);
+        try {
+            await UpdateStorageLimit(newLimit);
+        } catch (error) {
+            console.error("Failed to update storage limit:", error);
+        }
+    };
 
     const MenuSwitch = (isOn: boolean, toggleFunction: () => void, disabled = false): React.JSX.Element => {
         const handleToggleFunction = () => {
@@ -25,6 +60,32 @@ export default function WindowControls() {
             </button>
         );
     };
+
+    
+
+    const ClipStorageLimitSwitch = () => {
+        return (
+            <div className="flex items-center flex-col">
+                <button 
+                    className="block w-4 -rotate-90 disabled:opacity-50" 
+                    onClick={incrementLimit}
+                    disabled={limit >= 500}
+                >
+                    <img src="/arrow.png" alt="increment" className="h-full block" />
+                </button>
+                <div className="flex items-center justify-center w-fit">
+                    <span className="text-center w-full text-sm">{limit}</span>
+                </div>
+                <button 
+                    className="block w-4 rotate-90 disabled:opacity-50" 
+                    onClick={decrementLimit}
+                    disabled={limit <= 100}
+                >
+                    <img src="/arrow.png" alt="decrement" className="h-full block" />
+                </button>
+            </div>
+        )
+    }
 
     useGSAP(() => {
         gsap.set(
@@ -135,17 +196,24 @@ export default function WindowControls() {
                 <button onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
-                <div ref={settingDialogRef} className="setting-dialog p-4 absolute h-fit min-w-40 aspect-square right-0 top-5">
-                    <h2 className="text-lg text-center">Settings</h2>
-                    <Separator />
-                    <div className="flex items-center gap-3 justify-between py-2">
-                        <p className="text-base p-0!">Sound</p>
-                        {MenuSwitch(soundOn, toggleSound)}
-                    </div>
-                    <Separator />
-                    <div className="flex items-center gap-3 justify-between py-2">
-                        <p className="text-base p-0!">Hide Clipboard Content</p>
-                        {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
+                <div ref={settingDialogRef} className="setting-dialog p-4 absolute min-w-40 aspect-square right-0 top-5">
+                    <div className="h-full overflow-y-scroll">
+                        <h2 className="text-lg text-center">Settings</h2>
+                        <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2">
+                            <p className="text-base p-0!">Sound</p>
+                            {MenuSwitch(soundOn, toggleSound)}
+                        </div>
+                        <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2">
+                            <p className="text-base p-0!">Hide Clipboard Content</p>
+                            {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
+                        </div>
+                        <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2">
+                            <p className="text-base p-0!">Clipboard Limit</p>
+                            <ClipStorageLimitSwitch />
+                        </div>
                     </div>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>
