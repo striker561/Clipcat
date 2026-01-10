@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { playSound } from "@/helpers/playSound";
 import { UpdateStorageLimit, GetStorageLimit } from "../../wailsjs/go/main/App";
+import { GetClips } from "../../wailsjs/go/main/App";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -33,6 +34,7 @@ export default function WindowControls() {
         setLimit(newLimit);
         try {
             await UpdateStorageLimit(newLimit);
+            await GetClips();
         } catch (error) {
             console.error("Failed to update storage limit:", error);
         }
@@ -43,6 +45,7 @@ export default function WindowControls() {
         setLimit(newLimit);
         try {
             await UpdateStorageLimit(newLimit);
+            await GetClips();
         } catch (error) {
             console.error("Failed to update storage limit:", error);
         }
