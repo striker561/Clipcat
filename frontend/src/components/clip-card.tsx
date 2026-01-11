@@ -4,8 +4,8 @@ import type { Clip } from '../../types/clip'
 import { TogglePin, Delete } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
 import { playSound } from "@/helpers/playSound"
-import { formatTime } from "@/helpers/formatTime"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { useRelativeTime } from "@/hooks/use-relative-time"
 
 
 interface ClipCardProps {
@@ -87,7 +87,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                 </div>}
             <div className="mb-3 flex items-start justify-between">
                 <span className="text-xl"></span>
-                <span className="text-xs text-muted-foreground md:hidden">{formatTime(clip.createdAt)}</span>
+                <span className="text-xs text-muted-foreground md:hidden">{useRelativeTime(clip.createdAt)}</span>
             </div>
 
             {/* Content */}
@@ -97,7 +97,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
             {/* Footer with time and actions */}
             <div className="flex items-center justify-between">
-                <span className="hidden text-xs text-muted-foreground md:block">{formatTime(clip.createdAt)}</span>
+                <span className="hidden text-xs text-muted-foreground md:block">{useRelativeTime(clip.createdAt)}</span>
                 <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                         onClick={handleCopy}
@@ -139,7 +139,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                         <div className="margin"></div>
                         <DialogHeader className="pt-7 pb-0!">
                             <DialogTitle>Clip Content</DialogTitle>
-                            <DialogDescription>Created {formatTime(clip.createdAt)}</DialogDescription>
+                            <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
                             <img src="/seperator.png" alt="" className="w-full -mt-6" />
                         </DialogHeader>
                         <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
