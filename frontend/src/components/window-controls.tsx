@@ -31,7 +31,8 @@ export default function WindowControls() {
     }, []);
 
     const incrementLimit = async () => {
-        playSound('/sounds/switch-on.mp3', soundOn, 1);
+        // i know this sound is backwards but it sounds better this way 😂
+        playSound('/sounds/switch-off.mp3', soundOn, 1);
         const newLimit = Math.min(limit + 50, 500);
         setLimit(newLimit);
         try {
@@ -43,7 +44,8 @@ export default function WindowControls() {
     };
 
     const decrementLimit = async () => {
-        playSound('/sounds/switch-off.mp3', soundOn, 1);
+        // yeah, ik it is backwards
+        playSound('/sounds/switch-on.mp3', soundOn, 1);
         const newLimit = Math.max(limit - 50, 100);
         setLimit(newLimit);
         try {
