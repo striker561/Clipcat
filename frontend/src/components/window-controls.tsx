@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { playSound } from "@/helpers/playSound";
 import { UpdateStorageLimit, GetStorageLimit } from "../../wailsjs/go/main/App";
 import { GetClips } from "../../wailsjs/go/main/App";
+import { ScrollArea } from "./ui/scroll-area";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -64,13 +65,13 @@ export default function WindowControls() {
         );
     };
 
-    
+
 
     const ClipStorageLimitSwitch = () => {
         return (
             <div className="flex items-center flex-col">
-                <button 
-                    className="block w-4 -rotate-90 disabled:opacity-50" 
+                <button
+                    className="block w-4 -rotate-90 disabled:opacity-50"
                     onClick={incrementLimit}
                     disabled={limit >= 500}
                 >
@@ -79,8 +80,8 @@ export default function WindowControls() {
                 <div className="flex items-center justify-center w-fit">
                     <span className="text-center w-full text-sm">{limit}</span>
                 </div>
-                <button 
-                    className="block w-4 rotate-90 disabled:opacity-50" 
+                <button
+                    className="block w-4 rotate-90 disabled:opacity-50"
                     onClick={decrementLimit}
                     disabled={limit <= 100}
                 >
@@ -199,25 +200,25 @@ export default function WindowControls() {
                 <button onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
-                <div ref={settingDialogRef} className="setting-dialog p-4 absolute min-w-40 aspect-square right-0 top-5">
-                    <div className="h-full overflow-y-scroll">
+                <div ref={settingDialogRef} className="setting-dialog absolute min-w-40 aspect-square right-0 top-5">
+                    <ScrollArea className="h-full p-4">
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2">
                             <p className="text-base p-0!">Sound</p>
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
-                        <Separator />
+
                         <div className="flex items-center gap-3 justify-between py-2">
                             <p className="text-base p-0!">Hide Clipboard Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
-                        <Separator />
+
                         <div className="flex items-center gap-3 justify-between py-2">
                             <p className="text-base p-0!">Clipboard Limit</p>
                             <ClipStorageLimitSwitch />
                         </div>
-                    </div>
+                    </ScrollArea>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>
             </div>

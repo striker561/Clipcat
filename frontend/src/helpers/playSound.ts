@@ -12,6 +12,8 @@ const SOUND_FILES = [
   '/sounds/paper-copy.wav',
   '/sounds/clipboard-slap.mp3',
   '/sounds/paper-rip.mp3',
+  '/sounds/switch-on.mp3',
+  '/sounds/switch-off.mp3',
 ];
 
 // Preload all sounds into memory
