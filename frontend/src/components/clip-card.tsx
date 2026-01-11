@@ -135,7 +135,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                         <img src="/clip.png" className="h-full" alt="" />
                     </div>
 
-                    <div className="page rounded-none overflow-x-scroll shadow-md/50">
+                    <div className="page rounded-none! overflow-x-scroll shadow-md/50">
                         <div className="margin"></div>
                         <DialogHeader className="pt-7 pb-0!">
                             <DialogTitle>Clip Content</DialogTitle>
