@@ -11,11 +11,11 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 ![Clipussy Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipussy v0.2.1 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipussy/releases/download/v0.2.1/Clipussy.exe)
+[![Download Clipussy v0.2.2 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipussy/releases/download/v0.2.2/Clipussy.exe)
 
-**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.1/Clipussy.exe)**
+**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.2/Clipussy.exe)**
 
-> Windows 10/11 (64-bit) | Version 0.2.1
+> Windows 10/11 (64-bit) | Version 0.2.2
 
 ### ⚠️ Windows SmartScreen Warning
 
