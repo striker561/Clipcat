@@ -31,6 +31,7 @@ export default function WindowControls() {
     }, []);
 
     const incrementLimit = async () => {
+        playSound('/sounds/switch-on.mp3', soundOn, 1);
         const newLimit = Math.min(limit + 50, 500);
         setLimit(newLimit);
         try {
@@ -42,6 +43,7 @@ export default function WindowControls() {
     };
 
     const decrementLimit = async () => {
+        playSound('/sounds/switch-off.mp3', soundOn, 1);
         const newLimit = Math.max(limit - 50, 100);
         setLimit(newLimit);
         try {
@@ -54,6 +56,7 @@ export default function WindowControls() {
 
     const MenuSwitch = (isOn: boolean, toggleFunction: () => void, disabled = false): React.JSX.Element => {
         const handleToggleFunction = () => {
+            playSound(isOn ? '/sounds/switch-on.mp3' : '/sounds/switch-off.mp3', soundOn, 1);
             if (!disabled) {
                 toggleFunction();
             }
