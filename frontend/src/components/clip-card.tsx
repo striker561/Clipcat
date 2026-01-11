@@ -137,7 +137,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
                     <div className="page rounded-none! overflow-x-scroll shadow-md/50">
                         <div className="margin"></div>
-                        <DialogHeader className="pt-7 pb-0!">
+                        <DialogHeader className="sm:pt-7 pb-0!">
                             <DialogTitle>Clip Content</DialogTitle>
                             <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
                             <img src="/seperator.png" alt="" className="w-full -mt-6" />
