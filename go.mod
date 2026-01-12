@@ -1,4 +1,4 @@
-module Clipussy
+module Clipcat
 
 go 1.24.0
 

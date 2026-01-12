@@ -24,10 +24,10 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                     <img src="/dialog-bg.png" alt="" className=" h-full w-full" />
                 </div>
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-serif italic">About Clipussy</DialogTitle>
+                    <DialogTitle className="text-2xl font-serif italic">About Clipcat</DialogTitle>
                     <DialogDescription className="text-base pt-4 space-y-3">
                         <p>
-                            <strong>Clipussy</strong> is a creative clipboard manager that helps you keep track of your copied content with style.
+                            <strong>Clipcat</strong> is a creative clipboard manager that helps you keep track of your copied content with style.
                         </p>
                         <p>
                             Created with 💜 by <strong>Onyekwelu Jesse</strong> (

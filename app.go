@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Clipussy/internal/clipboard"
+	"Clipcat/internal/clipboard"
 	"context"
 	"fmt"
 	"os"

@@ -2,18 +2,18 @@
   <img src="./build/appicon.png" alt="icon" width="90">
 </p>
 <div align="center">
-<h1>Clipussy</h1>
+<h1>Clipcat</h1>
 </div>
 
 A creative and stylish clipboard manager built with Wails, designed to keep track of everything you copy through a clean, paper-aesthetic interface. It automatically records every clipboard change in real time, storing your copy history so you can easily revisit, reuse, and manage past content whenever you need it.
 
 ## ⬇️ Download
-![Clipussy Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
+![Clipcat Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipussy v0.2.2 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipussy/releases/download/v0.2.2/Clipussy.exe)
+[![Download Clipcat v0.2.2 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.2.2/Clipcat.exe)
 
-**[⬇️ Clipussy](https://github.com/d3uceY/Clipussy/releases/download/v0.2.2/Clipussy.exe)**
+**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.2.2/Clipcat.exe)**
 
 > Windows 10/11 (64-bit) | Version 0.2.2
 
@@ -32,7 +32,7 @@ Or alternatively:
 4. Click "Apply" → "OK"
 5. Run the executable
 
-The app is safe and [open source](https://github.com/d3uceY/Clipussy) - you can verify the code yourself!
+The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can verify the code yourself!
 
 
 
@@ -72,13 +72,13 @@ The app is safe and [open source](https://github.com/d3uceY/Clipussy) - you can 
 
 ## Why Wails?
 
-Clipussy uses Wails to:
+Clipcat uses Wails to:
 - Integrate native Windows clipboard APIs via Go
 - Communicate clipboard events to a React UI in real time
 - Bundle a lightweight, native-feeling desktop app without Electron
 ## 🏗️ Architecture
 
-Clipussy follows a clean architecture pattern with clear separation between frontend and backend:
+Clipcat follows a clean architecture pattern with clear separation between frontend and backend:
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -131,7 +131,7 @@ Clipussy follows a clean architecture pattern with clear separation between fron
 ## 📂 Project Structure
 
 ```
-Clipussy/
+Clipcat/
 ├── app.go                      # Main application entry point
 ├── clips.go                    # Clip CRUD operations
 ├── db.go                       # Database initialization
@@ -231,8 +231,8 @@ CREATE TABLE clip_storage_limit (
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/d3uceY/clipussy.git
-   cd clipussy
+   git clone https://github.com/d3uceY/clipcat.git
+   cd clipcat
    ```
 
 2. **Install dependencies**
@@ -271,7 +271,7 @@ The built application will be in `build/bin/`.
 
 Clips are stored in a SQLite database at:
 ```
-Windows: %APPDATA%\clipussy\db\gyatt.db
+Windows: %APPDATA%\clipcat\db\gyatt.db
 ```
 
 ## ⌨️ Keyboard Shortcuts

@@ -46,7 +46,7 @@ func StartClipboardListener(onChange func()) {
 	go func() {
 		instance := win.GetModuleHandle(nil)
 
-		className, _ := syscall.UTF16PtrFromString("ClipussyClipboardWindow")
+		className, _ := syscall.UTF16PtrFromString("ClipcatClipboardWindow")
 
 		var wc win.WNDCLASSEX
 		wc.CbSize = uint32(unsafe.Sizeof(wc))

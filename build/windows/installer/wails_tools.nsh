@@ -5,16 +5,16 @@
 !include "FileFunc.nsh"
 
 !ifndef INFO_PROJECTNAME
-    !define INFO_PROJECTNAME "Clipussy"
+    !define INFO_PROJECTNAME "Clipcat"
 !endif
 !ifndef INFO_COMPANYNAME
     !define INFO_COMPANYNAME "d3uceY"
 !endif
 !ifndef INFO_PRODUCTNAME
-    !define INFO_PRODUCTNAME "Clipussy"
+    !define INFO_PRODUCTNAME "Clipcat"
 !endif
 !ifndef INFO_PRODUCTVERSION
-    !define INFO_PRODUCTVERSION "0.2.1"
+    !define INFO_PRODUCTVERSION "0.2.2"
 !endif
 !ifndef INFO_COPYRIGHT
     !define INFO_COPYRIGHT "Copyright © 2026 d3uceY"
