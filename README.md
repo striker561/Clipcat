@@ -43,7 +43,6 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - 🔍 **Fast Search** - Quickly find clips with Ctrl+F
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
 - 🎨 **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
-- <img width="1894" height="994" alt="showcase-1" src="https://github.com/user-attachments/assets/ad3eb87b-12bc-4fc4-9636-05ce75044db4" />
 - 🗑️ **Easy Management** - Copy, pin, and delete clips with intuitive controls
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
 - �️ **Full Content View** - Click any clip to view complete content in a scrollable dialog
