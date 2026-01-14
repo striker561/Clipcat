@@ -206,7 +206,7 @@ export default function WindowControls() {
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
                 <div ref={settingDialogRef} className="setting-dialog absolute min-w-40 aspect-square right-0 top-5">
-                    <ScrollArea className="h-full p-4">
+                    <ScrollArea className="h-full pt-4 px-4 border">
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2">

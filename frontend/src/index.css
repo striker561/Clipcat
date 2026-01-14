@@ -429,7 +429,7 @@ body:after {
   & .settings-bg {
     position: absolute;
     inset: 0;
-    height: 95%;
+    height: 105%;
     width: 100%;
     z-index: -1;
   }
