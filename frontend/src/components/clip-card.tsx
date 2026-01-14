@@ -91,8 +91,8 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             {/* Content */}
-            <div className="mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform" onClick={handleViewClip}>
-                <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8 ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
+            <div className={`mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform  ${hideContent ? "hard-to-read" : ""}`} onClick={handleViewClip}>
+                <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`}>{clip.content}</p>
             </div>
 
             {/* Footer with time and actions */}
@@ -128,7 +128,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-[500px]">
+                <DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-125">
                     {/* clip image */}
                     <div className="w-fit absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
                         <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
