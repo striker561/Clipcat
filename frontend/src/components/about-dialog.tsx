@@ -6,12 +6,55 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
+import { GetVersion } from "../../wailsjs/go/main/App";
 
 interface AboutDialogProps {
     version: string;
 }
 
+interface UpdateInfo {
+    version: string;
+    releaseUrl: string;
+    releaseDate: string;
+}
+
 export default function AboutDialog({ version }: AboutDialogProps) {
+    const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
+    const [_, setIsChecking] = useState<boolean>(false);
+
+    useEffect(() => {
+        const checkVersion = async () => {
+            setIsChecking(true);
+            try {
+               
+                // Fetch latest release from GitHub
+                const response = await fetch("https://api.github.com/repos/d3uceY/Clipcat/releases/latest");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch latest release");
+                }
+
+                const data = await response.json();
+                const latestVersion = data.tag_name;
+
+                // Compare versions
+                if (latestVersion !== version) {
+                    setUpdateAvailable({
+                        version: latestVersion,
+                        releaseUrl: data.html_url,
+                        releaseDate: data.published_at,
+                    });
+                }
+            } catch (error) {
+                console.error("Error checking for updates:", error);
+            } finally {
+                setIsChecking(false);
+            }
+        };
+
+        checkVersion();
+    }, []);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -19,7 +62,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                     ⓘ
                 </button>
             </DialogTrigger>
-            <DialogContent className="!bg-[transparent] shadow-none border-0 pt-9">
+            <DialogContent className="bg-[transparent]! shadow-none border-0 pt-9">
                 <div className="absolute h-[calc(100%+2rem)] w-full -z-1">
                     <img src="/dialog-bg.png" alt="" className=" h-full w-full" />
                 </div>
@@ -48,6 +91,27 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                             <p className="text-xs text-muted-foreground pt-1">
                                 Version: {version}
                             </p>
+                        )}
+                        {updateAvailable && (
+                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                <p className="text-sm font-semibold text-blue-800 mb-2">
+                                    🎉 Update Available!
+                                </p>
+                                <p className="text-sm text-blue-700">
+                                    Version <strong>{updateAvailable.version}</strong> is now available
+                                </p>
+                                <p className="text-xs text-blue-600 mt-1">
+                                    Released: {new Date(updateAvailable.releaseDate).toLocaleDateString()}
+                                </p>
+                                <a
+                                    href={updateAvailable.releaseUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block mt-2 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                                >
+                                    Download Update
+                                </a>
+                            </div>
                         )}
                     </DialogDescription>
                 </DialogHeader>
