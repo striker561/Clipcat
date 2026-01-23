@@ -7,6 +7,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
+import { LogPrint } from "../../wailsjs/runtime/runtime";
 
 interface AboutDialogProps {
     version: string;
@@ -35,7 +36,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
 
                 const data = await response.json();
                 const latestVersion = data.tag_name;
-
+                 LogPrint(`Current version: ${version}, Latest version: ${latestVersion}`);
                 // Compare versions
                 if (latestVersion !== version) {
                     setUpdateAvailable({

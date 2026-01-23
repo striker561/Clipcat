@@ -147,13 +147,13 @@ function PageContent() {
                     {
                         y: '120%',
                         x: '-120%',
-                    }, 
+                    },
                     {
-                    y: '0%',
-                    x: '0%',
-                    duration: 0.25,
-                    ease: "elastic.out(1, 0.6)"
-                })
+                        y: '0%',
+                        x: '0%',
+                        duration: 0.25,
+                        ease: "elastic.out(1, 0.6)"
+                    })
         }
     }, [hideContent])
 
@@ -185,7 +185,10 @@ function PageContent() {
                 <div className="mb-10 flex sm:flex-row flex-row-reverse items-center gap-8 justify-between">
                     <div className="flex items-center gap-2">
                         <h1 className="font-serif text-xl font-bold italic text-foreground sm:block hidden">About</h1>
-                        <AboutDialog version={version} />
+                        {
+                            version &&
+                            < AboutDialog version={version} />
+                        }
                     </div>
                     <div className="relative w-full max-w-md torn-input">
                         <div className="tape-1 absolute -top-3 left-0 h-12 w-4 bg-yellow-200/40 rotate-45 rounded-sm shadow-sm"></div>
