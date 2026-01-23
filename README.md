@@ -41,7 +41,8 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 
 ## ✨ Features
 
-- **Automatic Clipboard Monitoring** - Automatically captures everything you copy
+- **Automatic Clipboard Monitoring** - Automatically captures everything you copy (text and images)
+- **Image Support** - Captures and displays clipboard images with base64 encoding
 - **Pin Important Clips** - Keep your most-used clips at the top
 - **Fast Search** - Quickly find clips with Ctrl+F
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
@@ -53,6 +54,7 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Sound Effects** - Audible feedback for actions
 - **Persistent Storage** - SQLite database keeps your clips safe
 - **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- **Auto Update Check** - Automatically checks for new versions on GitHub
 
 ## 🛠️ Technologies Used
 
@@ -60,7 +62,7 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **[Go](https://golang.org/)** - Core application logic
 - **[Wails v2](https://wails.io/)** - Desktop application framework
 - **[SQLite](https://www.sqlite.org/)** (via modernc.org/sqlite) - Local database for clip storage
-- **[atotto/clipboard](https://github.com/atotto/clipboard)** - Cross-platform clipboard access
+- **[golang.design/x/clipboard](https://github.com/golang-design/clipboard)** - Cross-platform clipboard access with image support
 - **Windows API** (lxn/win) - Native Windows clipboard monitoring
 
 ### Frontend
@@ -182,7 +184,8 @@ Clipcat/
 ```sql
 CREATE TABLE clips (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content TEXT NOT NULL,
+    content TEXT,
+    image BLOB,
     type TEXT NOT NULL,
     pinned BOOLEAN DEFAULT 0,
     created_at DATETIME
@@ -194,10 +197,13 @@ CREATE TABLE clip_storage_limit (
 );
 ```
 
+**Note:** The `content` field is nullable to support image-only clips. Either `content` or `image` will be populated based on the clip `type`.
+
 **Key Operations** (`clips.go`)
 - `getClips()` - Fetches all clips ordered by pinned status, then by date
-- `clipExists()` - Checks if content already exists to prevent duplicates
-- `addClip()` - Inserts new clip (skips duplicates) and maintains dynamic clip limit
+- `clipExists()` - Checks if content already exists to prevent duplicates (text only)
+- `addClip()` - Inserts new text clip (skips duplicates) and maintains dynamic clip limit
+- `addImageClip()` - Inserts new image clip as BLOB and maintains dynamic clip limit
 - `togglePinClip()` - Toggles pinned status by ID
 - `deleteClip()` - Removes clip from database
 - `getStorageLimit()` - Retrieves current storage limit from database
@@ -212,9 +218,9 @@ CREATE TABLE clip_storage_limit (
 - Provides `getClips()` method for manual refresh
 
 **UI Components**
-- **ClipCard** - Individual clip with copy/pin/delete actions
+- **ClipCard** - Individual clip with copy/pin/delete actions; displays text or image based on type
 - **Page** - Main layout with search, pinned section, recent section
-- **Dialog** - About modal with app information
+- **AboutDialog** - Modal with app information and automatic update checking
 
 **Animations** (GSAP)
 - Paper curtain reveal on startup
@@ -225,7 +231,7 @@ CREATE TABLE clip_storage_limit (
 ## Getting Started
 
 ### Prerequisites
-- Go 1.24 or higher
+- Go 1.24.0 or higher
 - Node.js 18+ and npm
 - Wails CLI: `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
 
