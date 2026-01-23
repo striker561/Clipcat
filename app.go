@@ -55,12 +55,27 @@ func (a *App) startup(ctx context.Context) {
 	migrateClipsTable()
 
 	// start clipboard listener
+	var lastImage []byte
 	clipboard.StartClipboardListener(func() {
-		// Try image first
+		// Try image first\
+
 		if img := gclip.Read(gclip.FmtImage); img != nil {
+			lastImagePtr := &lastImage
+
+			if string(*lastImagePtr) == string(img) {
+				// same image as before, skip
+				return
+			}
+
+			// new image, save it
+			*lastImagePtr = img
+			fmt.Println("this ran")
 			err := addImageClip(img)
 			if err != nil {
 				fmt.Println("failed to save image:", err)
+			}
+			if a.ctx != nil {
+				runtime.EventsEmit(a.ctx, "clipboard:changed")
 			}
 			return
 		}

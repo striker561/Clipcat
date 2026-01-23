@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"database/sql"
 	"encoding/base64"
+	"fmt"
 )
 
 type Clip struct {
@@ -15,7 +15,6 @@ type Clip struct {
 	Pinned    bool    `json:"isPinned"`
 	CreatedAt string  `json:"createdAt"`
 }
-
 
 func getStorageLimit() (int, error) {
 	query := `SELECT limit_count FROM clip_storage_limit WHERE id = 0`
@@ -33,7 +32,6 @@ func getStorageLimit() (int, error) {
 	return limit, nil
 }
 
-
 func updateStorageLimit(newLimit int) error {
 	if newLimit < 1 {
 		return fmt.Errorf("storage limit must be at least 1")
@@ -46,7 +44,6 @@ func updateStorageLimit(newLimit int) error {
 	}
 	return nil
 }
-
 
 func getClips() ([]Clip, error) {
 	query := `
@@ -91,7 +88,7 @@ func getClips() ([]Clip, error) {
 			clip.Length = len(content.String)
 		}
 
-		if clipType == "image" && len(image) > 0 {
+		if clipType == "image" {
 			encoded := base64.StdEncoding.EncodeToString(image)
 			clip.Image = &encoded
 			clip.Length = len(image)
@@ -113,7 +110,6 @@ func clipExists(content string) (bool, error) {
 	}
 	return count > 0, nil
 }
-
 
 func addClip(content string, clipType string) error {
 	// Check if content already exists
@@ -206,7 +202,6 @@ func togglePinClip(clipID int) error {
 	return nil
 }
 
-
 func deleteClip(clipID int) error {
 	query := `DELETE FROM clips WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
@@ -225,4 +220,3 @@ func deleteClip(clipID int) error {
 
 	return nil
 }
-

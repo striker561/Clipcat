@@ -6,6 +6,7 @@ import { useClips } from "@/context/ClipContext"
 import { playSound } from "@/helpers/playSound"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { useRelativeTime } from "@/hooks/use-relative-time"
+import { ScrollArea } from "./ui/scroll-area-white"
 
 
 interface ClipCardProps {
@@ -34,13 +35,13 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         updateRowSpan()
         window.addEventListener('resize', updateRowSpan)
         return () => window.removeEventListener('resize', updateRowSpan)
-    }, [clip.content])
+    }, [clips])
 
 
     const handleCopy = async () => {
         try {
             if (clip.type === "image") {
-                
+
                 return
             }
             if (clip.content === undefined) return
@@ -98,9 +99,9 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             {/* Content */}
             <div className={`mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform  ${hideContent ? "hard-to-read" : ""}`} onClick={handleViewClip}>
                 {clip.type === "image" && clip.image ? (
-                    <img 
-                        src={`data:image/png;base64,${clip.image}`} 
-                        alt="Clip image" 
+                    <img
+                        src={`data:image/png;base64,${clip.image}`}
+                        alt="Clip image"
                         className="w-full h-auto object-contain max-h-48 rounded"
                     />
                 ) : (
@@ -141,33 +142,52 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-125">
-                    {/* clip image */}
-                    <div className="w-fit absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
-                        <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
-                        <img src="/clip.png" className="h-full" alt="" />
-                    </div>
-
-                    <div className="page rounded-none! overflow-x-scroll shadow-md/50">
-                        <div className="margin"></div>
-                        <DialogHeader className="sm:pt-7 pb-0!">
-                            <DialogTitle>Clip Content</DialogTitle>
-                            <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
-                            <img src="/seperator.png" alt="" className="w-full -mt-6" />
-                        </DialogHeader>
-                        <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
-                            {clip.type === "image" && clip.image ? (
-                                <img 
-                                    src={`data:image/png;base64,${clip.image}`} 
-                                    alt="Clip image" 
+                {
+                    clip.type === "image" && clip.image ? (
+                        <DialogContent className="px-3 border-0 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover  h-[90vh]! max-h-125">
+                            {/* clip image */}
+                            <ScrollArea className=" overflow-auto ">
+                                <img
+                                    src={`data:image/png;base64,${clip.image}`}
+                                    alt="Clip image"
                                     className="w-full h-auto object-contain rounded"
                                 />
-                            ) : (
-                                <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
-                            )}
-                        </div>
-                    </div>
-                </DialogContent>
+                            </ScrollArea>
+                        </DialogContent>
+
+                    )
+
+                        :
+
+                        (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-125">
+                            {/* clip image */}
+                            <div className="w-fit absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
+                                <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
+                                <img src="/clip.png" className="h-full" alt="" />
+                            </div>
+
+                            <div className="page rounded-none! overflow-x-scroll shadow-md/50">
+                                <div className="margin"></div>
+                                <DialogHeader className="sm:pt-7 pb-0!">
+                                    <DialogTitle>Clip Content</DialogTitle>
+                                    <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
+                                    <img src="/seperator.png" alt="" className="w-full -mt-6" />
+                                </DialogHeader>
+                                <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
+                                    {clip.type === "image" && clip.image ? (
+                                        <img
+                                            src={`data:image/png;base64,${clip.image}`}
+                                            alt="Clip image"
+                                            className="w-full h-auto object-contain rounded"
+                                        />
+                                    ) : (
+                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
+                                    )}
+                                </div>
+                            </div>
+                        </DialogContent>
+                        )
+                }
             </Dialog>
         </div>
     )
