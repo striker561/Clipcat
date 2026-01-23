@@ -7,15 +7,18 @@
 
 A creative and stylish clipboard manager built with Wails, designed to keep track of everything you copy through a clean, paper-aesthetic interface. It automatically records every clipboard change in real time, storing your copy history so you can easily revisit, reuse, and manage past content whenever you need it.
 
+![clipcat (1)](https://github.com/user-attachments/assets/ca28ae42-2a9d-42c3-9a47-183808d59cf6)
+
+
 ## ⬇️ Download
 ![Clipcat Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipcat v0.3.3 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.3.3/Clipcat.exe)
+[![Download Clipcat v0.3.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.3.0/Clipcat.exe)
 
-**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.3.3/Clipcat.exe)**
+**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.3.0/Clipcat.exe)**
 
-> Windows 10/11 (64-bit) | Version 0.3.3
+> Windows 10/11 (64-bit) | Version 0.3.0
 
 ### ⚠️ Windows SmartScreen Warning
 
@@ -38,18 +41,18 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 
 ## ✨ Features
 
-- 🔄 **Automatic Clipboard Monitoring** - Automatically captures everything you copy
-- 📌 **Pin Important Clips** - Keep your most-used clips at the top
-- 🔍 **Fast Search** - Quickly find clips with Ctrl+F
+- **Automatic Clipboard Monitoring** - Automatically captures everything you copy
+- **Pin Important Clips** - Keep your most-used clips at the top
+- **Fast Search** - Quickly find clips with Ctrl+F
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
-- 🎨 **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
-- 🗑️ **Easy Management** - Copy, pin, and delete clips with intuitive controls
+- **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
+- **Easy Management** - Copy, pin, and delete clips with intuitive controls
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
-- �️ **Full Content View** - Click any clip to view complete content in a scrollable dialog
-- 🚫 **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
-- 🔊 **Sound Effects** - Audible feedback for actions
-- 💾 **Persistent Storage** - SQLite database keeps your clips safe
-- 🎯 **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- **Full Content View** - Click any clip to view complete content in a scrollable dialog
+- **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
+- **Sound Effects** - Audible feedback for actions
+- **Persistent Storage** - SQLite database keeps your clips safe
+- **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
 
 ## 🛠️ Technologies Used
 
@@ -219,7 +222,7 @@ CREATE TABLE clip_storage_limit (
 - Info button nudge animation
 - Sound effects on interactions
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Go 1.24 or higher
@@ -270,7 +273,7 @@ The built application will be in `build/bin/`.
 
 Clips are stored in a SQLite database at:
 ```
-Windows: %APPDATA%\clipcat\db\gyatt.db
+Windows: %APPDATA%\clipussy\db\gyatt.db
 ```
 
 ## ⌨️ Keyboard Shortcuts
@@ -308,19 +311,19 @@ playSound("/sounds/file.mp3", soundOn, 0.3)  // 0.0 to 1.0
 ### Modifying UI Colors
 Edit `frontend/src/index.css` and Tailwind classes in components.
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Feel free to submit issues and pull requests.
 
-## 👨‍💻 Author
+##  Author
 
 **Onyekwelu Jesse** ([@d3uceY](https://github.com/d3uceY))
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Wails](https://wails.io/) for the amazing Go + Web framework
 - All open-source contributors whose libraries made this possible
