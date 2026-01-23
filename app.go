@@ -69,7 +69,6 @@ func (a *App) startup(ctx context.Context) {
 
 			// new image, save it
 			*lastImagePtr = img
-			fmt.Println("this ran")
 			err := addImageClip(img)
 			if err != nil {
 				fmt.Println("failed to save image:", err)

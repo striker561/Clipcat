@@ -111,6 +111,17 @@ func clipExists(content string) (bool, error) {
 	return count > 0, nil
 }
 
+// check if a clip with the same image exists in db, call it pause on bro fr
+func imageClipExists(image []byte) (bool, error) {
+	query := `SELECT COUNT(*) FROM clips WHERE image = ?`
+	var count int
+	err := DB.QueryRow(query, image).Scan(&count)
+	if err != nil {
+		return false, fmt.Errorf("failed to check if clip exists: %v", err)
+	}
+	return count > 0, nil
+}
+
 func addClip(content string, clipType string) error {
 	// Check if content already exists
 	exists, err := clipExists(content)
@@ -153,8 +164,18 @@ func addClip(content string, clipType string) error {
 
 func addImageClip(img []byte) error {
 
+	// Check if image already exists
+	exists, err := imageClipExists(img)
+	if err != nil {
+		return fmt.Errorf("failed to check for duplicate image: %v", err)
+	}
+	if exists {
+		// Image already exists, skip insertion
+		return nil
+	}
+
 	query := `INSERT INTO clips (image, type, created_at) VALUES (?, ?, datetime('now'))`
-	_, err := DB.Exec(query, img, "image")
+	_, err = DB.Exec(query, img, "image")
 	if err != nil {
 		return fmt.Errorf("failed to insert image clip: %v", err)
 	}
