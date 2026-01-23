@@ -2,17 +2,21 @@ package main
 
 import (
 	"fmt"
+	"database/sql"
+	"encoding/base64"
 )
 
 type Clip struct {
-	ID        string `json:"id"`
-	Content   string `json:"content"`
-	Length    int    `json:"length"`
-	Pinned    bool   `json:"isPinned"`
-	CreatedAt string `json:"createdAt"`
+	ID        string  `json:"id"`
+	Type      string  `json:"type"`
+	Content   *string `json:"content,omitempty"`
+	Image     *string `json:"image,omitempty"` // base64 PNG
+	Length    int     `json:"length"`
+	Pinned    bool    `json:"isPinned"`
+	CreatedAt string  `json:"createdAt"`
 }
 
-// get the storage limit from the database
+
 func getStorageLimit() (int, error) {
 	query := `SELECT limit_count FROM clip_storage_limit WHERE id = 0`
 	var limit int
@@ -29,7 +33,7 @@ func getStorageLimit() (int, error) {
 	return limit, nil
 }
 
-// update the storage limit in the database
+
 func updateStorageLimit(newLimit int) error {
 	if newLimit < 1 {
 		return fmt.Errorf("storage limit must be at least 1")
@@ -43,36 +47,57 @@ func updateStorageLimit(newLimit int) error {
 	return nil
 }
 
-// this gets all clips
+
 func getClips() ([]Clip, error) {
-	query := `SELECT id, content, type, pinned, created_at FROM clips ORDER BY pinned DESC, created_at DESC`
+	query := `
+		SELECT id, content, image, type, pinned, created_at
+		FROM clips
+		ORDER BY pinned DESC, created_at DESC
+	`
+
 	rows, err := DB.Query(query)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query clips: %v", err)
+		return nil, err
 	}
+
 	defer rows.Close()
 
 	var clips []Clip
+
 	for rows.Next() {
-		var id int
-		var content, clipType, createdAt string
-		var pinned bool
-		err := rows.Scan(&id, &content, &clipType, &pinned, &createdAt)
+		var (
+			id        int
+			content   sql.NullString
+			image     []byte
+			clipType  string
+			pinned    bool
+			createdAt string
+		)
+
+		err := rows.Scan(&id, &content, &image, &clipType, &pinned, &createdAt)
 		if err != nil {
-			return nil, fmt.Errorf("failed to scan clip: %v", err)
+			return nil, err
 		}
 
-		clips = append(clips, Clip{
+		clip := Clip{
 			ID:        fmt.Sprintf("clip_%03d", id),
-			Content:   content,
-			Length:    len(content),
+			Type:      clipType,
 			Pinned:    pinned,
 			CreatedAt: createdAt,
-		})
-	}
+		}
 
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating clips: %v", err)
+		if clipType == "text" && content.Valid {
+			clip.Content = &content.String
+			clip.Length = len(content.String)
+		}
+
+		if clipType == "image" && len(image) > 0 {
+			encoded := base64.StdEncoding.EncodeToString(image)
+			clip.Image = &encoded
+			clip.Length = len(image)
+		}
+
+		clips = append(clips, clip)
 	}
 
 	return clips, nil
@@ -89,7 +114,7 @@ func clipExists(content string) (bool, error) {
 	return count > 0, nil
 }
 
-// this adds a new clip typeshit
+
 func addClip(content string, clipType string) error {
 	// Check if content already exists
 	exists, err := clipExists(content)
@@ -105,6 +130,37 @@ func addClip(content string, clipType string) error {
 	_, err = DB.Exec(query, content, clipType)
 	if err != nil {
 		return fmt.Errorf("failed to insert clip: %v", err)
+	}
+
+	// Get the storage limit from database
+	limit, err := getStorageLimit()
+	if err != nil {
+		return fmt.Errorf("failed to get storage limit: %v", err)
+	}
+
+	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
+	deleteQuery := `
+		DELETE FROM clips
+		WHERE id NOT IN (
+			SELECT id FROM clips
+			ORDER BY pinned DESC, created_at DESC
+			LIMIT ?
+		)
+	`
+	_, err = DB.Exec(deleteQuery, limit)
+	if err != nil {
+		return fmt.Errorf("failed to delete old clips: %v", err)
+	}
+
+	return nil
+}
+
+func addImageClip(img []byte) error {
+
+	query := `INSERT INTO clips (image, type, created_at) VALUES (?, ?, datetime('now'))`
+	_, err := DB.Exec(query, img, "image")
+	if err != nil {
+		return fmt.Errorf("failed to insert image clip: %v", err)
 	}
 
 	// Get the storage limit from database
@@ -150,7 +206,7 @@ func togglePinClip(clipID int) error {
 	return nil
 }
 
-// this deletes a clip by its ID
+
 func deleteClip(clipID int) error {
 	query := `DELETE FROM clips WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
@@ -170,6 +226,3 @@ func deleteClip(clipID int) error {
 	return nil
 }
 
-func addImageClip(img []byte) error {
-	return addClip(string(img), "image")
-}
