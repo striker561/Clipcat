@@ -16,6 +16,7 @@ interface ClipCardProps {
 }
 
 export default function ClipCard({ clip, type }: ClipCardProps) {
+    "use no memo";
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
