@@ -5,4 +5,5 @@ export interface Clip {
   isPinned: boolean
   createdAt: string
   image?: string
+  type: string
 }

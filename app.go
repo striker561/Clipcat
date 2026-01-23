@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	// clip "github.com/atotto/clipboard"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	gclip "golang.design/x/clipboard"
 )

@@ -39,6 +39,10 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     const handleCopy = async () => {
         try {
+            if (clip.type === "image") {
+                
+                return
+            }
             if (clip.content === undefined) return
             await navigator.clipboard.writeText(clip.content)
             playSound("/sounds/paper-copy.wav", soundOn, 1)
@@ -93,7 +97,15 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
             {/* Content */}
             <div className={`mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform  ${hideContent ? "hard-to-read" : ""}`} onClick={handleViewClip}>
-                <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`}>{clip.content}</p>
+                {clip.type === "image" && clip.image ? (
+                    <img 
+                        src={`data:image/png;base64,${clip.image}`} 
+                        alt="Clip image" 
+                        className="w-full h-auto object-contain max-h-48 rounded"
+                    />
+                ) : (
+                    <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`}>{clip.content}</p>
+                )}
             </div>
 
             {/* Footer with time and actions */}
@@ -144,7 +156,15 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                             <img src="/seperator.png" alt="" className="w-full -mt-6" />
                         </DialogHeader>
                         <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
-                            <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
+                            {clip.type === "image" && clip.image ? (
+                                <img 
+                                    src={`data:image/png;base64,${clip.image}`} 
+                                    alt="Clip image" 
+                                    className="w-full h-auto object-contain rounded"
+                                />
+                            ) : (
+                                <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
+                            )}
                         </div>
                     </div>
                 </DialogContent>
