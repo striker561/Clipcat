@@ -7,6 +7,7 @@ import { playSound } from "@/helpers/playSound"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
+import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
 
 
 interface ClipCardProps {
@@ -39,14 +40,14 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
 
     const handleCopy = async () => {
+         playSound("/sounds/paper-copy.wav", soundOn, 1)
         try {
             if (clip.type === "image") {
-
+                copyBase64ImageToClipboard(`data:image/png;base64,${clip.image}`) 
                 return
             }
             if (clip.content === undefined) return
             await navigator.clipboard.writeText(clip.content)
-            playSound("/sounds/paper-copy.wav", soundOn, 1)
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
         } catch (err) {
