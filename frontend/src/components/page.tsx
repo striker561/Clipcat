@@ -87,11 +87,11 @@ function PageContent() {
         return {
             pinned: clips.pinned.filter(
                 (clip) =>
-                    clip.content.toLowerCase().includes(query),
+                    clip?.content?.toLowerCase().includes(query),
             ),
             recent: clips.recent.filter(
                 (clip) =>
-                    clip.content.toLowerCase().includes(query),
+                    clip?.content?.toLowerCase().includes(query),
             ),
         }
     }

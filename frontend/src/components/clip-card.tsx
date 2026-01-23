@@ -39,6 +39,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     const handleCopy = async () => {
         try {
+            if (clip.content === undefined) return
             await navigator.clipboard.writeText(clip.content)
             playSound("/sounds/paper-copy.wav", soundOn, 1)
             setCopied(true)
