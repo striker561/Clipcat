@@ -7,8 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	clip "github.com/atotto/clipboard"
+	// clip "github.com/atotto/clipboard"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	gclip "golang.design/x/clipboard"
 )
 
 // to read clipboard contents, use cli command <<< go get github.com/atotto/clipboard >>>
@@ -33,6 +34,12 @@ func (a *App) GetVersion() string {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
+	// initialize clipboard
+	err := gclip.Init()
+	if err != nil {
+		panic(err)
+	}
+
 	appDir, err := getAppDataDir()
 	if err != nil {
 		panic(err)
@@ -46,22 +53,31 @@ func (a *App) startup(ctx context.Context) {
 	}
 
 	createTables()
+	migrateClipsTable()
 
 	// start clipboard listener
 	clipboard.StartClipboardListener(func() {
-		text, err := clip.ReadAll()
-		if err != nil || text == "" {
+		// Try image first
+		if img := gclip.Read(gclip.FmtImage); img != nil {
+			err := addImageClip(img)
+			if err != nil {
+				fmt.Println("failed to save image:", err)
+			}
 			return
 		}
 
-		// Save to database
-		err = addClip(text, "text")
+		// Fallback to text
+		text := string(gclip.Read(gclip.FmtText))
+		if text == "" {
+			return
+		}
+
+		err := addClip(text, "text")
 		if err != nil {
-			fmt.Printf("Failed to save clip to database: %v\n", err)
+			fmt.Println("failed to save text:", err)
 			return
 		}
 
-		// Notify frontend
 		if a.ctx != nil {
 			runtime.EventsEmit(a.ctx, "clipboard:changed", text)
 		}

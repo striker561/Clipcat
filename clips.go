@@ -169,3 +169,7 @@ func deleteClip(clipID int) error {
 
 	return nil
 }
+
+func addImageClip(img []byte) error {
+	return addClip(string(img), "image")
+}
