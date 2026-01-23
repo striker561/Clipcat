@@ -7,7 +7,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { GetVersion } from "../../wailsjs/go/main/App";
 
 interface AboutDialogProps {
     version: string;
