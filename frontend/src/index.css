@@ -235,13 +235,18 @@ body:after {
 
 /* this for the mansory grid layout */
 .free-form-grid-container {
-  column-width: 240px;
-  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-auto-rows: 10px;
+  /* Small row unit for masonry/bento effect */
+  gap: 16px;
+  align-items: start;
+  /* Items align to start of their grid area */
 }
 
-.free-form-grid-container > * {
-  break-inside: avoid;
-  margin-bottom: 16px;
+.free-form-grid-container>* {
+  grid-row: span var(--row-span, auto);
+  /* Each item can span multiple rows based on content */
 }
 
 

@@ -1,5 +1,5 @@
 import { Copy, Pin, Trash2 } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import type { Clip } from '../../types/clip'
 import { TogglePin, Delete } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
-
+import { wait } from "@/helpers/wait"
 
 
 interface ClipCardProps {
@@ -21,6 +21,28 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, clips, setClips, hideContent } = useClips()
+
+
+    useEffect(() => {
+        const updateRowSpan = () => {
+            if (cardRef.current) {
+                const rowHeight = 10 // Must match grid-auto-rows in CSS
+                const rowGap = 16 // Must match gap in CSS
+                const cardHeight = cardRef.current.getBoundingClientRect().height
+                const rowSpan = Math.ceil((cardHeight + rowGap) / (rowHeight + rowGap))
+                cardRef.current.style.setProperty('--row-span', String(rowSpan))
+            }
+        }
+
+        // i want it to wait 100ms before updating the row span
+        // because of the clips that are images, hopefully, this is stable enough to not cause ISSUES lmao
+        wait(100).then(() => {
+            updateRowSpan()
+        })
+        window.addEventListener('resize', updateRowSpan)
+        return () => window.removeEventListener('resize', updateRowSpan)
+    }, [clips])
+
 
     const handleCopy = async () => {
         playSound("/sounds/paper-copy.wav", soundOn, 1)
