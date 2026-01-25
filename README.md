@@ -14,11 +14,11 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 ![Clipcat Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
-[![Download Clipcat v0.4.0 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.4.0/Clipcat.exe)
+[![Download Clipcat v0.4.1 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.4.1/Clipcat.exe)
 
-**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.4.0/Clipcat.exe)**
+**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.4.1/Clipcat.exe)**
 
-> Windows 10/11 (64-bit) | Version 0.4.0
+> Windows 10/11 (64-bit) | Version 0.4.1
 
 ### ⚠️ Windows SmartScreen Warning
 
