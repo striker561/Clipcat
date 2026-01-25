@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
+import { wait } from "@/helpers/wait"
 
 
 interface ClipCardProps {
@@ -16,7 +17,6 @@ interface ClipCardProps {
 }
 
 export default function ClipCard({ clip, type }: ClipCardProps) {
-    "use no memo";
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
@@ -34,17 +34,21 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             }
         }
 
-        updateRowSpan()
+        // i want it to wait 100ms before updating the row span
+        // because of the clips that are images, hopefully, this is stable enough to not cause ISSUES lmao
+        wait(100).then(() => {
+            updateRowSpan()
+        })
         window.addEventListener('resize', updateRowSpan)
         return () => window.removeEventListener('resize', updateRowSpan)
     }, [clips])
 
 
     const handleCopy = async () => {
-         playSound("/sounds/paper-copy.wav", soundOn, 1)
+        playSound("/sounds/paper-copy.wav", soundOn, 1)
         try {
             if (clip.type === "image") {
-                copyBase64ImageToClipboard(`data:image/png;base64,${clip.image}`) 
+                copyBase64ImageToClipboard(`data:image/png;base64,${clip.image}`)
                 return
             }
             if (clip.content === undefined) return
