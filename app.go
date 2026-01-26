@@ -11,8 +11,6 @@ import (
 	gclip "golang.design/x/clipboard"
 )
 
-// to read clipboard contents, use cli command <<< go get github.com/atotto/clipboard >>>
-
 // App struct
 type App struct {
 	ctx context.Context
@@ -135,6 +133,7 @@ func getAppDataDir() (string, error) {
 	return appDir, err
 }
 
+// delete all clips
 func (a *App) DeleteAllClips() error {
 	return deleteAllClips()
 }
