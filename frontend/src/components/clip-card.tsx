@@ -156,7 +156,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                                 <img
                                     src={`data:image/png;base64,${clip.image}`}
                                     alt="Clip image"
-                                    className="w-full h-auto object-contain rounded"
+                                    className={`w-full h-auto object-contain rounded ${hideContent ? "hard-to-read" : ""}`}
                                 />
                             </ScrollArea>
                         </DialogContent>
