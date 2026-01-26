@@ -134,3 +134,7 @@ func getAppDataDir() (string, error) {
 
 	return appDir, err
 }
+
+func (a *App) DeleteAllClips() error {
+	return deleteAllClips()
+}

@@ -241,3 +241,12 @@ func deleteClip(clipID int) error {
 
 	return nil
 }
+
+func deleteAllClips() error {
+	query := `DELETE FROM clips`
+	_, err := DB.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to delete all clips: %v", err)
+	}
+	return nil
+}

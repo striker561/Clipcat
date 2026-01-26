@@ -6,6 +6,10 @@ export function Delete(arg1) {
   return window['go']['main']['App']['Delete'](arg1);
 }
 
+export function DeleteAllClips() {
+  return window['go']['main']['App']['DeleteAllClips']();
+}
+
 export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
