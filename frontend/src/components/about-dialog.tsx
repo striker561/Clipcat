@@ -36,7 +36,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
 
                 const data = await response.json();
                 const latestVersion = data.tag_name;
-                 LogPrint(`Current version: ${version}, Latest version: ${latestVersion}`);
+                //  LogPrint(`Current version: ${version}, Latest version: ${latestVersion}`); 
                 // Compare versions
                 if (latestVersion !== version) {
                     setUpdateAvailable({
@@ -93,14 +93,14 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                             </p>
                         )}
                         {updateAvailable && (
-                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                <p className="text-sm font-semibold text-blue-800 mb-2">
+                            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                                <p className="text-sm font-semibold text-amber-800 mb-2">
                                     🎉 Update Available!
                                 </p>
-                                <p className="text-sm text-blue-700">
+                                <p className="text-sm text-amber-700">
                                     Version <strong>{updateAvailable.version}</strong> is now available
                                 </p>
-                                <p className="text-xs text-blue-600 mt-1">
+                                <p className="text-xs text-amber-600 mt-1">
                                     Released: {new Date(updateAvailable.releaseDate).toLocaleDateString()}
                                 </p>
                                 <a
