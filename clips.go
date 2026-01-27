@@ -246,7 +246,7 @@ func deleteClip(clipID int) error {
 
 func deleteAllClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
+		Type:          runtime.WarningDialog,
 		Title:         "Delete All Clips?",
 		Message:       "Are you sure you want to delete all clips? This action cannot be undone.",
 		DefaultButton: "Ok",
@@ -271,7 +271,7 @@ func deleteAllClips(context context.Context) error {
 
 func deletePinnedClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
+		Type:          runtime.WarningDialog,
 		Title:         "Delete Pinned Clips?",
 		Message:       "Are you sure you want to delete all pinned clips? This action cannot be undone.",
 		DefaultButton: "Ok",
@@ -296,7 +296,7 @@ func deletePinnedClips(context context.Context) error {
 
 func deleteUnpinnedClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
+		Type:          runtime.WarningDialog,
 		Title:         "Delete Unpinned Clips?",
 		Message:       "Are you sure you want to delete all unpinned clips? This action cannot be undone.",
 		DefaultButton: "Ok",

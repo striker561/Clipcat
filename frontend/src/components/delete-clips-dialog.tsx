@@ -4,11 +4,13 @@ import DeleteButton from "./delete-button";
 import { DeleteAllClips, DeletePinnedClips, DeleteUnpinnedClips } from "../../wailsjs/go/main/App";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
+import { useClips } from "@/context/ClipContext";
 
 
 export default function DeleteClipsDialog({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const { getClips } = useClips();
 
     useGSAP(() => {
         if (!isOpen) return;
@@ -33,6 +35,26 @@ export default function DeleteClipsDialog({ children }: { children: React.ReactN
 
     }, { dependencies: [isOpen], scope: containerRef });
 
+    const handleDeleteAllClips = async () => {
+        await DeleteAllClips().then(() => {
+            getClips();
+        })
+    };
+
+    const handleDeletePinnedClips = async () => {
+        await DeletePinnedClips().then(() => {
+            getClips();
+        })
+    };
+
+    const handleDeleteUnpinnedClips = async () => {
+        await DeleteUnpinnedClips().then(() => {
+            getClips();
+        })
+    };
+
+
+
     return (
         <>
             <div onClick={() => setIsOpen(true)} className="w-full">
@@ -47,15 +69,15 @@ export default function DeleteClipsDialog({ children }: { children: React.ReactN
 
                         <div className="flex sm:flex-row flex-col sm:items-center justify-between gap-4 px-6 relative z-10 mt-4 ">
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
-                                <DeleteButton onClick={() => DeleteUnpinnedClips()} />
+                                <DeleteButton onClick={handleDeleteUnpinnedClips} />
                                 <span className="text-xs font-semibold text-center whitespace-nowrap delete-text">Delete Recents</span>
                             </div>
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
-                                <DeleteButton onClick={() => DeletePinnedClips()} />
+                                <DeleteButton onClick={handleDeletePinnedClips} />
                                 <span className="text-xs font-semibold text-center whitespace-nowrap delete-text">Delete Pinned</span>
                             </div>
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
-                                <DeleteButton onClick={() => DeleteAllClips()} />
+                                <DeleteButton onClick={handleDeleteAllClips} />
                                 <span className="text-xs font-semibold text-center whitespace-nowrap delete-text">Delete All</span>
                             </div>
                         </div>
