@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Clip struct {
@@ -211,7 +213,7 @@ func togglePinClip(clipID int) error {
 		return fmt.Errorf("failed to toggle pin status: %v", err)
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected() 
 	if err != nil {
 		return fmt.Errorf("failed to get rows affected: %v", err)
 	}
@@ -242,11 +244,77 @@ func deleteClip(clipID int) error {
 	return nil
 }
 
-func deleteAllClips() error {
+func deleteAllClips(context context.Context) error {
+	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+		Type:          runtime.QuestionDialog,
+		Title:         "Delete All Clips",
+		Message:       "Are you sure you want to delete all clips? This action cannot be undone.",
+		DefaultButton: "Ok",
+	},
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+	}
+
+	if res != "Ok" {
+		return nil
+	}
+
 	query := `DELETE FROM clips`
-	_, err := DB.Exec(query)
+	_, err = DB.Exec(query)
 	if err != nil {
 		return fmt.Errorf("failed to delete all clips: %v", err)
+	}
+	return nil
+}
+
+func deletePinnedClips(context context.Context) error {
+	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+		Type:          runtime.QuestionDialog,
+		Title:         "Delete Pinned Clips",
+		Message:       "Are you sure you want to delete all pinned clips? This action cannot be undone.",
+		DefaultButton: "Ok",
+	},
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+	}
+
+	if res != "Ok" {
+		return nil
+	}
+
+	query := `DELETE FROM clips WHERE pinned = 1`
+	_, err = DB.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to delete pinned clips: %v", err)
+	}
+	return nil
+}
+
+func deleteUnpinnedClips(context context.Context) error {
+	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+		Type:          runtime.QuestionDialog,
+		Title:         "Delete Unpinned Clips",
+		Message:       "Are you sure you want to delete all unpinned clips? This action cannot be undone.",
+		DefaultButton: "Ok",
+	},
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+	}
+
+	if res != "Ok" {
+		return nil
+	}
+
+	query := `DELETE FROM clips WHERE pinned = 0`
+	_, err = DB.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to delete unpinned clips: %v", err)
 	}
 	return nil
 }

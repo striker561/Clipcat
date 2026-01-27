@@ -6,6 +6,10 @@ export function Delete(arg1:number):Promise<void>;
 
 export function DeleteAllClips():Promise<void>;
 
+export function DeletePinnedClips():Promise<void>;
+
+export function DeleteUnpinnedClips():Promise<void>;
+
 export function GetClips():Promise<Array<main.Clip>>;
 
 export function GetStorageLimit():Promise<number>;

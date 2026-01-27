@@ -7,7 +7,8 @@ import { playSound } from "@/helpers/playSound";
 import { UpdateStorageLimit, GetStorageLimit } from "../../wailsjs/go/main/App";
 import { GetClips } from "../../wailsjs/go/main/App";
 import { ScrollArea } from "./ui/scroll-area";
-import DeleteButton from "./deleteButton";
+import DeleteButton from "./delete-button";
+import DeleteClipsDialog from "./delete-clips-dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -225,7 +226,9 @@ export default function WindowControls() {
                             <ClipStorageLimitSwitch />
                         </div>
                         <Separator />
-                        <DeleteButton onClick={() => {/* Add delete functionality here */}} />
+                        <DeleteClipsDialog>
+                            <DeleteButton onClick={() => {/* Add delete functionality here */ }} />
+                        </DeleteClipsDialog>
                     </ScrollArea>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>

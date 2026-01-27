@@ -10,6 +10,14 @@ export function DeleteAllClips() {
   return window['go']['main']['App']['DeleteAllClips']();
 }
 
+export function DeletePinnedClips() {
+  return window['go']['main']['App']['DeletePinnedClips']();
+}
+
+export function DeleteUnpinnedClips() {
+  return window['go']['main']['App']['DeleteUnpinnedClips']();
+}
+
 export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }

@@ -135,5 +135,16 @@ func getAppDataDir() (string, error) {
 
 // delete all clips
 func (a *App) DeleteAllClips() error {
-	return deleteAllClips()
+	return deleteAllClips(a.ctx)
+}
+
+
+// delete pinned clips
+func (a *App) DeletePinnedClips() error {
+	return deletePinnedClips(a.ctx)
+}
+
+// delete unpinned clips
+func (a *App) DeleteUnpinnedClips() error {
+	return deleteUnpinnedClips(a.ctx)
 }
