@@ -3,7 +3,6 @@ import type { ReactNode } from "react"
 import { GetClips } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
-import { LogPrint } from "../../wailsjs/runtime"
 
 interface ClipContextType {
     clips: { pinned: Clip[]; recent: Clip[] }
@@ -40,8 +39,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     }, [])
 
     useEffect(() => {
-        EventsOn("clipboard:changed", (text: string) => {
-            LogPrint(text)
+        EventsOn("clipboard:changed", () => {
             getClips()
         })
     }, [])
