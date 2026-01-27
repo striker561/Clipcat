@@ -210,7 +210,7 @@ function PageContent() {
                     <section className="mb-12">
                         <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
                             <span className="text-2xl">📌</span>
-                            <span className="italic">Pinned</span>
+                            <span className="italic">Pinned <span className="text-xl"> ({filteredClips().pinned.length}) </span></span>
                         </h2>
                         <div className="free-form-grid-container">
                             {filteredClips().pinned.map((clip) => (
@@ -225,7 +225,7 @@ function PageContent() {
                     <section>
                         <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
                             <span className="text-2xl">📝</span>
-                            <span className="italic">Recent</span>
+                            <span className="italic">Recent <span className="text-xl"> ({filteredClips().recent.length}) </span></span>
                         </h2>
                         <div className="free-form-grid-container">
                             {filteredClips().recent.map((clip) => (
