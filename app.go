@@ -138,7 +138,6 @@ func (a *App) DeleteAllClips() error {
 	return deleteAllClips(a.ctx)
 }
 
-
 // delete pinned clips
 func (a *App) DeletePinnedClips() error {
 	return deletePinnedClips(a.ctx)

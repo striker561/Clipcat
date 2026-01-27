@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import DeleteButton from "./delete-button";
-import { DeleteAllClips } from "../../wailsjs/go/main/App";
+import { DeleteAllClips, DeletePinnedClips, DeleteUnpinnedClips } from "../../wailsjs/go/main/App";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
+
 
 export default function DeleteClipsDialog({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -46,11 +47,11 @@ export default function DeleteClipsDialog({ children }: { children: React.ReactN
 
                         <div className="flex sm:flex-row flex-col sm:items-center justify-between gap-4 px-6 relative z-10 mt-4 ">
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
-                                <DeleteButton onClick={() => console.log("Delete Recents")} />
+                                <DeleteButton onClick={() => DeleteUnpinnedClips()} />
                                 <span className="text-xs font-semibold text-center whitespace-nowrap delete-text">Delete Recents</span>
                             </div>
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
-                                <DeleteButton onClick={() => console.log("Delete Pinned")} />
+                                <DeleteButton onClick={() => DeletePinnedClips()} />
                                 <span className="text-xs font-semibold text-center whitespace-nowrap delete-text">Delete Pinned</span>
                             </div>
                             <div className="flex flex-col items-center gap-1 w-24  delete-container">
