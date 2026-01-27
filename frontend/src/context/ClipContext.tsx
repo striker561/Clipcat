@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import { GetClips } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
+import { LogPrint } from "../../wailsjs/runtime"
 
 interface ClipContextType {
     clips: { pinned: Clip[]; recent: Clip[] }
@@ -23,9 +24,14 @@ export function ClipProvider({ children }: { children: ReactNode }) {
 
     const getClips = async () => {
         return GetClips().then((data) => {
-            const pinned = data.filter(clip => clip.isPinned)
-            const recent = data.filter(clip => !clip.isPinned)
-            setClips({ pinned, recent })
+            if (data != null) {
+                const pinned = data.filter(clip => clip.isPinned)
+                const recent = data.filter(clip => !clip.isPinned)
+                setClips({ pinned, recent })
+            }
+            else {
+                setClips({ pinned: [], recent: [] })
+            }
         })
     }
 
@@ -35,7 +41,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         EventsOn("clipboard:changed", (text: string) => {
-            console.log("New clip:", text)
+            LogPrint(text)
             getClips()
         })
     }, [])
