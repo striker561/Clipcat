@@ -17,13 +17,18 @@ export default function DeleteClipsDialog({ children }: { children: React.ReactN
 
         const tl = gsap.timeline();
 
-        tl.from('.delete-container', {
-            opacity: 0,
+        tl.from(containerRef.current, {
             scale: 0,
-            stagger: 0.1,
-            duration: 0.4,
-            ease: "power1.out"
+            duration: 0.3,
+            ease: "back.out(1.7)"
         })
+            .from('.delete-container', {
+                opacity: 0,
+                scale: 0,
+                stagger: 0.1,
+                duration: 0.4,
+                ease: "power1.out"
+            })
             .fromTo('.delete-text', {
                 opacity: 0,
             }, {

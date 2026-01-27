@@ -178,7 +178,7 @@ body:after {
   bottom: 0;
   z-index: 1;
   background: #000000;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0) 80%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 80%);
   pointer-events: none;
 }
 
@@ -191,7 +191,7 @@ body:before {
   min-height: 60px;
   z-index: 1;
   background: #000000;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0) 80%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 80%);
   pointer-events: none;
 }
 
