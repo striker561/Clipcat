@@ -474,3 +474,22 @@ body:before {
     border-radius: 100%;
   }
 }
+
+/* cursor customization  */
+
+
+body {
+  cursor: url("/cursors/arrow-cur.png") 0 0, auto;
+}
+
+a,
+button,
+[role="button"],
+[onclick],
+.cursor-pointer {
+  cursor: url("/cursors/pointer-cur.png") 0 0, pointer !important;
+}
+
+.cursor-grab {
+  cursor: url("/cursors/grab-cur.png") 0 0, grab !important;
+}
