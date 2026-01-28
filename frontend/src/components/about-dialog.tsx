@@ -27,7 +27,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
         const checkVersion = async () => {
             setIsChecking(true);
             try {
-               
+
                 // Fetch latest release from GitHub
                 const response = await fetch("https://api.github.com/repos/d3uceY/Clipcat/releases/latest");
                 if (!response.ok) {
@@ -58,7 +58,10 @@ export default function AboutDialog({ version }: AboutDialogProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold" title="About">
+                <button
+                    className={`heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold about-btn ${updateAvailable ? "indicator" : ""}`}
+                    title="About"
+                >
                     ⓘ
                 </button>
             </DialogTrigger>

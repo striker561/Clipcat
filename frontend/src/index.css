@@ -460,3 +460,17 @@ body:before {
 }
 
 
+.about-btn {
+  position: relative;
+
+  &.indicator::after {
+    position: absolute;
+    content: '';
+    width: 8px;
+    height: 8px;
+    top: 3px;
+    right: 0;
+    background-color: red;
+    border-radius: 100%;
+  }
+}
