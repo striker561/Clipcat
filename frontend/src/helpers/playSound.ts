@@ -14,6 +14,7 @@ const SOUND_FILES = [
   '/sounds/paper-rip.mp3',
   '/sounds/switch-on.mp3',
   '/sounds/switch-off.mp3',
+  '/sounds/trash.mp3',
 ];
 
 // Preload all sounds into memory
