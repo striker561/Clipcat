@@ -246,10 +246,10 @@ func deleteClip(clipID int) error {
 
 func deleteAllClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.WarningDialog,
+		Type:          runtime.QuestionDialog,
 		Title:         "Delete All Clips?",
 		Message:       "Are you sure you want to delete all clips? This action cannot be undone.",
-		DefaultButton: "Ok",
+		DefaultButton: "Yes",
 	},
 	)
 
@@ -257,7 +257,7 @@ func deleteAllClips(context context.Context) error {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
 
-	if res != "Ok" {
+	if res != "Yes" {
 		return nil
 	}
 
@@ -271,10 +271,10 @@ func deleteAllClips(context context.Context) error {
 
 func deletePinnedClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.WarningDialog,
+		Type:          runtime.QuestionDialog,
 		Title:         "Delete Pinned Clips?",
 		Message:       "Are you sure you want to delete all pinned clips? This action cannot be undone.",
-		DefaultButton: "Ok",
+		DefaultButton: "Yes",
 	},
 	)
 
@@ -282,7 +282,7 @@ func deletePinnedClips(context context.Context) error {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
 
-	if res != "Ok" {
+	if res != "Yes" {
 		return nil
 	}
 
@@ -296,18 +296,19 @@ func deletePinnedClips(context context.Context) error {
 
 func deleteUnpinnedClips(context context.Context) error {
 	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
-		Type:          runtime.WarningDialog,
+		Type:          runtime.QuestionDialog,
 		Title:         "Delete Unpinned Clips?",
 		Message:       "Are you sure you want to delete all unpinned clips? This action cannot be undone.",
-		DefaultButton: "Ok",
+		DefaultButton: "Yes",
 	},
 	)
+
 
 	if err != nil {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
 
-	if res != "Ok" {
+	if res != "Yes" {
 		return nil
 	}
 
