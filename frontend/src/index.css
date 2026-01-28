@@ -477,7 +477,6 @@ body:before {
 
 /* cursor customization  */
 
-
 body {
   cursor: url("/cursors/arrow-cur.png") 0 0, auto;
 }
@@ -492,4 +491,11 @@ button,
 
 .cursor-grab {
   cursor: url("/cursors/grab-cur.png") 0 0, grab !important;
+}
+
+input,
+textarea,
+select,
+[contenteditable="true"]{
+  cursor: url("/cursors/text-cur.png") 0 0, text !important;
 }
