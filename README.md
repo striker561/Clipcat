@@ -49,6 +49,10 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
 - **Easy Management** - Copy, pin, and delete clips with intuitive controls
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
+- **Privacy Mode** - Instantly hide clip content for privacy or during screen sharing
+- <img width="530" height="112" alt="showcase-privacy" src="" />
+- **Bulk Actions** - Quickly delete all, recent, or pinned clips via the settings menu
+- <img width="530" height="112" alt="showcase-bulk-delete" src="" />
 - **Full Content View** - Click any clip to view complete content in a scrollable dialog
 - **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
 - **Sound Effects** - Audible feedback for actions
