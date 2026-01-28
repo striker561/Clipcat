@@ -18,7 +18,7 @@ export default function DeleteButton({ onClick }: { onClick: () => void }) {
                 scale: 1.2,
                 duration: 0.2,
                 rotate: 10,
-                ease: "power1.out"
+                ease: "steps(3)"
             });
 
 

@@ -5,6 +5,7 @@ import { DeleteAllClips, DeletePinnedClips, DeleteUnpinnedClips } from "../../wa
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { useClips } from "@/context/ClipContext";
+import { playSound } from "@/helpers/playSound";
 
 
 export default function DeleteClipsDialog({ children }: { children: React.ReactNode }) {
@@ -20,7 +21,10 @@ export default function DeleteClipsDialog({ children }: { children: React.ReactN
         tl.from(containerRef.current, {
             scale: 0,
             duration: 0.3,
-            ease: "back.out(1.7)"
+            ease: "back.out(1.7)",
+            onStart: () => {
+                playSound('/sounds/paper-rise.mp3', true, 1.3);
+            }
         })
             .from('.delete-container', {
                 opacity: 0,
