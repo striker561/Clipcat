@@ -496,6 +496,6 @@ button,
 input,
 textarea,
 select,
-[contenteditable="true"]{
+[contenteditable="true"] {
   cursor: url("/cursors/text-cur.png") 0 0, text !important;
 }
