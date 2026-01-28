@@ -7,7 +7,7 @@
 
 A creative and stylish clipboard manager built with Wails, designed to keep track of everything you copy through a clean, paper-aesthetic interface. It automatically records every clipboard change in real time, storing your copy history so you can easily revisit, reuse, and manage past content whenever you need it.
 
-![clipcat (1)](https://github.com/user-attachments/assets/ca28ae42-2a9d-42c3-9a47-183808d59cf6)
+<img width="1912" height="1026" alt="image" src="https://github.com/user-attachments/assets/ec4870c1-8555-49e0-9cb4-52c83f7551b0" />
 
 
 ## ⬇️ Download
@@ -19,6 +19,8 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 **[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.4.1/Clipcat.exe)**
 
 > Windows 10/11 (64-bit) | Version 0.4.1
+
+![clipcat (1)](https://github.com/user-attachments/assets/ca28ae42-2a9d-42c3-9a47-183808d59cf6)
 
 ### ⚠️ Windows SmartScreen Warning
 
@@ -46,18 +48,30 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Pin Important Clips** - Keep your most-used clips at the top
 - **Fast Search** - Quickly find clips with Ctrl+F
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
+
 - **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
 - **Easy Management** - Copy, pin, and delete clips with intuitive controls
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
+
 - **Privacy Mode** - Instantly hide clip content for privacy or during screen sharing
-- <img width="530" height="112" alt="showcase-privacy" src="" />
+- <img width="242" height="227" alt="image" src="https://github.com/user-attachments/assets/9fed26d4-31cb-4ff0-bdd4-e8ee25780dba" />
+
+- <img width="1223" height="244" alt="image" src="https://github.com/user-attachments/assets/0d242347-2e1d-46bf-b57f-20255d7c4fd1" />
+
 - **Bulk Actions** - Quickly delete all, recent, or pinned clips via the settings menu
-- <img width="530" height="112" alt="showcase-bulk-delete" src="" />
+- <img width="196" height="179" alt="image" src="https://github.com/user-attachments/assets/a6cb09b3-14fa-4bc7-884a-57fc0d17d561" />
+
+- <img width="467" height="193" alt="image" src="https://github.com/user-attachments/assets/a78a8a32-0d91-4920-ba4a-4100bb8d8cca" />
+
 - **Full Content View** - Click any clip to view complete content in a scrollable dialog
+- <img width="572" height="552" alt="image" src="https://github.com/user-attachments/assets/d85b3231-0380-4643-952a-e8d5dfcc71c4" />
+
 - **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
 - **Sound Effects** - Audible feedback for actions
 - **Persistent Storage** - SQLite database keeps your clips safe
 - **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- <img width="204" height="229" alt="image" src="https://github.com/user-attachments/assets/cbe645fb-5819-44b5-9b2e-8c470e95df4a" />
+
 - **Auto Update Check** - Automatically checks for new versions on GitHub
 
 ## 🛠️ Technologies Used
