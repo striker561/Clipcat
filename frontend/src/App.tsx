@@ -11,7 +11,7 @@ function App() {
 
   return (
     <>
-      <main className="page min-h-screen main">
+      <main className="page min-h-screen md:pt-16">
         <div className="app-boundary">
           <Page />
         </div>

@@ -454,7 +454,7 @@ body:before {
 
 @media screen and (max-width: 600px) {
   .page {
-    padding: 3rem 0rem 8rem 2rem;
+    padding: 3rem 1rem 8rem 2rem;
   }
 
 
@@ -509,9 +509,10 @@ body:before {
 /* cursor customization  */
 
 /* this padding is for the app boundary so that i can resize the window */
-main{
-  padding: 3px;
-  padding-right: 5px;
+main {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
 }
 
 .app-boundary {
