@@ -6,9 +6,11 @@ import TeaseDialog from "./tease-dialog"
 
 interface AddClipDialogProps {
     children: React.ReactNode;
+    triggerClassName?: string;
+    className?: string;
 }
 
-export default function AddClipDialog({ children }: AddClipDialogProps) {
+export default function AddClipDialog({ children, triggerClassName, className }: AddClipDialogProps) {
     const [open, setOpen] = useState(false)
     const [content, setContent] = useState("")
     const [isPinned, setIsPinned] = useState(false)
@@ -48,10 +50,10 @@ export default function AddClipDialog({ children }: AddClipDialogProps) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className={triggerClassName}>
                 {children}
             </DialogTrigger>
-            <DialogContent showCloseButton={false} className="hand-drawn lined thin p-6 bg-[#F9F5E6] max-w-md border-0 sm:rounded-none">
+            <DialogContent showCloseButton={false} className={`hand-drawn lined thin p-6 bg-[#F9F5E6] max-w-md border-0 sm:rounded-none ${className}`}>
                 {/* Header/Pin option */}
                 <div className="flex justify-end mb-2">
                     <button

@@ -206,6 +206,17 @@ function PageContent() {
                     </div>
                 </div>
 
+                {(clips.pinned.length > 0 || clips.recent.length > 0) && (
+                    <AddClipDialog triggerClassName="sm:mb-7 mb-4">
+                        <button className="hover:scale-95 p-1 bg-amber-100 transition-transform cursor-pointer hand-drawn-btn dashed thin" title="Add new clip">
+                            <div className="flex items-center sm:gap-2 gap-1">
+                                <span className="sm:text-xl text-lg">Add Clip</span>
+                                <span className="sm:text-4xl text-2xl">+</span>
+                            </div>
+                        </button>
+                    </AddClipDialog>
+                )}
+
                 {/* Pinned Section */}
                 {filteredClips().pinned.length > 0 && (
                     <section className="mb-12">
@@ -246,9 +257,11 @@ function PageContent() {
                         <div className="text-lg text-black text-center">OR</div>
                         <div className="w-full flex justify-center">
                             <AddClipDialog>
-                                <button className="block h-10 hover:scale-95 transition-transform">
-                                    <img src="add-clip.png" alt="" className="h-full" />
-                                    <p className="text-sm text-center line">Add Clip</p>
+                                <button className="hover:scale-95 p-1 bg-amber-100 transition-transform cursor-pointer hand-drawn-btn dashed thin" title="Add new clip">
+                                    <div className="flex items-center sm:gap-2 gap-1">
+                                        <span className="sm:text-xl text-lg">Add Clip</span>
+                                        <span className="sm:text-4xl text-2xl">+</span>
+                                    </div>
                                 </button>
                             </AddClipDialog>
                         </div>
