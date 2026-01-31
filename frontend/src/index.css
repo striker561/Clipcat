@@ -512,7 +512,6 @@ body:before {
 main{
   padding: 3px;
   padding-right: 5px;
-  border: 1px solid green;
 }
 
 .app-boundary {
