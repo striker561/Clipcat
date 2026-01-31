@@ -242,14 +242,6 @@ body:before {
   top: 0;
 }
 
-.page p {
-  margin: 0;
-  text-indent: 1rem;
-  padding-bottom: 1.2rem;
-  color: black;
-  line-height: 20px;
-}
-
 /* this for the mansory grid layout */
 .free-form-grid-container {
   display: grid;

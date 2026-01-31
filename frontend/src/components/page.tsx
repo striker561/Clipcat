@@ -237,10 +237,18 @@ function PageContent() {
 
                 {/* Empty State */}
                 {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 && (
-                    <div className="flex h-64 items-center justify-center text-center">
-                        <p className="text-lg text-muted-foreground">
+                    <div className="flex-col h-64 border border-black">
+                        <p className="text-lg text-muted-foreground text-center border border-black">
                             {searchQuery ? "No clips found matching your search" : "No clips yet. Start copying!"}
                         </p>
+
+                        <div className="text-lg text-muted-foreground text-center border border-black">OR</div>
+                        <div className="w-full border border-black flex justify-center">
+                            <button className="block h-10">
+                                <img src="add-clip.png" alt="" className="h-full" />
+                                <p className="text-sm text-center border border-black line">Add Clip</p>
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
