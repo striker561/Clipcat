@@ -143,7 +143,19 @@ func (a *App) DeletePinnedClips() error {
 	return deletePinnedClips(a.ctx)
 }
 
-// delete unpinned clips
+// Delete unpinned clips
 func (a *App) DeleteUnpinnedClips() error {
 	return deleteUnpinnedClips(a.ctx)
+}
+
+// AddClip adds a new text clip manually
+func (a *App) AddClip(content string, pinned bool) error {
+	err := addManualClip(content, pinned)
+	if err != nil {
+		return err
+	}
+	if a.ctx != nil {
+		runtime.EventsEmit(a.ctx, "clipboard:changed")
+	}
+	return nil
 }

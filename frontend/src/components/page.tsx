@@ -8,6 +8,7 @@ import { playSound } from "@/helpers/playSound";
 import AboutDialog from "./about-dialog";
 import WindowControls from "./window-controls";
 import { GetVersion } from "../../wailsjs/go/main/App";
+import AddClipDialog from "./add-clip-dialog";
 
 function PageContent() {
     const [searchQuery, setSearchQuery] = useState("")
@@ -237,17 +238,19 @@ function PageContent() {
 
                 {/* Empty State */}
                 {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 && (
-                    <div className="flex-col h-64 border border-black">
-                        <p className="text-lg text-muted-foreground text-center border border-black">
+                    <div className="flex-col h-64 text-black flex items-center justify-center gap-2">
+                        <p className="text-lg text-black text-center">
                             {searchQuery ? "No clips found matching your search" : "No clips yet. Start copying!"}
                         </p>
 
-                        <div className="text-lg text-muted-foreground text-center border border-black">OR</div>
-                        <div className="w-full border border-black flex justify-center">
-                            <button className="block h-10">
-                                <img src="add-clip.png" alt="" className="h-full" />
-                                <p className="text-sm text-center border border-black line">Add Clip</p>
-                            </button>
+                        <div className="text-lg text-black text-center">OR</div>
+                        <div className="w-full flex justify-center">
+                            <AddClipDialog>
+                                <button className="block h-10 hover:scale-95 transition-transform">
+                                    <img src="add-clip.png" alt="" className="h-full" />
+                                    <p className="text-sm text-center line">Add Clip</p>
+                                </button>
+                            </AddClipDialog>
                         </div>
                     </div>
                 )}

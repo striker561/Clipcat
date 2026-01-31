@@ -174,10 +174,10 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
                             <div className="page rounded-none! overflow-x-scroll shadow-md/50">
                                 <div className="margin"></div>
-                                <DialogHeader className="sm:pt-7 pb-0!">
+                                <DialogHeader className="sm:pt-7">
                                     <DialogTitle>Clip Content</DialogTitle>
                                     <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
-                                    <img src="/seperator.png" alt="" className="w-full -mt-6" />
+                                    <img src="/seperator.png" alt="" className="w-full " />
                                 </DialogHeader>
                                 <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
                                     {clip.type === "image" && clip.image ? (

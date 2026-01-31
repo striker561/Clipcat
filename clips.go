@@ -164,6 +164,46 @@ func addClip(content string, clipType string) error {
 	return nil
 }
 
+func addManualClip(content string, pinned bool) error {
+	// Check if content already exists
+	exists, err := clipExists(content)
+	if err != nil {
+		return fmt.Errorf("failed to check for duplicate: %v", err)
+	}
+	if exists {
+		// Content already exists, skip insertion
+		return nil
+	}
+
+	query := `INSERT INTO clips (content, type, pinned, created_at) VALUES (?, ?, ?, datetime('now'))`
+	_, err = DB.Exec(query, content, "text", pinned)
+	if err != nil {
+		return fmt.Errorf("failed to insert clip: %v", err)
+	}
+
+	// Get the storage limit from database
+	limit, err := getStorageLimit()
+	if err != nil {
+		return fmt.Errorf("failed to get storage limit: %v", err)
+	}
+
+	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
+	deleteQuery := `
+		DELETE FROM clips
+		WHERE id NOT IN (
+			SELECT id FROM clips
+			ORDER BY pinned DESC, created_at DESC
+			LIMIT ?
+		)
+	`
+	_, err = DB.Exec(deleteQuery, limit)
+	if err != nil {
+		return fmt.Errorf("failed to delete old clips: %v", err)
+	}
+
+	return nil
+}
+
 func addImageClip(img []byte) error {
 
 	// Check if image already exists
