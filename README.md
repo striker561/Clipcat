@@ -46,6 +46,8 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Automatic Clipboard Monitoring** - Automatically captures everything you copy (text and images)
 - **Image Support** - Captures and displays clipboard images with base64 encoding
 - **Pin Important Clips** - Keep your most-used clips at the top
+- <img width="577" height="471" alt="image" src="https://github.com/user-attachments/assets/aa6e7ff1-159e-4fc0-8565-fdc9208a07c4" />
+
 - **Fast Search** - Quickly find clips with Ctrl+F
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
 
