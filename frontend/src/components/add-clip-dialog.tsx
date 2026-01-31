@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useState } from "react"
 import { Check, X, Pin } from "lucide-react"
 import { useClips } from "../context/ClipContext"
+import TeaseDialog from "./tease-dialog"
 
 interface AddClipDialogProps {
     children: React.ReactNode;
@@ -13,8 +14,24 @@ export default function AddClipDialog({ children }: AddClipDialogProps) {
     const [isPinned, setIsPinned] = useState(false)
     const { addClip } = useClips()
 
+    // Tease Dialog State
+    const [teaseOpen, setTeaseOpen] = useState(false)
+    const [detectedWord, setDetectedWord] = useState<'Mena' | 'Jesse' | null>(null)
+
     const handleSave = async () => {
         if (!content.trim()) return;
+
+        const lowerContent = content.toLowerCase()
+        if (lowerContent.includes("mena")) {
+            setDetectedWord("Mena")
+            setTeaseOpen(true)
+            return
+        }
+        if (lowerContent.includes("jesse")) {
+            setDetectedWord("Jesse")
+            setTeaseOpen(true)
+            return
+        }
 
         await addClip(content, isPinned)
 
@@ -40,8 +57,8 @@ export default function AddClipDialog({ children }: AddClipDialogProps) {
                     <button
                         onClick={() => setIsPinned(!isPinned)}
                         className={`rounded p-1.5 transition-colors ${isPinned
-                                ? "bg-yellow-100 text-yellow-700 hover:bg-red-100 hover:text-red-700"
-                                : "bg-foreground/5 text-foreground hover:bg-yellow-100 hover:text-yellow-700"
+                            ? "bg-yellow-100 text-yellow-700 hover:bg-red-100 hover:text-red-700"
+                            : "bg-foreground/5 text-foreground hover:bg-yellow-100 hover:text-yellow-700"
                             }`}
                         title={isPinned ? "Unpin upon creation" : "Pin upon creation"}
                     >
@@ -51,7 +68,7 @@ export default function AddClipDialog({ children }: AddClipDialogProps) {
 
                 {/* Content Input */}
                 <textarea
-                    className="w-full min-h-[150px] bg-transparent resize-none outline-none text-foreground placeholder:text-muted-foreground/50 border-b border-dashed border-gray-400"
+                    className="w-full min-h-37.5 bg-transparent resize-none outline-none text-foreground placeholder:text-muted-foreground/50 border-b border-dashed border-gray-400"
                     placeholder="Type your clip content here..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -76,6 +93,13 @@ export default function AddClipDialog({ children }: AddClipDialogProps) {
                     </button>
                 </div>
             </DialogContent>
+
+            <TeaseDialog
+                open={teaseOpen}
+                onOpenChange={setTeaseOpen}
+                detectedWord={detectedWord}
+                onClose={() => setTeaseOpen(false)}
+            />
         </Dialog>
     )
 }
