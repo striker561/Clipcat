@@ -50,11 +50,11 @@ export default function TeaseDialog({ open, onOpenChange, detectedWord, onClose 
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="bg-transparent! shadow-none border-0 pt-9 sm:max-w-[425px]">
+            <DialogContent className="bg-transparent! shadow-none border-0 pt-9 sm:max-w-106.25">
                 <div className="absolute top-0 left-0 h-[calc(100%+2rem)] w-full -z-1">
                     <img src="/dialog-bg.png" alt="" className="h-full w-full object-fill" />
                 </div>
-                
+
                 <div className="absolute right-8 top-8 opacity-70 hover:opacity-100 cursor-pointer" onClick={onClose}>
                     <X className="h-4 w-4" />
                 </div>
