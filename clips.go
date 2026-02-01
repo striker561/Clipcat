@@ -253,7 +253,7 @@ func togglePinClip(clipID int) error {
 		return fmt.Errorf("failed to toggle pin status: %v", err)
 	}
 
-	rowsAffected, err := result.RowsAffected() 
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		return fmt.Errorf("failed to get rows affected: %v", err)
 	}
@@ -343,7 +343,6 @@ func deleteUnpinnedClips(context context.Context) error {
 	},
 	)
 
-
 	if err != nil {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
@@ -358,4 +357,16 @@ func deleteUnpinnedClips(context context.Context) error {
 		return fmt.Errorf("failed to delete unpinned clips: %v", err)
 	}
 	return nil
+}
+
+func makeMiniClip(context context.Context, value bool) {
+	runtime.WindowSetAlwaysOnTop(context, value)
+
+	if value == true {
+		runtime.WindowSetPosition(context, 20, 20)
+		runtime.WindowSetMaxSize(context, 300, 300)
+		return
+	}
+
+	runtime.WindowSetMaxSize(context, 0, 0)
 }

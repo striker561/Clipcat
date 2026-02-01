@@ -159,3 +159,8 @@ func (a *App) AddClip(content string, pinned bool) error {
 	}
 	return nil
 }
+
+// this function makes the app a mini clip
+func (a *App) MakeMiniClip(value bool) {
+	makeMiniClip(a.ctx, value)
+}
