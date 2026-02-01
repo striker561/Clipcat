@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import type { ReactNode } from "react"
-import { GetClips, AddClip, MakeMiniClip} from "../../wailsjs/go/main/App"
+import { GetClips, AddClip, MakeMiniClip, IsMiniClip } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
 
@@ -30,6 +30,10 @@ export function ClipProvider({ children }: { children: ReactNode }) {
             setIsMiniClip((prev) => (
                 !prev
             ))
+        })
+
+        await IsMiniClip().then((res) => {
+            setIsMiniClip(res);
         })
     }
 

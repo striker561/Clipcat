@@ -167,11 +167,12 @@ func (a *App) makeMiniClip(value bool) {
 		return
 	}
 
+	runtime.WindowUnmaximise(a.ctx)
 	runtime.WindowSetAlwaysOnTop(a.ctx, value)
 
 	if value {
 		runtime.WindowSetPosition(a.ctx, 20, 20)
-		runtime.WindowSetMaxSize(a.ctx, 450, 300)
+		runtime.WindowSetMaxSize(a.ctx, 500, 300)
 	} else {
 		runtime.WindowSetMaxSize(a.ctx, 0, 0)
 	}
