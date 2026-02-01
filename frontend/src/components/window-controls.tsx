@@ -212,11 +212,6 @@ export default function WindowControls() {
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2">
-                            <p className="text-base p-0!">Sound</p>
-                            {MenuSwitch(soundOn, toggleSound)}
-                        </div>
-                        <Separator />
-                        <div className="flex items-center gap-3 justify-between py-2">
                             <p className="text-base p-0!">Hide Clipboard Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
@@ -224,6 +219,11 @@ export default function WindowControls() {
                         <div className="flex items-center gap-3 justify-between py-2">
                             <p className="text-base p-0!">Clipboard Limit</p>
                             <ClipStorageLimitSwitch />
+                        </div>
+                        <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2">
+                            <p className="text-base p-0!">Sound</p>
+                            {MenuSwitch(soundOn, toggleSound)}
                         </div>
                         <Separator />
                         <DeleteClipsDialog>
