@@ -34,6 +34,10 @@ export function GetVersion() {
   return window['go']['main']['App']['GetVersion']();
 }
 
+export function MakeMiniClip(arg1) {
+  return window['go']['main']['App']['MakeMiniClip'](arg1);
+}
+
 export function TogglePin(arg1) {
   return window['go']['main']['App']['TogglePin'](arg1);
 }

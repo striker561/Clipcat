@@ -18,6 +18,8 @@ export function GetStorageLimit():Promise<number>;
 
 export function GetVersion():Promise<string>;
 
+export function MakeMiniClip(arg1:boolean):Promise<void>;
+
 export function TogglePin(arg1:number):Promise<void>;
 
 export function UpdateStorageLimit(arg1:number):Promise<void>;
