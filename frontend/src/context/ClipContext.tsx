@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import type { ReactNode } from "react"
-import { GetClips, AddClip } from "../../wailsjs/go/main/App"
+import { GetClips, AddClip, MakeMiniClip } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
 
@@ -13,6 +13,8 @@ interface ClipContextType {
     setSoundOn: React.Dispatch<React.SetStateAction<boolean>>
     hideContent: boolean
     setHideContent: React.Dispatch<React.SetStateAction<boolean>>
+    toggleMiniClip: () => Promise<void>
+    isMiniClip: Boolean
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -21,6 +23,15 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     const [clips, setClips] = useState<{ pinned: Clip[]; recent: Clip[] }>({ pinned: [], recent: [] })
     const [soundOn, setSoundOn] = useState<boolean>(localStorage.getItem("soundOn") !== "false")
     const [hideContent, setHideContent] = useState<boolean>(localStorage.getItem("hideContent") === "true" || false)
+    const [isMiniClip, setIsMiniClip] = useState(false);
+
+    const toggleMiniClip = async () => {
+        await MakeMiniClip(!isMiniClip).then(() => {
+            setIsMiniClip((prev) => (
+                !prev
+            ))
+        })
+    }
 
     const getClips = async () => {
         return GetClips().then((data) => {
@@ -51,7 +62,24 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     }, [])
 
     return (
-        <ClipContext.Provider value={{ clips, setClips, getClips, addClip, soundOn, setSoundOn, hideContent, setHideContent }}>
+        <ClipContext.Provider value={
+            {
+                // CLIP OPERATIONS
+                clips,
+                setClips,
+                getClips,
+                addClip,
+                // SOUND OPERATIONS
+                soundOn,
+                setSoundOn,
+                // PRIVACY OPERATIONS
+                hideContent,
+                setHideContent,
+                // MINI CLIP OPERATIONS
+                isMiniClip,
+                toggleMiniClip
+            }
+        }>
             {children}
         </ClipContext.Provider>
     )
