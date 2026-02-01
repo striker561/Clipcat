@@ -12,7 +12,7 @@ import DeleteClipsDialog from "./delete-clips-dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
-    const { soundOn, setSoundOn } = useClips();
+    const { soundOn, setSoundOn, isMiniClip, toggleMiniClip } = useClips();
     const { hideContent, setHideContent, clips } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
@@ -213,7 +213,7 @@ export default function WindowControls() {
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Makes the app window smaller and always appear on top">
                             <p className="text-base p-0!">Mini Clip</p>
-                            {MenuSwitch(soundOn, toggleSound)}
+                            {MenuSwitch(isMiniClip, toggleMiniClip)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
@@ -232,24 +232,29 @@ export default function WindowControls() {
                         </div>
                         <Separator />
                         <DeleteClipsDialog>
-                            <DeleteButton onClick={() => {/* Add delete functionality here */ }} />
+                            <DeleteButton onClick={() => {/* This should stay Empty, trust me, bro */ }} />
                         </DeleteClipsDialog>
                     </ScrollArea>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
                 </div>
             </div>
 
-            <div className=" flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
-                <button onClick={() => WindowMinimise()}>
-                    <img src="/minimize.png" alt="minimize" className="h-5 shadow-md/30" />
-                </button>
-                <button onClick={() => handleWindowScreen()}>
-                    <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md/30" />
-                </button>
-                <button onClick={() => Quit()}>
-                    <img src="/close.png" alt="close" className="h-5 shadow-md/30" />
-                </button>
-            </div>
+            {
+                !isMiniClip && (
+                    <div className=" flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
+                        <button onClick={() => WindowMinimise()}>
+                            <img src="/minimize.png" alt="minimize" className="h-5 shadow-md/30" />
+                        </button>
+                        <button onClick={() => handleWindowScreen()}>
+                            <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md/30" />
+                        </button>
+                        <button onClick={() => Quit()}>
+                            <img src="/close.png" alt="close" className="h-5 shadow-md/30" />
+                        </button>
+                    </div>
+
+                )
+            }
         </div>
     );
 }

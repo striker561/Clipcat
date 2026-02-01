@@ -13,7 +13,8 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx        context.Context
+	isMiniClip bool
 }
 
 // NewApp creates a new App application struct
@@ -160,7 +161,30 @@ func (a *App) AddClip(content string, pinned bool) error {
 	return nil
 }
 
+func (a *App) makeMiniClip(value bool) {
+	// No-op if state is already the same
+	if a.isMiniClip == value {
+		return
+	}
+
+	runtime.WindowSetAlwaysOnTop(a.ctx, value)
+
+	if value {
+		runtime.WindowSetPosition(a.ctx, 20, 20)
+		runtime.WindowSetMaxSize(a.ctx, 450, 300)
+	} else {
+		runtime.WindowSetMaxSize(a.ctx, 0, 0)
+	}
+
+	a.isMiniClip = value
+}
+
 // this function makes the app a mini clip
 func (a *App) MakeMiniClip(value bool) {
-	makeMiniClip(a.ctx, value)
+	a.makeMiniClip(value)
+}
+
+// this is a function that is exposed to the frontend to handle the boolean state for the mini clip
+func (a *App) IsMiniClip() bool {
+	return a.isMiniClip
 }

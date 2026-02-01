@@ -20,7 +20,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
-    const { getClips, soundOn, clips, setClips, hideContent } = useClips()
+    const { getClips, soundOn, clips, setClips, hideContent, isMiniClip } = useClips()
 
 
     useEffect(() => {
@@ -36,12 +36,12 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
         // i want it to wait 100ms before updating the row span
         // because of the clips that are images, hopefully, this is stable enough to not cause ISSUES lmao
-        wait(100).then(() => {
+        wait(50).then(() => {
             updateRowSpan()
         })
         window.addEventListener('resize', updateRowSpan)
         return () => window.removeEventListener('resize', updateRowSpan)
-    }, [clips])
+    }, [clips, isMiniClip])
 
 
     const handleCopy = async () => {

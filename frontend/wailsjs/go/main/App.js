@@ -34,6 +34,10 @@ export function GetVersion() {
   return window['go']['main']['App']['GetVersion']();
 }
 
+export function IsMiniClip() {
+  return window['go']['main']['App']['IsMiniClip']();
+}
+
 export function MakeMiniClip(arg1) {
   return window['go']['main']['App']['MakeMiniClip'](arg1);
 }

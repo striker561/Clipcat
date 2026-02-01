@@ -359,14 +359,4 @@ func deleteUnpinnedClips(context context.Context) error {
 	return nil
 }
 
-func makeMiniClip(context context.Context, value bool) {
-	runtime.WindowSetAlwaysOnTop(context, value)
 
-	if value == true {
-		runtime.WindowSetPosition(context, 20, 20)
-		runtime.WindowSetMaxSize(context, 300, 300)
-		return
-	}
-
-	runtime.WindowSetMaxSize(context, 0, 0)
-}

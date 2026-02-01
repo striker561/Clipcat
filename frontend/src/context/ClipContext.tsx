@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import type { ReactNode } from "react"
-import { GetClips, AddClip, MakeMiniClip } from "../../wailsjs/go/main/App"
+import { GetClips, AddClip, MakeMiniClip} from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
 
@@ -14,7 +14,7 @@ interface ClipContextType {
     hideContent: boolean
     setHideContent: React.Dispatch<React.SetStateAction<boolean>>
     toggleMiniClip: () => Promise<void>
-    isMiniClip: Boolean
+    isMiniClip: boolean
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
