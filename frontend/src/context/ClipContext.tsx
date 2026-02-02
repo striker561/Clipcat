@@ -36,6 +36,11 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     const [isMiniClip, setIsMiniClip] = useState(false);
     const [isStartup, setIsStartup] = useState(false);
 
+
+    /* ===============================
+        STARTUP FUNCTIONS     
+       ===============================
+    */   
     const checkStartup = async () => {
         await IsStartupEnabled().then((res) => {
             setIsStartup(res);
@@ -54,6 +59,11 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         }
     }
 
+
+    /* ===============================
+        MINI CLIP FUNCTIONS     
+       ===============================
+    */  
     const toggleMiniClip = async () => {
         await MakeMiniClip(!isMiniClip).then(() => {
             setIsMiniClip((prev) => (
@@ -65,6 +75,11 @@ export function ClipProvider({ children }: { children: ReactNode }) {
             setIsMiniClip(res);
         })
     }
+
+    /* ===============================
+        CLIP OPS FUNCTIONS     
+       ===============================
+    */  
 
     const getClips = async () => {
         return GetClips().then((data) => {
@@ -84,6 +99,10 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         await getClips()
     }
 
+    /* ===============================
+        RUN FUNCTIONS ON APP LOAD 
+       ===============================
+    */
     useEffect(() => {
         checkStartup()
         getClips()
