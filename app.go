@@ -2,6 +2,7 @@ package main
 
 import (
 	"Clipcat/internal/clipboard"
+	"Clipcat/internal/startup"
 	"context"
 	"fmt"
 	"os"
@@ -56,7 +57,7 @@ func (a *App) startup(ctx context.Context) {
 	// start clipboard listener
 	var lastImage []byte
 	clipboard.StartClipboardListener(func() {
-		// Try image first\
+		// Try image first
 
 		if img := gclip.Read(gclip.FmtImage); img != nil {
 			lastImagePtr := &lastImage
@@ -96,37 +97,6 @@ func (a *App) startup(ctx context.Context) {
 	})
 }
 
-// GetClips returns all clips from the database
-func (a *App) GetClips() ([]Clip, error) {
-	return getClips()
-}
-
-// updates the content of a clip
-func (a *App) UpdateClipContent(clipID int, newContent string) error {
-	return updateClipContent(clipID, newContent)
-}
-
-// TogglePin toggles the pinned status of a clip
-func (a *App) TogglePin(clipID int) error {
-	return togglePinClip(clipID)
-}
-
-// Delete a clip by ID
-func (a *App) Delete(clipID int) error {
-	return deleteClip(clipID)
-}
-
-// GetStorageLimit returns the current storage limit
-func (a *App) GetStorageLimit() (int, error) {
-	return getStorageLimit()
-}
-
-// UpdateStorageLimit updates the storage limit
-func (a *App) UpdateStorageLimit(newLimit int) error {
-	return updateStorageLimit(newLimit)
-}
-
-// get app data directory
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
@@ -139,22 +109,50 @@ func getAppDataDir() (string, error) {
 	return appDir, err
 }
 
-// delete all clips
+//
+// --------------------------------------------------------------------------------
+// Storage Limit Functions
+// --------------------------------------------------------------------------------
+//
+func (a *App) GetStorageLimit() (int, error) {
+	return getStorageLimit()
+}
+
+func (a *App) UpdateStorageLimit(newLimit int) error {
+	return updateStorageLimit(newLimit)
+}
+
+
+// --------------------------------------------------------------------------------
+// Clip Management Functions
+// --------------------------------------------------------------------------------
+func (a *App) GetClips() ([]Clip, error) {
+	return getClips()
+}
+
+func (a *App) UpdateClipContent(clipID int, newContent string) error {
+	return updateClipContent(clipID, newContent)
+}
+
+func (a *App) TogglePin(clipID int) error {
+	return togglePinClip(clipID)
+}
+
+func (a *App) Delete(clipID int) error {
+	return deleteClip(clipID)
+}
 func (a *App) DeleteAllClips() error {
 	return deleteAllClips(a.ctx)
 }
 
-// delete pinned clips
 func (a *App) DeletePinnedClips() error {
 	return deletePinnedClips(a.ctx)
 }
 
-// Delete unpinned clips
 func (a *App) DeleteUnpinnedClips() error {
 	return deleteUnpinnedClips(a.ctx)
 }
 
-// AddClip adds a new text clip manually
 func (a *App) AddClip(content string, pinned bool) error {
 	err := addManualClip(content, pinned)
 	if err != nil {
@@ -166,8 +164,10 @@ func (a *App) AddClip(content string, pinned bool) error {
 	return nil
 }
 
+// --------------------------------------------------------------------------------
+// Mini Clip Mode Functions
+// --------------------------------------------------------------------------------
 func (a *App) makeMiniClip(value bool) {
-	// No-op if state is already the same
 	if a.isMiniClip == value {
 		return
 	}
@@ -185,12 +185,28 @@ func (a *App) makeMiniClip(value bool) {
 	a.isMiniClip = value
 }
 
-// this function makes the app a mini clip
 func (a *App) MakeMiniClip(value bool) {
 	a.makeMiniClip(value)
 }
 
-// this is a function that is exposed to the frontend to handle the boolean state for the mini clip
 func (a *App) IsMiniClip() bool {
 	return a.isMiniClip
+}
+
+//
+// --------------------------------------------------------------------------------
+// Windows Startup Management Functions
+// --------------------------------------------------------------------------------
+//
+
+func (a *App) EnableStartup() error {
+	return startup.EnableStartupWindows()
+}
+
+func (a *App) DisableStartup() error {
+	return startup.RemoveStartupWindows()
+}
+
+func (a *App) IsStartupEnabled() (bool, error) {
+	return startup.IsStartupEnabledWindows()
 }
