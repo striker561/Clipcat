@@ -118,7 +118,7 @@ func imageClipExists(image []byte) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE image = ?`
 	var count int
 	err := DB.QueryRow(query, image).Scan(&count)
-	if err != nil {	
+	if err != nil {
 		return false, fmt.Errorf("failed to check if clip exists: %v", err)
 	}
 	return count > 0, nil
@@ -287,6 +287,7 @@ func togglePinClip(clipID int) error {
 func deleteClip(clipID int) error {
 	query := `DELETE FROM clips WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
+	DB.Exec(`VACUUM`)
 	if err != nil {
 		return fmt.Errorf("failed to delete clip: %v", err)
 	}
@@ -377,5 +378,3 @@ func deleteUnpinnedClips(context context.Context) error {
 	}
 	return nil
 }
-
-
