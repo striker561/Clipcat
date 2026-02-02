@@ -216,7 +216,7 @@ export default function WindowControls() {
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
-                            <p className="sm:text-base text-sm p-0!">Hide Clipboard Content</p>
+                            <p className="sm:text-base text-sm p-0!">Hide                                                    Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
                         <Separator />
