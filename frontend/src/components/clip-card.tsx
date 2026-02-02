@@ -117,7 +117,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             {/* Footer with time and actions */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col-reverse gap-2 justify-between">
                 <span className="hidden text-xs text-muted-foreground md:block">{useRelativeTime(clip.createdAt)}</span>
                 <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
