@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { playSound } from "@/helpers/playSound";
 import { useClips } from "@/context/ClipContext";
 
-export default function DeleteButton({ onClick }: { onClick: () => void }) {
+export default function DeleteButton({ onClick }: { onClick?: () => void }) {
     const { soundOn } = useClips();
     const tl = gsap.timeline();
     const deleteBtnRef = useRef<HTMLButtonElement>(null);

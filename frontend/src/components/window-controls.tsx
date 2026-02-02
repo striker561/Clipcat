@@ -12,14 +12,13 @@ import DeleteClipsDialog from "./delete-clips-dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
-    const { soundOn, setSoundOn, isMiniClip, toggleMiniClip } = useClips();
+    const { soundOn, setSoundOn, isMiniClip, toggleMiniClip, toggleStartup, isStartup } = useClips();
     const { hideContent, setHideContent, clips } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [limit, setLimit] = useState(100)
 
-    // Load initial limit from Wails on component mount
     useEffect(() => {
         const loadLimit = async () => {
             try {
@@ -33,7 +32,7 @@ export default function WindowControls() {
     }, []);
 
     const incrementLimit = async () => {
-        // i know this sound is backwards but it sounds better this way 😂
+        // i know this sound is backwards but it sounds better this way
         playSound('/sounds/switch-off.mp3', soundOn, 1);
         const newLimit = Math.min(limit + 50, 500);
         setLimit(newLimit);
@@ -212,27 +211,32 @@ export default function WindowControls() {
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Makes the app window smaller and always appear on top">
-                            <p className="text-base p-0!">Mini Clip</p>
+                            <p className="text-sm p-0!">Mini Clip</p>
                             {MenuSwitch(isMiniClip, toggleMiniClip)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
-                            <p className="text-base p-0!">Hide Clipboard Content</p>
+                            <p className="text-sm p-0!">Hide Clipboard Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Limits the number of clipboard items stored">
-                            <p className="text-base p-0!">Clipboard Limit</p>
+                            <p className="text-sm p-0!">Clipboard Limit</p>
                             <ClipStorageLimitSwitch />
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables sound effects">
-                            <p className="text-base p-0!">Sound</p>
+                            <p className="text-sm p-0!">Sound</p>
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
                         <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
+                            <p className="text-sm p-0!">Load on Startup</p>
+                            {MenuSwitch(isStartup, toggleStartup)}
+                        </div>
+                        <Separator />
                         <DeleteClipsDialog>
-                            <DeleteButton onClick={() => {/* This should stay Empty, trust me, bro */ }} />
+                            <DeleteButton />
                         </DeleteClipsDialog>
                     </ScrollArea>
                     <img src="/menu-clean.png" alt="" className="settings-bg" />
