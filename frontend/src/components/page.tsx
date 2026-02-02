@@ -210,7 +210,7 @@ function PageContent() {
                     <AddClipDialog triggerClassName="sm:mb-7 mb-4">
                         <button className="hover:scale-95 p-1 bg-amber-100 transition-transform cursor-pointer hand-drawn-btn dashed thin" title="Add new clip">
                             <div className="flex items-center sm:gap-2 gap-1">
-                                <span className="sm:text-xl text-lg">Add Clip</span>
+                                <span className="sm:text-xl text-base">Add Clip</span>
                                 <span className="sm:text-4xl text-2xl">+</span>
                             </div>
                         </button>

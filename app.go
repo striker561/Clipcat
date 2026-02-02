@@ -101,6 +101,11 @@ func (a *App) GetClips() ([]Clip, error) {
 	return getClips()
 }
 
+// updates the content of a clip
+func (a *App) UpdateClipContent(clipID int, newContent string) error {
+	return updateClipContent(clipID, newContent)
+}
+
 // TogglePin toggles the pinned status of a clip
 func (a *App) TogglePin(clipID int) error {
 	return togglePinClip(clipID)

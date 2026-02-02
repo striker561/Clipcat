@@ -118,7 +118,7 @@ func imageClipExists(image []byte) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE image = ?`
 	var count int
 	err := DB.QueryRow(query, image).Scan(&count)
-	if err != nil {
+	if err != nil {	
 		return false, fmt.Errorf("failed to check if clip exists: %v", err)
 	}
 	return count > 0, nil
@@ -240,6 +240,25 @@ func addImageClip(img []byte) error {
 	_, err = DB.Exec(deleteQuery, limit)
 	if err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
+	}
+
+	return nil
+}
+
+func updateClipContent(clipID int, newContent string) error {
+	query := `UPDATE clips SET content = ? WHERE id = ?`
+	result, err := DB.Exec(query, newContent, clipID)
+	if err != nil {
+		return fmt.Errorf("failed to update clip content: %v", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %v", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("clip with id %d not found", clipID)
 	}
 
 	return nil

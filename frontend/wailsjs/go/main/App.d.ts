@@ -24,4 +24,6 @@ export function MakeMiniClip(arg1:boolean):Promise<void>;
 
 export function TogglePin(arg1:number):Promise<void>;
 
+export function UpdateClipContent(arg1:number,arg2:string):Promise<void>;
+
 export function UpdateStorageLimit(arg1:number):Promise<void>;

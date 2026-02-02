@@ -46,6 +46,10 @@ export function TogglePin(arg1) {
   return window['go']['main']['App']['TogglePin'](arg1);
 }
 
+export function UpdateClipContent(arg1, arg2) {
+  return window['go']['main']['App']['UpdateClipContent'](arg1, arg2);
+}
+
 export function UpdateStorageLimit(arg1) {
   return window['go']['main']['App']['UpdateStorageLimit'](arg1);
 }
