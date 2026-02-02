@@ -22,6 +22,14 @@ export function DeleteUnpinnedClips() {
   return window['go']['main']['App']['DeleteUnpinnedClips']();
 }
 
+export function DisableStartup() {
+  return window['go']['main']['App']['DisableStartup']();
+}
+
+export function EnableStartup() {
+  return window['go']['main']['App']['EnableStartup']();
+}
+
 export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
@@ -36,6 +44,10 @@ export function GetVersion() {
 
 export function IsMiniClip() {
   return window['go']['main']['App']['IsMiniClip']();
+}
+
+export function IsStartupEnabled() {
+  return window['go']['main']['App']['IsStartupEnabled']();
 }
 
 export function MakeMiniClip(arg1) {

@@ -1,6 +1,14 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import type { ReactNode } from "react"
-import { GetClips, AddClip, MakeMiniClip, IsMiniClip } from "../../wailsjs/go/main/App"
+import {
+    GetClips,
+    AddClip,
+    MakeMiniClip,
+    IsMiniClip,
+    IsStartupEnabled,
+    EnableStartup,
+    DisableStartup
+} from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
 
@@ -15,6 +23,8 @@ interface ClipContextType {
     setHideContent: React.Dispatch<React.SetStateAction<boolean>>
     toggleMiniClip: () => Promise<void>
     isMiniClip: boolean
+    isStartup: boolean
+    toggleStartup: () => Promise<void>
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -24,6 +34,25 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     const [soundOn, setSoundOn] = useState<boolean>(localStorage.getItem("soundOn") !== "false")
     const [hideContent, setHideContent] = useState<boolean>(localStorage.getItem("hideContent") === "true" || false)
     const [isMiniClip, setIsMiniClip] = useState(false);
+    const [isStartup, setIsStartup] = useState(false);
+
+    const checkStartup = async () => {
+        await IsStartupEnabled().then((res) => {
+            setIsStartup(res);
+        })
+    }
+
+    const toggleStartup = async () => {
+        if (isStartup) {
+            await DisableStartup().then(() => {
+                setIsStartup(false);
+            })
+        } else {
+            await EnableStartup().then(() => {
+                setIsStartup(true);
+            })
+        }
+    }
 
     const toggleMiniClip = async () => {
         await MakeMiniClip(!isMiniClip).then(() => {
@@ -56,10 +85,8 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     }
 
     useEffect(() => {
+        checkStartup()
         getClips()
-    }, [])
-
-    useEffect(() => {
         EventsOn("clipboard:changed", () => {
             getClips()
         })
@@ -81,7 +108,10 @@ export function ClipProvider({ children }: { children: ReactNode }) {
                 setHideContent,
                 // MINI CLIP OPERATIONS
                 isMiniClip,
-                toggleMiniClip
+                toggleMiniClip,
+                // STARTUP OPERATIONS
+                isStartup,
+                toggleStartup
             }
         }>
             {children}

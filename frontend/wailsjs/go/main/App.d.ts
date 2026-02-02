@@ -12,6 +12,10 @@ export function DeletePinnedClips():Promise<void>;
 
 export function DeleteUnpinnedClips():Promise<void>;
 
+export function DisableStartup():Promise<void>;
+
+export function EnableStartup():Promise<void>;
+
 export function GetClips():Promise<Array<main.Clip>>;
 
 export function GetStorageLimit():Promise<number>;
@@ -19,6 +23,8 @@ export function GetStorageLimit():Promise<number>;
 export function GetVersion():Promise<string>;
 
 export function IsMiniClip():Promise<boolean>;
+
+export function IsStartupEnabled():Promise<boolean>;
 
 export function MakeMiniClip(arg1:boolean):Promise<void>;
 
