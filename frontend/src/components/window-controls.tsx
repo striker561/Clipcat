@@ -211,27 +211,27 @@ export default function WindowControls() {
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Makes the app window smaller and always appear on top">
-                            <p className="md:text-base text-sm p-0!">Mini Clip</p>
+                            <p className="sm:text-base text-sm p-0!">Mini Clip</p>
                             {MenuSwitch(isMiniClip, toggleMiniClip)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
-                            <p className="md:text-base text-sm p-0!">Hide Clipboard Content</p>
+                            <p className="sm:text-base text-sm p-0!">Hide Clipboard Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Limits the number of clipboard items stored">
-                            <p className="md:text-base text-sm p-0!">Clipboard Limit</p>
+                            <p className="sm:text-base text-sm p-0!">Clipboard Limit</p>
                             <ClipStorageLimitSwitch />
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables sound effects">
-                            <p className="md:text-base text-sm p-0!">Sound</p>
+                            <p className="sm:text-base text-sm p-0!">Sound</p>
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
-                            <p className="md:text-base text-sm p-0!">Load on Startup</p>
+                            <p className="sm:text-base text-sm p-0!">Load on Startup</p>
                             {MenuSwitch(isStartup, toggleStartup)}
                         </div>
                         <Separator />
