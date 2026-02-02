@@ -102,7 +102,7 @@ func getClips() ([]Clip, error) {
 	return clips, nil
 }
 
-// check if a clip with the same content already exists in the database
+
 func clipExists(content string) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE content = ?`
 	var count int
@@ -113,7 +113,7 @@ func clipExists(content string) (bool, error) {
 	return count > 0, nil
 }
 
-// check if a clip with the same image exists in db, call it pause on bro fr
+
 func imageClipExists(image []byte) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE image = ?`
 	var count int
@@ -264,7 +264,6 @@ func updateClipContent(clipID int, newContent string) error {
 	return nil
 }
 
-// this pins/unpins a clip by toggling its pinned status
 func togglePinClip(clipID int) error {
 	query := `UPDATE clips SET pinned = NOT pinned WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
