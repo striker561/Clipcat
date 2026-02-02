@@ -206,32 +206,32 @@ export default function WindowControls() {
                 <button onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
-                <div ref={settingDialogRef} className="setting-dialog absolute min-w-40 aspect-square right-0 top-5">
-                    <ScrollArea className="h-full pt-4 px-4 border">
+                <div ref={settingDialogRef} className="setting-dialog absolute min-w-56  -right-1 top-5">
+                    <ScrollArea className="h-[calc(100vh-100px)] max-h-70 min-h-60 pt-4 px-4">
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Makes the app window smaller and always appear on top">
-                            <p className="text-sm p-0!">Mini Clip</p>
+                            <p className="md:text-base text-sm p-0!">Mini Clip</p>
                             {MenuSwitch(isMiniClip, toggleMiniClip)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
-                            <p className="text-sm p-0!">Hide Clipboard Content</p>
+                            <p className="md:text-base text-sm p-0!">Hide Clipboard Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Limits the number of clipboard items stored">
-                            <p className="text-sm p-0!">Clipboard Limit</p>
+                            <p className="md:text-base text-sm p-0!">Clipboard Limit</p>
                             <ClipStorageLimitSwitch />
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables sound effects">
-                            <p className="text-sm p-0!">Sound</p>
+                            <p className="md:text-base text-sm p-0!">Sound</p>
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
-                            <p className="text-sm p-0!">Load on Startup</p>
+                            <p className="md:text-base text-sm p-0!">Load on Startup</p>
                             {MenuSwitch(isStartup, toggleStartup)}
                         </div>
                         <Separator />
