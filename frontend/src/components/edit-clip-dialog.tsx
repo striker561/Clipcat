@@ -1,34 +1,37 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useState } from "react"
-import { Check, X, Pin } from "lucide-react"
+import { Check, X } from "lucide-react"
 import { useClips } from "../context/ClipContext"
+import { UpdateClipContent } from "../../wailsjs/go/main/App"
+// import TeaseDialog from "./tease-dialog"
+import type { Clip } from '../../types/clip'
 
-interface AddClipDialogProps {
+interface EditClipDialogProps {
     children: React.ReactNode;
+    clip: Clip;
     triggerClassName?: string;
     className?: string;
 }
 
-export default function AddClipDialog({ children, triggerClassName, className }: AddClipDialogProps) {
+export default function EditClipDialog({ children, clip, triggerClassName, className }: EditClipDialogProps) {
     const [open, setOpen] = useState(false)
-    const [content, setContent] = useState("")
-    const [isPinned, setIsPinned] = useState(false)
-    const { addClip } = useClips()
+    const [content, setContent] = useState(clip.content || "")
+    const { getClips } = useClips()
+
 
     const handleSave = async () => {
         if (!content.trim()) return;
 
-        await addClip(content, isPinned)
+        const clipId = Number(clip.id.replace('clip_', ''))
+        await UpdateClipContent(clipId, content)
+        await getClips()
 
         setOpen(false)
-        setContent("")
-        setIsPinned(false)
     }
 
     const handleCancel = () => {
         setOpen(false)
-        setContent("")
-        setIsPinned(false)
+        setContent(clip.content || "")
     }
 
     return (
@@ -37,18 +40,9 @@ export default function AddClipDialog({ children, triggerClassName, className }:
                 {children}
             </DialogTrigger>
             <DialogContent showCloseButton={false} className={`hand-drawn lined thin p-6 bg-[#F9F5E6] max-w-md border-0 sm:rounded-none ${className}`}>
-                {/* Header/Pin option */}
-                <div className="flex justify-end mb-2">
-                    <button
-                        onClick={() => setIsPinned(!isPinned)}
-                        className={`rounded p-1.5 transition-colors ${isPinned
-                            ? "bg-yellow-100 text-yellow-700 hover:bg-red-100 hover:text-red-700"
-                            : "bg-foreground/5 text-foreground hover:bg-yellow-100 hover:text-yellow-700"
-                            }`}
-                        title={isPinned ? "Unpin upon creation" : "Pin upon creation"}
-                    >
-                        <Pin className={`h-4 w-4 ${isPinned ? "fill-current" : ""}`} />
-                    </button>
+                {/* Header - No pin option for edit */}
+                <div className="flex justify-end mb-2 h-6">
+                   {/* Spacer to keep layout similar if needed, or just empty */}
                 </div>
 
                 {/* Content Input */}
@@ -72,12 +66,12 @@ export default function AddClipDialog({ children, triggerClassName, className }:
                     <button
                         onClick={handleSave}
                         className="rounded-full p-2 hover:bg-green-100 text-green-600 transition-colors"
-                        title="Save Clip"
+                        title="Save Changes"
                     >
                         <Check className="h-5 w-5" />
                     </button>
                 </div>
             </DialogContent>
-        </Dialog>
+       </Dialog>
     )
 }

@@ -1,4 +1,4 @@
-import { Copy, Pin, Trash2 } from "lucide-react"
+import { Copy, Pin, Trash2, Pencil } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import type { Clip } from '../../types/clip'
 import { TogglePin, Delete } from "../../wailsjs/go/main/App"
@@ -9,6 +9,7 @@ import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
 import { wait } from "@/helpers/wait"
+import EditClipDialog from "./edit-clip-dialog"
 
 
 interface ClipCardProps {
@@ -127,6 +128,16 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                     >
                         <Copy className="h-4 w-4" />
                     </button>
+                    {clip.type !== "image" && (
+                        <EditClipDialog clip={clip}>
+                            <button
+                                className="rounded p-1.5 bg-foreground/5 text-foreground transition-colors hover:bg-blue-100 hover:text-blue-700"
+                                title="Edit clip"
+                            >
+                                <Pencil className="h-4 w-4" />
+                            </button>
+                        </EditClipDialog>
+                    )}
                     <button
                         onClick={handlePin}
                         className={`rounded p-1.5 transition-colors ${clip.isPinned
