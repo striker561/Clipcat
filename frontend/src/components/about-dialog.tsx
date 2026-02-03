@@ -21,9 +21,15 @@ interface UpdateInfo {
 
 export default function AboutDialog({ version }: AboutDialogProps) {
     const [updateAvailable, setUpdateAvailable] = useState<UpdateInfo | null>(null);
+    const [isBirthday, setIsBirthday] = useState<boolean>(false);
     const [_, setIsChecking] = useState<boolean>(false);
 
     useEffect(() => {
+        const today = new Date();
+        if (today.getDate() === 24 && today.getMonth() === 9) {
+            setIsBirthday(true);
+        }
+
         const checkVersion = async () => {
             setIsChecking(true);
             try {
@@ -59,7 +65,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
         <Dialog>
             <DialogTrigger asChild>
                 <button
-                    className={`heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold about-btn ${updateAvailable ? "indicator" : ""}`}
+                    className={`heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold about-btn ${updateAvailable || isBirthday ? "indicator" : ""}`}
                     title="About"
                 >
                     ⓘ
@@ -90,6 +96,24 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                         <p className="text-sm text-muted-foreground pt-2">
                             Built with Wails, React, TypeScript, and Go
                         </p>
+                        {isBirthday && (
+                            <div className="mt-4 p-3 bg-fuchsia-100 border border-fuchsia-200 rounded-md">
+                                <p className="text-sm font-semibold text-fuchsia-800 mb-2">
+                                    🎂 It's my Birthday!
+                                </p>
+                                <p className="text-sm text-fuchsia-700 mb-2">
+                                    Today is October 24th! 🥳
+                                </p>
+                                <a
+                                    href="https://github.com/d3uceY"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block mt-1 px-3 py-1.5 bg-fuchsia-600 text-white text-sm rounded hover:bg-fuchsia-700 transition-colors"
+                                >
+                                    Visit my GitHub Profile
+                                </a>
+                            </div>
+                        )}
                         {version && (
                             <p className="text-xs text-muted-foreground pt-1">
                                 Version: {version}
