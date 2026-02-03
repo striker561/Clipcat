@@ -102,7 +102,6 @@ func getClips() ([]Clip, error) {
 	return clips, nil
 }
 
-
 func clipExists(content string) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE content = ?`
 	var count int
@@ -112,7 +111,6 @@ func clipExists(content string) (bool, error) {
 	}
 	return count > 0, nil
 }
-
 
 func imageClipExists(image []byte) (bool, error) {
 	query := `SELECT COUNT(*) FROM clips WHERE image = ?`
@@ -325,6 +323,7 @@ func deleteAllClips(context context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete all clips: %v", err)
 	}
+	DB.Exec(`VACUUM`)
 	return nil
 }
 
@@ -350,6 +349,7 @@ func deletePinnedClips(context context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete pinned clips: %v", err)
 	}
+	DB.Exec(`VACUUM`)
 	return nil
 }
 
@@ -375,5 +375,6 @@ func deleteUnpinnedClips(context context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete unpinned clips: %v", err)
 	}
+	DB.Exec(`VACUUM`)
 	return nil
 }
