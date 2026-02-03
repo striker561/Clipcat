@@ -239,7 +239,7 @@ func addImageClip(img []byte) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}
-
+	DB.Exec(`VACUUM`)
 	return nil
 }
 
