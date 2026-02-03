@@ -53,6 +53,8 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 
 - **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
 - **Easy Management** - Copy, pin, and delete clips with intuitive controls
+- **Edit Clips** - Modify the content of your saved clips anytime
+- **Manual Creation** - Add new clips directly from the app without copying
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
 
 - **Privacy Mode** - Instantly hide clip content for privacy or during screen sharing
@@ -72,6 +74,8 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Sound Effects** - Audible feedback for actions
 - **Persistent Storage** - SQLite database keeps your clips safe
 - **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- **Mini Clip Mode** - A compact, always-on-top window for unobtrusive usage
+- **Startup Support** - Option to launch automatically when your system starts
 - <img width="204" height="229" alt="image" src="https://github.com/user-attachments/assets/cbe645fb-5819-44b5-9b2e-8c470e95df4a" />
 
 - **Auto Update Check** - Automatically checks for new versions on GitHub

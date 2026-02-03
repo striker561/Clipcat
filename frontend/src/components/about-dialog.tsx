@@ -105,12 +105,12 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                                     Today is October 24th! 🥳
                                 </p>
                                 <a
-                                    href="https://github.com/d3uceY"
+                                    href="https://www.linkedin.com/in/jesse-onyekwelu-4a8982275/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-block mt-1 px-3 py-1.5 bg-fuchsia-600 text-white text-sm rounded hover:bg-fuchsia-700 transition-colors"
                                 >
-                                    Visit my GitHub Profile
+                                    Visit my LinkedIn Profile
                                 </a>
                             </div>
                         )}
