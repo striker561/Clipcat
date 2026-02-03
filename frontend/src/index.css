@@ -358,7 +358,7 @@ body:before {
 .torn-input::after {
   content: "";
   position: absolute;
-  top: 80%;
+  top: 90%;
   height: 20px;
   width: 100%;
   left: 0;
@@ -454,7 +454,7 @@ body:before {
 
 @media screen and (max-width: 600px) {
   .page {
-    padding: 3rem 1rem 8rem 2rem;
+    padding: 1rem 1rem 8rem 2rem;
   }
 
   .margin {

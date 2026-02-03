@@ -183,14 +183,15 @@ function PageContent() {
             <div className="margin"></div>
             <div className="mx-auto max-w-6xl">
                 {/* Header */}
-                <div className="mb-10 flex sm:flex-row flex-row-reverse items-center gap-8 justify-between">
-                    <div className="flex items-center gap-2">
-                        <h1 className="font-serif text-xl font-bold italic text-foreground sm:block hidden">About</h1>
+                <div className="mb-10 sm:flex-row flex justify-center items-center sm:gap-8 sm:justify-between">
+                    <div className="items-center gap-2 sm:flex hidden">
+                        <h1 className="font-serif text-xl font-bold italic text-foreground ">About</h1>
                         {
                             version &&
                             < AboutDialog version={version} />
                         }
                     </div>
+
                     <div className="relative w-full max-w-md torn-input">
                         <div className="tape-1 absolute -top-3 left-0 h-12 w-4 bg-yellow-200/40 rotate-45 rounded-sm shadow-sm"></div>
                         <div className="tape-2 absolute -top-3 right-0 h-12 w-4 bg-yellow-200/40 -rotate-45 rounded-sm shadow-sm"></div>
@@ -206,24 +207,25 @@ function PageContent() {
                     </div>
                 </div>
 
-                {(clips.pinned.length > 0 || clips.recent.length > 0) && (
-                    <AddClipDialog triggerClassName="sm:mb-7 mb-4">
-                        <button className="hover:scale-95 p-1 bg-amber-100 transition-transform cursor-pointer hand-drawn-btn dashed thin" title="Add new clip">
-                            <div className="flex items-center sm:gap-2 gap-1">
-                                <span className="sm:text-xl text-base">Add Clip</span>
-                                <span className="sm:text-4xl text-2xl">+</span>
-                            </div>
-                        </button>
-                    </AddClipDialog>
-                )}
-
                 {/* Pinned Section */}
                 {filteredClips().pinned.length > 0 && (
                     <section className="mb-12">
-                        <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
-                            <span className="text-2xl">📌</span>
-                            <span className="italic">Pinned <span className="text-xl"> ({filteredClips().pinned.length}) </span></span>
-                        </h2>
+                        <div className="flex items-center gap-8 mb-4">
+                            <h2 className="sm:flex hidden items-center gap-2 text-2xl font-bold text-foreground">
+                                <span className="text-2xl">📌</span>
+                                <span className="italic">Pinned <span className="text-xl"> ({filteredClips().pinned.length}) </span></span>
+                            </h2>
+                            <div className="sm:m-0 mx-auto mb-2">
+                                <AddClipDialog>
+                                    <button className="hover:scale-95 sm:p-2 p-4 rounded-lg! h-auto bg-amber-100 transition-transform hand-drawn-btn dashed thin" title="Add new clip">
+                                        <div className="flex items-center sm:gap-2 gap-1 font-bold">
+                                            <span className="text-xs leading-0.5">Add Clip</span>
+                                            <span className="text-base leading-0.5">+</span>
+                                        </div>
+                                    </button>
+                                </AddClipDialog>
+                            </div>
+                        </div>
                         <div className="free-form-grid-container">
                             {filteredClips().pinned.map((clip) => (
                                 <ClipCard key={clip.id} clip={clip} type="pinned" />
@@ -235,10 +237,22 @@ function PageContent() {
                 {/* Recent Section */}
                 {filteredClips().recent.length > 0 && (
                     <section>
-                        <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
-                            <span className="text-2xl">📝</span>
-                            <span className="italic">Recent <span className="text-xl"> ({filteredClips().recent.length}) </span></span>
-                        </h2>
+                        <div className="flex items-center gap-8 mb-4">
+                            <h2 className=" sm:flex hidden items-center gap-2 text-2xl font-bold text-foreground">
+                                <span className="text-2xl">📝</span>
+                                <span className="italic">Recent <span className="text-xl"> ({filteredClips().recent.length}) </span></span>
+                            </h2>
+                            <div>
+                                <AddClipDialog triggerClassName="sm:block hidden">
+                                    <button className="hover:scale-95 p-2 rounded-lg! h-auto bg-amber-100 transition-transform hand-drawn-btn dashed thin" title="Add new clip">
+                                        <div className="flex items-center sm:gap-2 gap-1 font-bold">
+                                            <span className="text-xs leading-0.5">Add Clip</span>
+                                            <span className="text-base leading-0.5">+</span>
+                                        </div>
+                                    </button>
+                                </AddClipDialog>
+                            </div>
+                        </div>
                         <div className="free-form-grid-container">
                             {filteredClips().recent.map((clip) => (
                                 <ClipCard key={clip.id} clip={clip} type="recent" />
