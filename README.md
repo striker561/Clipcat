@@ -74,9 +74,13 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - **Sound Effects** - Audible feedback for actions
 - **Persistent Storage** - SQLite database keeps your clips safe
 - **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- <img width="259" height="335" alt="image" src="https://github.com/user-attachments/assets/ca3ed1ef-8a44-4aa2-a759-37d025e0682b" />
+
 - **Mini Clip Mode** - A compact, always-on-top window for unobtrusive usage
+- <img width="270" height="330" alt="image" src="https://github.com/user-attachments/assets/ddedff44-5007-4f57-b98e-006e28e24e71" />
+
 - **Startup Support** - Option to launch automatically when your system starts
-- <img width="204" height="229" alt="image" src="https://github.com/user-attachments/assets/cbe645fb-5819-44b5-9b2e-8c470e95df4a" />
+- <img width="293" height="335" alt="image" src="https://github.com/user-attachments/assets/2437742c-48c4-4e09-9726-19551d86eb54" />
 
 - **Auto Update Check** - Automatically checks for new versions on GitHub
 
