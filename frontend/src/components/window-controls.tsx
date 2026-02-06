@@ -198,12 +198,12 @@ export default function WindowControls() {
                     <ScrollArea className="h-[calc(100vh-100px)] max-h-70 min-h-60 pt-4 px-4">
                         <h2 className="text-lg text-center">Settings</h2>
                         <Separator />
-                        <div className="flex items-center gap-3 justify-between py-2" title="Makes the app window smaller and always appear on top">
+                        <div className="flex items-center gap-3 justify-between py-2" title="alt + m to toggle">
                             <p className="sm:text-base text-sm p-0!">Mini Clip</p>
                             {MenuSwitch(isMiniClip, toggleMiniClip)}
                         </div>
                         <Separator />
-                        <div className="flex items-center gap-3 justify-between py-2" title="Hides the content of the clipboard for privacy">
+                        <div className="flex items-center gap-3 justify-between py-2" title="alt + h to toggle">
                             <p className="sm:text-base text-sm p-0!">Hide                                                    Content</p>
                             {MenuSwitch(hideContent, toggleHideContent, !hasClips())}
                         </div>
@@ -213,7 +213,7 @@ export default function WindowControls() {
                             <ClipStorageLimitSwitch />
                         </div>
                         <Separator />
-                        <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables sound effects">
+                        <div className="flex items-center gap-3 justify-between py-2" title="alt + s to toggle">
                             <p className="sm:text-base text-sm p-0!">Sound</p>
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
