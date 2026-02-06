@@ -7,7 +7,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-// import { LogPrint } from "../../wailsjs/runtime/runtime";
 
 interface AboutDialogProps {
     version: string;
