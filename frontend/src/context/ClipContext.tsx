@@ -135,6 +135,33 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         })
     }, [])
 
+    /* ===============================
+        SHORTCUT KEYS LISTENER
+       ===============================
+    */
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.altKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'm':
+                        toggleMiniClip()
+                        break
+                    case 's':
+                        toggleSound()
+                        break
+                    case 'h':
+                        toggleHideContent()
+                        break
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [toggleMiniClip, toggleSound, toggleHideContent])
+
 
     return (
         <ClipContext.Provider value={
