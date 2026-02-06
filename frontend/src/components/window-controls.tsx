@@ -12,8 +12,8 @@ import DeleteClipsDialog from "./delete-clips-dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
-    const { soundOn, setSoundOn, isMiniClip, toggleMiniClip, toggleStartup, isStartup } = useClips();
-    const { hideContent, setHideContent, clips } = useClips();
+    const { soundOn, toggleSound, isMiniClip, toggleMiniClip, toggleStartup, isStartup } = useClips();
+    const { hideContent, toggleHideContent, clips } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -171,19 +171,7 @@ export default function WindowControls() {
     };
 
 
-    const toggleSound = () => {
-        setSoundOn((prev) => {
-            localStorage.setItem("soundOn", (!prev).toString());
-            return !prev;
-        });
-    }
 
-    const toggleHideContent = () => {
-        setHideContent((prev) => {
-            localStorage.setItem("hideContent", (!prev).toString());
-            return !prev;
-        });
-    }
 
     const handleWindowScreen = async () => {
         const isMax = await WindowIsMaximised();

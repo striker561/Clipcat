@@ -14,17 +14,16 @@ import type { Clip } from '../../types/clip'
 
 interface ClipContextType {
     clips: { pinned: Clip[]; recent: Clip[] }
-    setClips: React.Dispatch<React.SetStateAction<{ pinned: Clip[]; recent: Clip[] }>>
     getClips: () => Promise<void>
     addClip: (content: string, pinned: boolean) => Promise<void>
     soundOn: boolean
-    setSoundOn: React.Dispatch<React.SetStateAction<boolean>>
+    toggleSound: () => void
     hideContent: boolean
-    setHideContent: React.Dispatch<React.SetStateAction<boolean>>
     toggleMiniClip: () => Promise<void>
     isMiniClip: boolean
     isStartup: boolean
     toggleStartup: () => Promise<void>
+    toggleHideContent: () => void
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -40,7 +39,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     /* ===============================
         STARTUP FUNCTIONS     
        ===============================
-    */   
+    */
     const checkStartup = async () => {
         await IsStartupEnabled().then((res) => {
             setIsStartup(res);
@@ -63,7 +62,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     /* ===============================
         MINI CLIP FUNCTIONS     
        ===============================
-    */  
+    */
     const toggleMiniClip = async () => {
         await MakeMiniClip(!isMiniClip).then(() => {
             setIsMiniClip((prev) => (
@@ -79,7 +78,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     /* ===============================
         CLIP OPS FUNCTIONS     
        ===============================
-    */  
+    */
 
     const getClips = async () => {
         return GetClips().then((data) => {
@@ -99,6 +98,31 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         await getClips()
     }
 
+
+    /* ===============================
+       HIDE CONTENT OPS FUNCTIONS
+      ===============================
+   */
+    const toggleHideContent = () => {
+        setHideContent((prev) => {
+            localStorage.setItem("hideContent", (!prev).toString());
+            return !prev;
+        });
+    }
+
+     /* ===============================
+       SOUND OPS FUNCTIONS
+      ===============================
+   */
+    const toggleSound = () => {
+        setSoundOn((prev) => {
+            localStorage.setItem("soundOn", (!prev).toString());
+            return !prev;
+        });
+    }
+
+
+
     /* ===============================
         RUN FUNCTIONS ON APP LOAD 
        ===============================
@@ -111,20 +135,20 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         })
     }, [])
 
+
     return (
         <ClipContext.Provider value={
             {
                 // CLIP OPERATIONS
                 clips,
-                setClips,
                 getClips,
                 addClip,
                 // SOUND OPERATIONS
                 soundOn,
-                setSoundOn,
+                toggleSound,
                 // PRIVACY OPERATIONS
                 hideContent,
-                setHideContent,
+                toggleHideContent,
                 // MINI CLIP OPERATIONS
                 isMiniClip,
                 toggleMiniClip,

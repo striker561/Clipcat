@@ -21,7 +21,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
-    const { getClips, soundOn, clips, setClips, hideContent, isMiniClip } = useClips()
+    const { getClips, soundOn, clips, hideContent, isMiniClip } = useClips()
 
 
     useEffect(() => {
@@ -74,9 +74,6 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const handleDelete = async () => {
         const clipId = Number(clip.id.replace('clip_', ''))
         playSound("/sounds/paper-rip.mp3", soundOn, .5)
-        if (clips.pinned.length <= 1 && clips.recent.length <= 1) {
-            setClips({ pinned: [], recent: [] })
-        }
         await Delete(clipId).catch((err) => {
             console.error("Failed to delete clip:", err)
         }).then(() => {
