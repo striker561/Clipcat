@@ -2,7 +2,7 @@
 export const insertLinks = (text: string | any) => {
     if (!text) return text;
     
-    // First, escape all HTML entities to prevent arbitrary HTML injection
+    // escape all HTML entities to prevent arbitrary HTML injection
     const escapeHtml = (str: string) => {
         return str
             .replace(/&/g, '&amp;')
@@ -16,13 +16,13 @@ export const insertLinks = (text: string | any) => {
     let modifiedText = escapeHtml(text);
     
     // Now find URLs and convert them to links
-    const urlRegex = /https?:\/\/(?:www\.)?[^\s/$.?#].[^\s]*/g;
+    const urlRegex = /(?<!["\w:])https?:\/\/(?:www\.)?[^\s"'<>]+/g;
     const matches = modifiedText.match(urlRegex);
 
     if (matches) {
         for (let i = 0; i < matches.length; i++) {
             const url = matches[i];
-            const link = `<a href="${url}" target="_blank" class="inserted-link">${url}</a>`;
+            const link = `<span class="inserted-link" data-url="${url}">${url}</span>`;
             modifiedText = modifiedText.replace(url, link);
         }
     }

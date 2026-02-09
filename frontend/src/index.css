@@ -532,8 +532,10 @@ select,
   cursor: url("/cursors/text-cur.png") 0 0, text !important;
 }
 
+
+/* this is for the links that are detected in the clip-card content */
 .inserted-link{
-  color: blue !important;
+  color: hsl(240, 68%, 63%) !important;
   &:hover{
     text-decoration: underline !important;
   }

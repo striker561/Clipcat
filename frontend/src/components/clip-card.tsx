@@ -11,6 +11,7 @@ import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
 import { wait } from "@/helpers/wait"
 import EditClipDialog from "./edit-clip-dialog"
 import { insertLinks } from "@/helpers/insertLinks"
+import { BrowserOpenURL } from "../../wailsjs/runtime/runtime"
 
 
 interface ClipCardProps {
@@ -86,6 +87,18 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         setDialogOpen(true)
     }
 
+    const handleLinkClick = (e: React.MouseEvent) => {
+        const target = e.target as HTMLElement
+        if (target.classList.contains('inserted-link')) {
+            e.preventDefault()
+            e.stopPropagation()
+            const url = target.getAttribute('data-url')
+            if (url) {
+                BrowserOpenURL(url)
+            }
+        }
+    }
+
     return (
         <div
             ref={cardRef}
@@ -102,7 +115,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             </div>
 
             {/* Content */}
-            <div className={`mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform  ${hideContent ? "hard-to-read" : ""}`} onClick={handleViewClip}>
+            <div className={`mb-4 flex-1 overflow-hidden cursor-pointer hover:scale-95 transition-transform  ${hideContent ? "hard-to-read" : ""}`} onClick={(e) => { handleLinkClick(e); if (!(e.target as HTMLElement).classList.contains('inserted-link')) handleViewClip(); }}>
                 {clip.type === "image" && clip.image ? (
                     <img
                         src={`data:image/png;base64,${clip.image}`}
@@ -188,7 +201,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                                     <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
                                     <img src="/seperator.png" alt="" className="w-full " />
                                 </DialogHeader>
-                                <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden">
+                                <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
                                     {clip.type === "image" && clip.image ? (
                                         <img
                                             src={`data:image/png;base64,${clip.image}`}
