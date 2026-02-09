@@ -534,9 +534,51 @@ select,
 
 
 /* this is for the links that are detected in the clip-card content */
-.inserted-link{
+.inserted-link {
   color: hsl(240, 68%, 63%) !important;
-  &:hover{
+
+  &:hover {
     text-decoration: underline !important;
   }
+}
+
+
+
+/* this is for the scroll thumb pencil design that is in scroll-area-pencil.tsx */
+.triangle {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0px 4.5px 7.8px 4.5px;
+  border-color: transparent transparent burlywood transparent;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  position: relative;
+  top: 4px;
+  margin: 0px auto;
+}
+
+.stalk {
+  width: 7px;
+  background: goldenrod;
+  height: 100%;
+  position: relative;
+
+  &:before {
+    content: '';
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 1px;
+    inset: 0;
+    margin: 0px auto;
+  }
+}
+
+.eraser {
+  background-color: #ffb6c1;
+  width: 7px;
+  height: 7px;
 }

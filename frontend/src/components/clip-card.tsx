@@ -7,6 +7,7 @@ import { playSound } from "@/helpers/playSound"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
+import { ScrollArea as ScrollAreaPencil } from "./ui/scroll-area-pencil"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
 import { wait } from "@/helpers/wait"
 import EditClipDialog from "./edit-clip-dialog"
@@ -172,7 +173,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 {
                     clip.type === "image" && clip.image ? (
-                        <DialogContent className="px-3 border-0 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover  h-[90vh]! max-h-125">
+                        <DialogContent className="px-3 border-0 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover h-screen!  sm:h-[90vh]! max-h-125">
                             {/* clip image */}
                             <ScrollArea className=" overflow-auto ">
                                 <img
@@ -187,31 +188,23 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
                         :
 
-                        (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-125">
+                        (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-screen!  sm:h-[90vh]! max-h-125">
                             {/* clip image */}
                             <div className="w-fit hidden sm:block absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
                                 <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
                                 <img src="/clip.png" className="h-full" alt="" />
                             </div>
 
-                            <div className="page rounded-none! overflow-x-scroll shadow-md/50">
+                            <div className="page rounded-none! overflow-x-scroll overflow-y-hidden shadow-md/50">
                                 <div className="margin"></div>
                                 <DialogHeader className="sm:pt-7">
                                     <DialogTitle>Clip Content</DialogTitle>
                                     <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
                                     <img src="/seperator.png" alt="" className="w-full " />
                                 </DialogHeader>
-                                <div className="overflow-y-auto max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
-                                    {clip.type === "image" && clip.image ? (
-                                        <img
-                                            src={`data:image/png;base64,${clip.image}`}
-                                            alt="Clip image"
-                                            className="w-full h-auto object-contain rounded"
-                                        />
-                                    ) : (
+                                <ScrollAreaPencil className=" max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
                                         <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: insertLinks(clip.content) }} />
-                                    )}
-                                </div>
+                                </ScrollAreaPencil>
                             </div>
                         </DialogContent>
                         )
