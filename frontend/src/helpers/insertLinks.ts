@@ -16,7 +16,8 @@ export const insertLinks = (text: string | any) => {
     let modifiedText = escapeHtml(text);
     
     // Now find URLs and convert them to links
-    const urlRegex = /(?<!["\w:])https?:\/\/(?:www\.)?[^\s"'<>]+/g;
+    // Stop at: whitespace, quotes, brackets, ampersands (&), commas, backslashes
+    const urlRegex = /(?<!["\w:])https?:\/\/(?:www\.)?[^\s"'<>&,\\]+/g;
     const matches = modifiedText.match(urlRegex);
 
     if (matches) {

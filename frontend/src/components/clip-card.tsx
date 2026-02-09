@@ -189,7 +189,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
                         (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-[90vh]! max-h-125">
                             {/* clip image */}
-                            <div className="w-fit absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
+                            <div className="w-fit hidden sm:block absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
                                 <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
                                 <img src="/clip.png" className="h-full" alt="" />
                             </div>
