@@ -531,3 +531,10 @@ select,
 [contenteditable="true"] {
   cursor: url("/cursors/text-cur.png") 0 0, text !important;
 }
+
+.inserted-link{
+  color: blue !important;
+  &:hover{
+    text-decoration: underline !important;
+  }
+}

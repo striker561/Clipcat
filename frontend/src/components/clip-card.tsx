@@ -110,7 +110,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                         className="w-full h-auto object-contain max-h-48 rounded"
                     />
                 ) : (
-                    <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`}>{clip.content}</p>
+                    <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`} dangerouslySetInnerHTML={{ __html: insertLinks(clip.content) }}></p>
                 )}
             </div>
 
@@ -196,7 +196,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                                             className="w-full h-auto object-contain rounded"
                                         />
                                     ) : (
-                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}> {insertLinks(clip.content)}</p>
+                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: insertLinks(clip.content) }} />
                                     )}
                                 </div>
                             </div>
