@@ -10,6 +10,7 @@ import { ScrollArea } from "./ui/scroll-area-white"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
 import { wait } from "@/helpers/wait"
 import EditClipDialog from "./edit-clip-dialog"
+import { insertLinks } from "@/helpers/insertLinks"
 
 
 interface ClipCardProps {
@@ -195,7 +196,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                                             className="w-full h-auto object-contain rounded"
                                         />
                                     ) : (
-                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}>{clip.content}</p>
+                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`}> {insertLinks(clip.content)}</p>
                                     )}
                                 </div>
                             </div>
