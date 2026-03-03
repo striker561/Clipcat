@@ -60,6 +60,9 @@ func (a *App) startup(ctx context.Context) {
 		clipboard.SetIgnoredProcesses(ignoreList)
 	}
 
+	// Start the system-tray icon so the app is reachable while hidden.
+	a.startTray()
+
 	// start clipboard listener
 	var lastImage []byte
 	clipboard.StartClipboardListener(func() {
@@ -220,6 +223,13 @@ func (a *App) RemoveIgnoreEntry(name string) error {
 func (a *App) PasteToWindow(content string) error {
 	// Write content to the system clipboard.
 	gclip.Write(gclip.FmtText, []byte(content))
+
+	// If there is no previous window to paste into (e.g. Clipcat was opened
+	// directly rather than via the hotkey), just leave the content in the
+	// clipboard and keep the window visible so the user isn't left stranded.
+	if !clipboard.HasPreviousWindow() {
+		return nil
+	}
 
 	// Hide Clipcat so it gets out of the way before we paste.
 	runtime.WindowHide(a.ctx)

@@ -49,6 +49,13 @@ func capturePreviousWindow() {
 	prevHWND = hwnd
 }
 
+// HasPreviousWindow reports whether a valid foreground window was captured
+// when the hotkey last fired. Returns false if the hotkey has never fired or
+// the captured handle was zero (e.g. no app had focus at that moment).
+func HasPreviousWindow() bool {
+	return prevHWND != 0
+}
+
 // FocusPreviousWindow restores keyboard focus to the window that was active
 // when the user pressed the hotkey.
 func FocusPreviousWindow() {
