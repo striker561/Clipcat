@@ -61,6 +61,11 @@ func (a *App) startup(ctx context.Context) {
 		clipboard.SetIgnoredProcesses(ignoreList)
 	}
 
+	// Register our PID so the focus tracker never treats Clipcat's own window
+	// as the paste target, then start tracking.
+	clipboard.SetOurProcessID(uint32(os.Getpid()))
+	clipboard.StartFocusTracker()
+
 	// Start the system-tray icon so the app is reachable while hidden.
 	a.startTray()
 

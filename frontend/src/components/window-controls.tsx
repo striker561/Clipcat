@@ -9,6 +9,7 @@ import { GetClips } from "../../wailsjs/go/main/App";
 import { ScrollArea } from "./ui/scroll-area";
 import DeleteButton from "./delete-button";
 import DeleteClipsDialog from "./delete-clips-dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -19,6 +20,23 @@ export default function WindowControls() {
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [limit, setLimit] = useState(100)
+    const [showQuickPasteConfirm, setShowQuickPasteConfirm] = useState(false)
+
+    const handleQuickPasteToggle = () => {
+        if (isGhostMode) {
+            playSound(isGhostMode ? '/sounds/switch-on.mp3' : '/sounds/switch-off.mp3', soundOn, 1)
+            toggleGhostMode()
+        } else {
+            setShowQuickPasteConfirm(true)
+        }
+    }
+
+    const confirmEnableQuickPaste = async () => {
+        playSound('/sounds/switch-off.mp3', soundOn, 1)
+        await toggleGhostMode()
+        setShowQuickPasteConfirm(false)
+        WindowHide()
+    }
 
     useEffect(() => {
         const loadLimit = async () => {
@@ -231,9 +249,9 @@ export default function WindowControls() {
                             {MenuSwitch(isPaused, togglePause)}
                         </div>
                         <Separator />
-                        <div className="flex items-center gap-3 justify-between py-2" title="Ghost Mode: hides into the system tray. Press Ctrl+Shift+V to summon.">
-                            <p className="sm:text-base text-sm p-0!">👻 Ghost Mode</p>
-                            {MenuSwitch(isGhostMode, toggleGhostMode)}
+                        <div className="flex items-center gap-3 justify-between py-2" title="Quick Paste: hides to the tray, Ctrl+Shift+V summons it, paste any clip into the last window you used">
+                            <p className="sm:text-base text-sm p-0!">Quick Paste</p>
+                            {MenuSwitch(isGhostMode, handleQuickPasteToggle)}
                         </div>
                         <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
@@ -303,6 +321,39 @@ export default function WindowControls() {
 
                 )
             }
+
+            {/* Quick Paste enable confirmation dialog */}
+            <Dialog open={showQuickPasteConfirm} onOpenChange={(open) => { if (!open) setShowQuickPasteConfirm(false) }}>
+                <DialogContent showCloseButton={false} className="hand-drawn lined thin p-6 bg-[#F9F5E6] max-w-sm border-0 sm:rounded-none">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                            <h2 className="text-lg font-bold">Enable Quick Paste?</h2>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Clipcat will slip into the system tray and stay out of your way.
+                            </p>
+                            <ul className="text-sm mt-1 space-y-1.5">
+                                <li><span className="font-semibold">Ctrl+Shift+V</span> — summon Clipcat from any window</li>
+                                <li>Click the paste icon on a clip to fire it into the last window you used</li>
+                                <li>The tray icon also brings Clipcat back whenever you need it</li>
+                            </ul>
+                        </div>
+                        <div className="flex justify-end gap-2 pt-1">
+                            <button
+                                onClick={() => setShowQuickPasteConfirm(false)}
+                                className="rounded px-3 py-1 text-sm bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmEnableQuickPaste}
+                                className="rounded px-3 py-1 text-sm bg-foreground text-background hover:opacity-80 transition-opacity"
+                            >
+                                Enable &amp; Hide
+                            </button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

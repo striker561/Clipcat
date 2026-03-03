@@ -37,27 +37,65 @@ const (
 )
 
 //
-// Previous window tracking (used for paste-back after hotkey)
+// Previous window tracking
+//
+// prevHWND is kept up-to-date by two sources:
+//   1. The Ctrl+Shift+V hotkey handler (instant, authoritative)
+//   2. StartFocusTracker – a background poller that watches for focus changes
+//      so the paste button works even without ever pressing the hotkey.
 //
 
-var prevHWND uintptr
+var (
+	prevHWND uintptr
+	ourPID   uint32 // this process's PID; focus tracker ignores our own windows
+)
 
-// capturePreviousWindow saves the currently focused window so we can paste back
-// into it later. Called right when the hotkey fires, before Clipcat shows.
-func capturePreviousWindow() {
-	hwnd, _, _ := procGetForegroundWindow.Call()
-	prevHWND = hwnd
+// SetOurProcessID stores the host process PID so StartFocusTracker can tell
+// Clipcat windows apart from everything else.
+func SetOurProcessID(pid uint32) {
+	ourPID = pid
 }
 
-// HasPreviousWindow reports whether a valid foreground window was captured
-// when the hotkey last fired. Returns false if the hotkey has never fired or
-// the captured handle was zero (e.g. no app had focus at that moment).
+// StartFocusTracker polls GetForegroundWindow every 150 ms and stores the
+// most recently focused window that does NOT belong to this process.
+// Must be called after SetOurProcessID.
+func StartFocusTracker() {
+	go func() {
+		for {
+			time.Sleep(150 * time.Millisecond)
+			hwnd, _, _ := procGetForegroundWindow.Call()
+			if hwnd == 0 {
+				continue
+			}
+			// Skip our own window so we never overwrite prevHWND with Clipcat.
+			var pid uint32
+			procGetWindowThreadProcessId.Call(hwnd, uintptr(unsafe.Pointer(&pid)))
+			if pid != 0 && pid != ourPID {
+				prevHWND = hwnd
+			}
+		}
+	}()
+}
+
+// capturePreviousWindow is called by the hotkey handler; it does an immediate
+// snapshot that takes priority over the poller's last seen window.
+func capturePreviousWindow() {
+	hwnd, _, _ := procGetForegroundWindow.Call()
+	if hwnd != 0 {
+		var pid uint32
+		procGetWindowThreadProcessId.Call(hwnd, uintptr(unsafe.Pointer(&pid)))
+		if pid != 0 && pid != ourPID {
+			prevHWND = hwnd
+		}
+	}
+}
+
+// HasPreviousWindow reports whether a non-Clipcat window has been seen yet.
 func HasPreviousWindow() bool {
 	return prevHWND != 0
 }
 
-// FocusPreviousWindow restores keyboard focus to the window that was active
-// when the user pressed the hotkey.
+// FocusPreviousWindow restores keyboard focus to the last tracked window.
 func FocusPreviousWindow() {
 	if prevHWND == 0 {
 		return
