@@ -43,6 +43,11 @@ func createTables() {
 	CREATE TABLE IF NOT EXISTS ignore_list (
 		process_name TEXT PRIMARY KEY
 	);
+
+	CREATE TABLE IF NOT EXISTS settings (
+		id INTEGER PRIMARY KEY CHECK (id = 0),
+		ghost_mode INTEGER DEFAULT 0
+	);
 	`
 
 	_, err := DB.Exec(query)
@@ -56,4 +61,10 @@ func createTables() {
 // if it already exists, it does nothing
 func migrateClipsTable() {
 	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN image BLOB`)
+}
+
+// migrateSettingsTable seeds the single-row settings record for users whose
+// DB was created before the settings table was introduced.
+func migrateSettingsTable() {
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (id, ghost_mode) VALUES (0, 0)`)
 }

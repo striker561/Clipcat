@@ -38,6 +38,10 @@ export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
 
+export function GetGhostMode() {
+  return window['go']['main']['App']['GetGhostMode']();
+}
+
 export function GetIgnoreList() {
   return window['go']['main']['App']['GetIgnoreList']();
 }
@@ -80,6 +84,10 @@ export function RemoveIgnoreEntry(arg1) {
 
 export function ResumeCapture() {
   return window['go']['main']['App']['ResumeCapture']();
+}
+
+export function SetGhostMode(arg1) {
+  return window['go']['main']['App']['SetGhostMode'](arg1);
 }
 
 export function TogglePin(arg1) {

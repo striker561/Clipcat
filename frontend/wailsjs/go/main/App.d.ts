@@ -20,6 +20,8 @@ export function EnableStartup():Promise<void>;
 
 export function GetClips():Promise<Array<main.Clip>>;
 
+export function GetGhostMode():Promise<boolean>;
+
 export function GetIgnoreList():Promise<Array<string>>;
 
 export function GetStorageLimit():Promise<number>;
@@ -41,6 +43,8 @@ export function PauseCapture():Promise<void>;
 export function RemoveIgnoreEntry(arg1:string):Promise<void>;
 
 export function ResumeCapture():Promise<void>;
+
+export function SetGhostMode(arg1:boolean):Promise<void>;
 
 export function TogglePin(arg1:number):Promise<void>;
 

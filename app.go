@@ -54,6 +54,7 @@ func (a *App) startup(ctx context.Context) {
 
 	createTables()
 	migrateClipsTable()
+	migrateSettingsTable()
 
 	// Sync the ignore list from the DB into the in-memory clipboard filter.
 	if ignoreList, err := getIgnoreList(); err == nil {
@@ -62,6 +63,12 @@ func (a *App) startup(ctx context.Context) {
 
 	// Start the system-tray icon so the app is reachable while hidden.
 	a.startTray()
+
+	// If Ghost Mode was left on from the last session, hide into the tray
+	// immediately so the user never sees the window on startup.
+	if ghostMode, err := getGhostMode(); err == nil && ghostMode {
+		runtime.WindowHide(a.ctx)
+	}
 
 	// start clipboard listener
 	var lastImage []byte
@@ -182,6 +189,18 @@ func (a *App) ResumeCapture() {
 
 func (a *App) IsPaused() bool {
 	return clipboard.IsPaused()
+}
+
+// --------------------------------------------------------------------------------
+// Ghost Mode
+// --------------------------------------------------------------------------------
+
+func (a *App) GetGhostMode() (bool, error) {
+	return getGhostMode()
+}
+
+func (a *App) SetGhostMode(enabled bool) error {
+	return setGhostMode(enabled)
 }
 
 // --------------------------------------------------------------------------------

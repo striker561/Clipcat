@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit } from "../../wailsjs/runtime/runtime";
+import { WindowIsMaximised, WindowMinimise, WindowUnmaximise, WindowMaximise, Quit, WindowHide } from "../../wailsjs/runtime/runtime";
 import { useClips } from "@/context/ClipContext";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -14,7 +14,7 @@ export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
     const [newIgnoreEntry, setNewIgnoreEntry] = useState("");
     const { soundOn, toggleSound, isMiniClip, toggleMiniClip, toggleStartup, isStartup } = useClips();
-    const { hideContent, toggleHideContent, clips, isPaused, togglePause, ignoreList, addIgnoreEntry, removeIgnoreEntry } = useClips();
+    const { hideContent, toggleHideContent, clips, isPaused, togglePause, ignoreList, addIgnoreEntry, removeIgnoreEntry, isGhostMode, toggleGhostMode } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -231,6 +231,11 @@ export default function WindowControls() {
                             {MenuSwitch(isPaused, togglePause)}
                         </div>
                         <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2" title="Ghost Mode: hides into the system tray. Press Ctrl+Shift+V to summon.">
+                            <p className="sm:text-base text-sm p-0!">👻 Ghost Mode</p>
+                            {MenuSwitch(isGhostMode, toggleGhostMode)}
+                        </div>
+                        <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
                             <p className="sm:text-base text-sm p-0!">Load on Startup</p>
                             {MenuSwitch(isStartup, toggleStartup)}
@@ -291,7 +296,7 @@ export default function WindowControls() {
                         <button onClick={() => handleWindowScreen()}>
                             <img src={fullScreen ? "/unmaximise.png" : "/maximize.png"} alt="maximize" className="h-5 shadow-md/30" />
                         </button>
-                        <button onClick={() => Quit()}>
+                        <button onClick={() => isGhostMode ? WindowHide() : Quit()}>
                             <img src="/close.png" alt="close" className="h-5 shadow-md/30" />
                         </button>
                     </div>

@@ -26,7 +26,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
-    const { getClips, soundOn, clips, hideContent, isMiniClip } = useClips()
+    const { getClips, soundOn, clips, hideContent, isMiniClip, isGhostMode } = useClips()
     const relativeTime = useRelativeTime(clip.createdAt)
 
 
@@ -164,7 +164,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                     >
                         <Copy className="h-4 w-4" />
                     </button>
-                    {clip.type !== "image" && (
+                    {clip.type !== "image" && isGhostMode && (
                         <button
                             onClick={handlePaste}
                             className="rounded p-1.5 bg-foreground/5 text-foreground transition-colors hover:bg-purple-100 hover:text-purple-700"

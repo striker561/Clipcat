@@ -14,6 +14,8 @@ import {
     GetIgnoreList,
     AddIgnoreEntry,
     RemoveIgnoreEntry,
+    GetGhostMode,
+    SetGhostMode,
 } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
@@ -37,6 +39,9 @@ interface ClipContextType {
     ignoreList: string[]
     addIgnoreEntry: (name: string) => Promise<void>
     removeIgnoreEntry: (name: string) => Promise<void>
+    // Ghost Mode
+    isGhostMode: boolean
+    toggleGhostMode: () => Promise<void>
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -49,7 +54,18 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     const [isStartup, setIsStartup] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [ignoreList, setIgnoreList] = useState<string[]>([]);
+    const [isGhostMode, setIsGhostMode] = useState(false);
 
+
+    /* ===============================
+        GHOST MODE FUNCTIONS
+       ===============================
+    */
+    const toggleGhostMode = async () => {
+        const next = !isGhostMode
+        await SetGhostMode(next)
+        setIsGhostMode(next)
+    }
 
     /* ===============================
         CAPTURE PAUSE FUNCTIONS
@@ -180,6 +196,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         getClips()
         IsPaused().then(setIsPaused)
         loadIgnoreList()
+        GetGhostMode().then((v) => setIsGhostMode(v ?? false)).catch(() => {})
         EventsOn("clipboard:changed", () => {
             getClips()
         })
@@ -239,6 +256,9 @@ export function ClipProvider({ children }: { children: ReactNode }) {
                 ignoreList,
                 addIgnoreEntry: addToIgnoreList,
                 removeIgnoreEntry: removeFromIgnoreList,
+                // GHOST MODE
+                isGhostMode,
+                toggleGhostMode,
             }
         }>
             {children}
