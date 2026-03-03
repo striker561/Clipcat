@@ -13,6 +13,7 @@ import { wait } from "@/helpers/wait"
 import EditClipDialog from "./edit-clip-dialog"
 import { insertLinks } from "@/helpers/insertLinks"
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime"
+import { LogPrint } from "../../wailsjs/runtime/runtime"
 
 
 interface ClipCardProps {
@@ -23,8 +24,10 @@ interface ClipCardProps {
 export default function ClipCard({ clip, type }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [isDeleted, setIsDeleted] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, clips, hideContent, isMiniClip } = useClips()
+    const relativeTime = useRelativeTime(clip.createdAt)
 
 
     useEffect(() => {
@@ -38,9 +41,9 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
             }
         }
 
-        // i want it to wait 100ms before updating the row span
+        // i want it to wait 50ms before updating the row span
         // because of the clips that are images, hopefully, this is stable enough to not cause ISSUES lmao
-        wait(50).then(() => {
+        wait(25).then(() => {
             updateRowSpan()
         })
         window.addEventListener('resize', updateRowSpan)
@@ -76,12 +79,19 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     const handleDelete = async () => {
         const clipId = Number(clip.id.replace('clip_', ''))
-        playSound("/sounds/paper-rip.mp3", soundOn, .5)
-        await Delete(clipId).catch((err) => {
+        playSound("/sounds/paper-rip.mp3", soundOn, 0.5)
+
+        // Optimistically hide the card immediately
+        setIsDeleted(true)
+
+        try {
+            await Delete(clipId)
+            await getClips()
+        } catch (err) {
             console.error("Failed to delete clip:", err)
-        }).then(() => {
-            getClips()
-        })
+            LogPrint(`Failed to delete clip: ${err}`)   
+            setIsDeleted(false) // rollback on failure
+        }
     }
 
     const handleViewClip = () => {
@@ -100,6 +110,8 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         }
     }
 
+    if (isDeleted) return null
+
     return (
         <div
             ref={cardRef}
@@ -112,7 +124,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                 </div>}
             <div className="mb-3 flex items-start justify-between">
                 <span className="text-xl"></span>
-                <span className="text-xs text-muted-foreground md:hidden">{useRelativeTime(clip.createdAt)}</span>
+                <span className="text-xs text-muted-foreground md:hidden">{relativeTime}</span>
             </div>
 
             {/* Content */}
@@ -130,7 +142,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
             {/* Footer with time and actions */}
             <div className="flex flex-col-reverse gap-2 justify-between">
-                <span className="hidden text-xs text-muted-foreground md:block">{useRelativeTime(clip.createdAt)}</span>
+                <span className="hidden text-xs text-muted-foreground md:block">{relativeTime}</span>
                 <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                         onClick={handleCopy}
@@ -199,7 +211,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                                 <div className="margin"></div>
                                 <DialogHeader className="sm:pt-7">
                                     <DialogTitle>Clip Content</DialogTitle>
-                                    <DialogDescription>Created {useRelativeTime(clip.createdAt)}</DialogDescription>
+                                    <DialogDescription>Created {relativeTime}</DialogDescription>
                                     <img src="/seperator.png" alt="" className="w-full " />
                                 </DialogHeader>
                                 <ScrollAreaPencil className=" max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
