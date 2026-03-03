@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="./build/appicon.png" alt="icon" width="90">
 </p>
 <div align="center">
@@ -10,19 +10,19 @@ A creative and stylish clipboard manager built with Wails, designed to keep trac
 <img width="1912" height="1026" alt="image" src="https://github.com/user-attachments/assets/ec4870c1-8555-49e0-9cb4-52c83f7551b0" />
 
 
-## ⬇️ Download
+## â¬‡ï¸ Download
 ![Clipcat Banner](https://img.shields.io/badge/Made%20with-Wails-00ADD8?style=for-the-badge&logo=go)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
 
 [![Download Clipcat v0.7.2 for Windows](https://img.shields.io/badge/Download-Windows%20Installer-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/d3uceY/Clipcat/releases/download/v0.7.2/Clipcat.exe)
 
-**[⬇️ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.7.2/Clipcat.exe)**
+**[â¬‡ï¸ Clipcat](https://github.com/d3uceY/Clipcat/releases/download/v0.7.2/Clipcat.exe)**
 
 > Windows 10/11 (64-bit) | Version 0.7.2
 
 ![clipcat (1)](https://github.com/user-attachments/assets/ca28ae42-2a9d-42c3-9a47-183808d59cf6)
 
-### ⚠️ Windows SmartScreen Warning
+### âš ï¸ Windows SmartScreen Warning
 
 When running the app for the first time, Windows SmartScreen may show a warning because the app is not yet code-signed. This is normal for open-source applications.
 
@@ -34,64 +34,88 @@ Or alternatively:
 1. Right-click the downloaded .exe file
 2. Select "Properties"
 3. Check "Unblock" at the bottom
-4. Click "Apply" → "OK"
+4. Click "Apply" â†’ "OK"
 5. Run the executable
 
 The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can verify the code yourself!
 
 
 
-## ✨ Features
+## âœ¨ Features
 
-- **Automatic Clipboard Monitoring** - Automatically captures everything you copy (text and images)
-- **Image Support** - Captures and displays clipboard images with base64 encoding
-- **Pin Important Clips** - Keep your most-used clips at the top
+- **Automatic Clipboard Monitoring** - Automatically captures everything you copy (text and images) in real time via a native Windows message-only window
+
+- **Image Support** - Captures and displays clipboard images, stored as BLOBs and rendered from base64 in the UI
+
+- **Pin Important Clips** - Keep your most-used clips anchored to the top; pinned clips are protected from automatic deletion when the storage limit is reached
 - <img width="577" height="471" alt="image" src="https://github.com/user-attachments/assets/aa6e7ff1-159e-4fc0-8565-fdc9208a07c4" />
 
-- **Fast Search** - Quickly find clips with Ctrl+F
+- **Fast Search** - Instantly filter all clips with `Ctrl+F`; searches both pinned and recent clips simultaneously
 - <img width="530" height="112" alt="showcase-search" src="https://github.com/user-attachments/assets/c2c76d50-5f94-481d-9191-ad37f2518967" />
 
-- **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI
-- **Easy Management** - Copy, pin, and delete clips with intuitive controls
-- **Edit Clips** - Modify the content of your saved clips anytime
-- **Manual Creation** - Add new clips directly from the app without copying
+- **Unique Paper Aesthetic** - Beautiful hand-drawn, notebook-style UI with GSAP animations, paper curtain reveals, and a soundtrack of satisfying sounds
+
+- **Easy Management** - Copy, pin, and delete clips with intuitive hover controls
+
+- **Edit Clips** - Modify the text content of any saved clip in-place without re-copying
+
+- **Manual Clip Creation** - Add new clips directly from the app without copying anything; supports pinning on creation
 - <img width="705" height="324" alt="showcase-action-btns" src="https://github.com/user-attachments/assets/d03a6634-8b41-4d78-a976-662b4c2b8f89" />
 
-- **Privacy Mode** - Instantly hide clip content for privacy or during screen sharing
+- **Privacy Mode** - Instantly blur all clip content for privacy or screen sharing; toggle with `Alt+H`
 - <img width="242" height="227" alt="image" src="https://github.com/user-attachments/assets/9fed26d4-31cb-4ff0-bdd4-e8ee25780dba" />
-
 - <img width="1223" height="244" alt="image" src="https://github.com/user-attachments/assets/0d242347-2e1d-46bf-b57f-20255d7c4fd1" />
 
-- **Bulk Actions** - Quickly delete all, recent, or pinned clips via the settings menu
-- <img width="196" height="179" alt="image" src="https://github.com/user-attachments/assets/a6cb09b3-14fa-4bc7-884a-57fc0d17d561" />
+- **Quick Paste** - A power-user workflow mode. When enabled, Clipcat hides to the system tray. Press `Ctrl+Shift+V` from any window to summon it, click the paste icon on a clip, and it fires directly into the window you were just using â€” then vanishes again. When disabled, the paste button still lets you fire any clip into your last focused window without hiding the app.
 
-- <img width="467" height="193" alt="image" src="https://github.com/user-attachments/assets/a78a8a32-0d91-4920-ba4a-4100bb8d8cca" />
+- **System Tray** - Clipcat lives in the system tray and can be summoned or quit from there at any time, even when the window is hidden
 
-- **Full Content View** - Click any clip to view complete content in a scrollable dialog
-- <img width="572" height="552" alt="image" src="https://github.com/user-attachments/assets/d85b3231-0380-4643-952a-e8d5dfcc71c4" />
+- **Global Hotkey** - `Ctrl+Shift+V` is a system-wide hotkey that brings Clipcat to the front from any application
 
-- **Duplicate Detection** - Automatically prevents saving duplicate clipboard content
-- **Sound Effects** - Audible feedback for actions
-- **Persistent Storage** - SQLite database keeps your clips safe
-- **Configurable Storage Limit** - Customize how many clips to keep (default: 100)
+- **Paste Into Any Window** - Every text clip has a paste button that fires its content directly into whichever window you had focused before opening Clipcat. No manual copying needed â€” the previous window is tracked automatically in the background
+
+- **Blocked Apps** - Add any `.exe` name (e.g. `1password.exe`) to a blocklist. Clipboard changes originating from those processes will be silently ignored and never stored
 - <img width="259" height="335" alt="image" src="https://github.com/user-attachments/assets/ca3ed1ef-8a44-4aa2-a759-37d025e0682b" />
 
-- **Mini Clip Mode** - A compact, always-on-top window for unobtrusive usage
+- **Pause Capture** - Temporarily suspend all clipboard monitoring without closing the app. Resume it any time from settings
+
+- **Bulk Actions** - Quickly delete all clips, only pinned clips, or only unpinned clips via the settings menu â€” all with a confirmation dialog
+- <img width="196" height="179" alt="image" src="https://github.com/user-attachments/assets/a6cb09b3-14fa-4bc7-884a-57fc0d17d561" />
+- <img width="467" height="193" alt="image" src="https://github.com/user-attachments/assets/a78a8a32-0d91-4920-ba4a-4100bb8d8cca" />
+
+- **Full Content View** - Click any clip to open a scrollable dialog showing the complete content
+- <img width="572" height="552" alt="image" src="https://github.com/user-attachments/assets/d85b3231-0380-4643-952a-e8d5dfcc71c4" />
+
+- **Hyperlink Detection** - URLs inside clip text are automatically rendered as clickable links that open in your default browser
+
+- **Relative Timestamps** - Each clip shows a live-updating relative time (e.g. "2 minutes ago", "yesterday")
+
+- **Duplicate Detection** - Automatically prevents saving duplicate text or image content
+
+- **Sound Effects** - Audible feedback for copy, paste, delete, pin, and settings interactions; can be toggled off with `Alt+S`
+
+- **Persistent Storage** - SQLite database keeps your clips safe across restarts
+
+- **Configurable Storage Limit** - Customize how many clips to keep (100â€“500, in steps of 50); pinned clips are always preserved regardless of the limit
+- <img width="259" height="335" alt="image" src="https://github.com/user-attachments/assets/ca3ed1ef-8a44-4aa2-a759-37d025e0682b" />
+
+- **Mini Clip Mode** - A compact, always-on-top window for unobtrusive usage; toggle with `Alt+M`
 - <img width="270" height="330" alt="image" src="https://github.com/user-attachments/assets/ddedff44-5007-4f57-b98e-006e28e24e71" />
 
-- **Startup Support** - Option to launch automatically when your system starts
+- **Startup Support** - Option to launch Clipcat automatically when your system starts
 - <img width="293" height="335" alt="image" src="https://github.com/user-attachments/assets/2437742c-48c4-4e09-9726-19551d86eb54" />
 
 - **Auto Update Check** - Automatically checks for new versions on GitHub
 
-## 🛠️ Technologies Used
+## ðŸ› ï¸ Technologies Used
 
 ### Backend
 - **[Go](https://golang.org/)** - Core application logic
 - **[Wails v2](https://wails.io/)** - Desktop application framework
 - **[SQLite](https://www.sqlite.org/)** (via modernc.org/sqlite) - Local database for clip storage
 - **[golang.design/x/clipboard](https://github.com/golang-design/clipboard)** - Cross-platform clipboard access with image support
-- **Windows API** (lxn/win) - Native Windows clipboard monitoring
+- **[lxn/win](https://github.com/lxn/win)** - Windows API bindings for the clipboard message window
+- **[getlantern/systray](https://github.com/getlantern/systray)** - Cross-platform system tray icon and menu
 
 ### Frontend
 - **[React 18](https://react.dev/)** - UI framework
@@ -108,153 +132,215 @@ Clipcat uses Wails to:
 - Integrate native Windows clipboard APIs via Go
 - Communicate clipboard events to a React UI in real time
 - Bundle a lightweight, native-feeling desktop app without Electron
-## 🏗️ Architecture
+
+## ðŸ—ï¸ Architecture
 
 Clipcat follows a clean architecture pattern with clear separation between frontend and backend:
 
 ```
-┌─────────────────────────────────────────────────┐
-│                   Frontend (React)               │
-│  ┌────────────┐  ┌──────────┐  ┌──────────┐    │
-│  │  UI Layer  │  │ Context  │  │ Components│    │
-│  │  (TSX/CSS) │  │ Provider │  │  (Cards)  │    │
-│  └────────────┘  └──────────┘  └──────────┘    │
-└──────────────────────┬──────────────────────────┘
-                       │ Wails Bridge (IPC)
-┌──────────────────────┴──────────────────────────┐
-│                Backend (Go)                      │
-│  ┌────────────┐  ┌──────────┐  ┌──────────┐    │
-│  │   App.go   │  │ clips.go │  │  db.go   │    │
-│  │  (Bridge)  │  │ (Logic)  │  │(Storage) │    │
-│  └────────────┘  └──────────┘  └──────────┘    │
-└──────────────────────┬──────────────────────────┘
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-    ┌─────▼─────┐          ┌────────▼────────┐
-    │  SQLite   │          │ OS Clipboard    │
-    │ Database  │          │   Listener      │
-    └───────────┘          └─────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                   Frontend (React)               â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  UI Layer  â”‚  â”‚ Context  â”‚  â”‚ Componentsâ”‚    â”‚
+â”‚  â”‚  (TSX/CSS) â”‚  â”‚ Provider â”‚  â”‚  (Cards)  â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                       â”‚ Wails Bridge (IPC)
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                Backend (Go)                      â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  app.go  â”‚  â”‚ clips.go â”‚  â”‚ settings.go  â”‚  â”‚
+â”‚  â”‚ (Bridge) â”‚  â”‚ (Logic)  â”‚  â”‚  (Prefs)     â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  tray.go â”‚  â”‚ ignore.goâ”‚  â”‚   db.go      â”‚  â”‚
+â”‚  â”‚  (Tray)  â”‚  â”‚ (Filter) â”‚  â”‚  (Storage)   â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                       â”‚
+          â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+          â”‚                         â”‚
+    â”Œâ”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”          â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”
+    â”‚  SQLite   â”‚          â”‚   Windows API   â”‚
+    â”‚ Database  â”‚          â”‚ (Clipboard +    â”‚
+    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜          â”‚  Hotkey + Focus)â”‚
+                           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### Data Flow
 
 1. **Clipboard Monitoring**
-   - Windows clipboard listener runs in the background
-   - Detects clipboard changes via Windows API
-   - Filters out duplicate or empty content
+   - A hidden `HWND_MESSAGE` window receives `WM_CLIPBOARDUPDATE` notifications from Windows
+   - A 150 ms debounce prevents duplicate saves when apps write the clipboard in multiple steps
+   - The ignore list filters out events from blocked processes before saving
 
-2. **Data Storage**
-   - New clips are saved to SQLite database
-   - Automatic cleanup keeps only 100 most recent clips (prioritizing pinned)
-   - Each clip stores: content, type, timestamp, and pinned status
+2. **Focus Tracking**
+   - A background goroutine polls `GetForegroundWindow` every 150 ms
+   - It continuously stores the last non-Clipcat window, so the paste button always has a valid target without requiring the hotkey to be pressed first
 
-3. **Frontend Updates**
-   - Backend emits events when clipboard changes
-   - React context manages clip state
+3. **Data Storage**
+   - New clips are saved to SQLite with duplicate detection (text and image)
+   - Automatic cleanup keeps only the most recent N clips, always preserving pinned ones
+   - App preferences (Quick Paste mode, storage limit, ignore list) are stored in the same database
+
+4. **Frontend Updates**
+   - Backend emits `clipboard:changed` events when new content is saved
+   - React context manages all clip state and settings
    - UI automatically re-renders with new data
 
-4. **User Actions**
+5. **User Actions**
    - Copy: Uses browser clipboard API
+   - Paste to window: Focuses the previously tracked window and simulates Ctrl+V
    - Pin/Unpin: Toggles database flag, reorders UI
    - Delete: Removes from database, refreshes list
    - Search: Client-side filtering with instant results
 
-## 📂 Project Structure
+## ðŸ“‚ Project Structure
 
 ```
 Clipcat/
-├── app.go                      # Main application entry point
-├── clips.go                    # Clip CRUD operations
-├── db.go                       # Database initialization
-├── main.go                     # Wails runtime setup
-├── go.mod                      # Go dependencies
-├── wails.json                  # Wails configuration
-├── internal/
-│   └── clipboard/
-│       └── listener_window.go  # Windows clipboard listener
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx            # Root component
-│   │   ├── components/
-│   │   │   ├── page.tsx       # Main page layout
-│   │   │   └── ui/
-│   │   │       ├── clip-card.tsx   # Individual clip card
-│   │   │       └── dialog.tsx      # Modal dialog
-│   │   ├── context/
-│   │   │   └── ClipContext.tsx     # Global state management
-│   │   ├── helpers/
-│   │   │   ├── formatTime.ts       # Date formatting
-│   │   │   └── playSound.ts        # Audio feedback
-│   │   └── types/
-│   │       └── clip.ts             # TypeScript interfaces
-│   ├── wailsjs/                    # Auto-generated Wails bindings
-│   ├── public/                     # Static assets
-│   ├── package.json
-│   └── vite.config.ts
-└── build/                          # Build configuration
-    └── windows/
-        └── installer/              # NSIS installer config
+â”œâ”€â”€ app.go                          # Wails app struct, startup, exposed bindings
+â”œâ”€â”€ clips.go                        # Clip CRUD operations
+â”œâ”€â”€ db.go                           # Database initialization and migrations
+â”œâ”€â”€ settings.go                     # App settings (Quick Paste / ghost mode)
+â”œâ”€â”€ ignore.go                       # Blocked app list persistence
+â”œâ”€â”€ tray.go                         # System tray icon and menu
+â”œâ”€â”€ main.go                         # Wails runtime setup
+â”œâ”€â”€ go.mod                          # Go dependencies
+â”œâ”€â”€ wails.json                      # Wails configuration
+â”œâ”€â”€ internal/
+â”‚   â””â”€â”€ clipboard/
+â”‚       â”œâ”€â”€ listener_window.go      # Windows clipboard + hotkey listener
+â”‚       â””â”€â”€ window_utils.go         # Focus tracker, paste simulation, ignore check
+â”œâ”€â”€ frontend/
+â”‚   â”œâ”€â”€ src/
+â”‚   â”‚   â”œâ”€â”€ App.tsx                 # Root component
+â”‚   â”‚   â”œâ”€â”€ components/
+â”‚   â”‚   â”‚   â”œâ”€â”€ page.tsx            # Main page layout
+â”‚   â”‚   â”‚   â”œâ”€â”€ clip-card.tsx       # Individual clip card with all actions
+â”‚   â”‚   â”‚   â”œâ”€â”€ window-controls.tsx # Title bar, settings panel
+â”‚   â”‚   â”‚   â”œâ”€â”€ add-clip-dialog.tsx # Manual clip creation dialog
+â”‚   â”‚   â”‚   â”œâ”€â”€ edit-clip-dialog.tsx# Clip edit dialog
+â”‚   â”‚   â”‚   â”œâ”€â”€ delete-clips-dialog.tsx # Bulk delete dialog
+â”‚   â”‚   â”‚   â”œâ”€â”€ about-dialog.tsx    # About / version dialog
+â”‚   â”‚   â”‚   â””â”€â”€ ui/                 # shadcn/ui base components
+â”‚   â”‚   â”œâ”€â”€ context/
+â”‚   â”‚   â”‚   â””â”€â”€ ClipContext.tsx     # Global state management
+â”‚   â”‚   â”œâ”€â”€ helpers/
+â”‚   â”‚   â”‚   â”œâ”€â”€ formatTime.ts       # Date formatting
+â”‚   â”‚   â”‚   â”œâ”€â”€ playSound.ts        # Audio feedback
+â”‚   â”‚   â”‚   â”œâ”€â”€ insertLinks.ts      # URL â†’ clickable link renderer
+â”‚   â”‚   â”‚   â”œâ”€â”€ copyBase64Image.ts  # Image clipboard helper
+â”‚   â”‚   â”‚   â””â”€â”€ wait.ts             # Promise-based delay
+â”‚   â”‚   â””â”€â”€ types/
+â”‚   â”‚       â””â”€â”€ clip.ts             # TypeScript interfaces
+â”‚   â”œâ”€â”€ wailsjs/                    # Auto-generated Wails bindings
+â”‚   â”œâ”€â”€ public/                     # Static assets (sounds, images, cursors)
+â”‚   â”œâ”€â”€ package.json
+â”‚   â””â”€â”€ vite.config.ts
+â””â”€â”€ build/                          # Build configuration
+    â””â”€â”€ windows/
+        â””â”€â”€ installer/              # NSIS installer config
 ```
 
-## 🔧 How It Works
+## ðŸ”§ How It Works
 
 ### Backend Implementation
 
 **Clipboard Monitoring** (`internal/clipboard/listener_window.go`)
+
+A hidden `HWND_MESSAGE` window is registered with `AddClipboardFormatListener`. Windows delivers `WM_CLIPBOARDUPDATE` messages to it whenever any app writes to the clipboard. The same window also handles `WM_HOTKEY` for the global `Ctrl+Shift+V` shortcut via `RegisterHotKey`.
+
 ```go
-// Polls clipboard every 500ms using Windows API
-// Compares clipboard sequence numbers to detect changes
-// Invokes callback when new content is detected
+case WM_CLIPBOARDUPDATE:
+    // 150 ms debounce + pause check + ignore list check
+    // â†’ calls onChangeCallback()
+
+case WM_HOTKEY:
+    // Snapshot the current foreground window, then show Clipcat
+    capturePreviousWindow()
+    go onHotkeyCallback()
+```
+
+**Focus Tracking** (`internal/clipboard/window_utils.go`)
+
+A background goroutine polls `GetForegroundWindow` every 150 ms, skipping Clipcat's own process, so the paste target is always up to date:
+
+```go
+func StartFocusTracker() {
+    go func() {
+        for {
+            time.Sleep(150 * time.Millisecond)
+            hwnd, _, _ := procGetForegroundWindow.Call()
+            // skip our own PID â†’ store prevHWND
+        }
+    }()
+}
 ```
 
 **Database Schema** (`db.go`)
+
 ```sql
 CREATE TABLE clips (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    content TEXT,
-    image BLOB,
-    type TEXT NOT NULL,
-    pinned BOOLEAN DEFAULT 0,
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    content    TEXT,
+    image      BLOB,
+    type       TEXT NOT NULL,
+    pinned     BOOLEAN DEFAULT 0,
     created_at DATETIME
 );
 
 CREATE TABLE clip_storage_limit (
-    id INTEGER PRIMARY KEY CHECK (id = 0),
+    id          INTEGER PRIMARY KEY CHECK (id = 0),
     limit_count INTEGER DEFAULT 100
+);
+
+CREATE TABLE ignore_list (
+    process_name TEXT PRIMARY KEY
+);
+
+CREATE TABLE settings (
+    id         INTEGER PRIMARY KEY CHECK (id = 0),
+    ghost_mode INTEGER DEFAULT 0   -- 1 = Quick Paste enabled
 );
 ```
 
-**Note:** The `content` field is nullable to support image-only clips. Either `content` or `image` will be populated based on the clip `type`.
+> `content` is nullable to support image-only clips. Either `content` or `image` is populated based on the clip `type`.
 
 **Key Operations** (`clips.go`)
-- `getClips()` - Fetches all clips ordered by pinned status, then by date
-- `clipExists()` - Checks if content already exists to prevent duplicates (text only)
-- `addClip()` - Inserts new text clip (skips duplicates) and maintains dynamic clip limit
-- `addImageClip()` - Inserts new image clip as BLOB and maintains dynamic clip limit
-- `togglePinClip()` - Toggles pinned status by ID
-- `deleteClip()` - Removes clip from database
-- `getStorageLimit()` - Retrieves current storage limit from database
-- `updateStorageLimit()` - Updates the maximum number of clips to store
+- `getClips()` â€” Fetches all clips ordered by pinned status, then by date
+- `clipExists()` / `imageClipExists()` â€” Prevent duplicate text and image clips
+- `addClip()` â€” Inserts new text clip and enforces storage limit (preserving pinned)
+- `addImageClip()` â€” Inserts new image clip as BLOB and enforces storage limit
+- `addManualClip()` â€” Inserts a user-created clip with optional pinned flag
+- `togglePinClip()` â€” Toggles pinned status by ID
+- `deleteClip()` â€” Removes clip by ID
+- `deleteAllClips()` / `deletePinnedClips()` / `deleteUnpinnedClips()` â€” Bulk delete with native confirmation dialog
+- `updateClipContent()` â€” Edits text content of an existing clip
 
 ### Frontend Implementation
 
 **State Management** (`ClipContext.tsx`)
-- Global state using React Context API
-- Splits clips into pinned and recent arrays
-- Listens for clipboard events from backend
-- Provides `getClips()` method for manual refresh
+- Global state with React Context
+- Splits clips into `pinned` and `recent` arrays
+- Listens for `clipboard:changed` events from backend
+- Manages all settings: sound, hide content, mini clip, startup, pause capture, blocked apps, Quick Paste
 
 **UI Components**
-- **ClipCard** - Individual clip with copy/pin/delete actions; displays text or image based on type
-- **Page** - Main layout with search, pinned section, recent section
-- **AboutDialog** - Modal with app information and automatic update checking
+- **ClipCard** â€” Individual clip with copy / paste-to-window / edit / pin / delete actions; renders text (with clickable links) or image; shows relative timestamps
+- **Page** â€” Main layout with animated paper curtain reveal, search bar, pinned section, and recent section
+- **WindowControls** â€” Frameless title bar with minimize/maximize/close and an animated settings panel
+- **AddClipDialog** â€” Inline manual clip creation with optional pinning
+- **EditClipDialog** â€” Edit existing clip content in a modal
+- **DeleteClipsDialog** â€” Bulk delete options (all / pinned / unpinned)
+- **AboutDialog** â€” App info with automatic GitHub update checking
 
 **Animations** (GSAP)
-- Paper curtain reveal on startup
-- Cat character entrance
-- Info button nudge animation
-- Sound effects on interactions
+- Paper curtain reveal and cat character entrance on startup
+- Settings panel slide/scale in & out
+- Clip card row-span masonry layout
+- Privacy mode cat swap
+- Sound effects on every interaction
 
 ## Getting Started
 
@@ -275,7 +361,7 @@ CREATE TABLE clip_storage_limit (
    ```bash
    # Backend dependencies
    go mod download
-   
+
    # Frontend dependencies
    cd frontend
    npm install
@@ -303,41 +389,48 @@ wails build -nsis
 
 The built application will be in `build/bin/`.
 
-## 📝 Database Location
+## ðŸ“ Database Location
 
 Clips are stored in a SQLite database at:
 ```
 Windows: %APPDATA%\clipussy\db\gyatt.db
 ```
 
-## ⌨️ Keyboard Shortcuts
+## âŒ¨ï¸ Keyboard Shortcuts
 
-- `Ctrl + F` - Focus search bar
-- `Ctrl + C` - Copy selected text (triggers clipboard monitoring)
+| Shortcut | Action |
+|---|---|
+| `Ctrl + Shift + V` | Summon / show Clipcat from any application (system-wide) |
+| `Ctrl + F` | Focus the search bar |
+| `Alt + M` | Toggle Mini Clip mode |
+| `Alt + H` | Toggle Privacy Mode (hide content) |
+| `Alt + S` | Toggle sound effects |
 
-## 🎨 Customization
+## ðŸŽ¨ Customization
 
 ### Changing Clip Limit
-The storage limit is now dynamic and stored in the database. You can update it programmatically:
+The storage limit is dynamic and stored in the database. Adjust it in the settings panel (100â€“500, steps of 50) or programmatically:
 
-**From Frontend:**
 ```typescript
 import { GetStorageLimit, UpdateStorageLimit } from './wailsjs/go/main/App'
 
-// Get current limit
-const limit = await GetStorageLimit()
-
-// Set new limit
+const limit = await GetStorageLimit()   // e.g. 100
 await UpdateStorageLimit(200)
 ```
 
-**Or manually in the database:**
+Or directly in the database:
 ```sql
 INSERT OR REPLACE INTO clip_storage_limit (id, limit_count) VALUES (0, 200);
 ```
 
+### Blocking an Application
+Add its process name in the "Blocked Apps" settings panel, or directly:
+```sql
+INSERT OR IGNORE INTO ignore_list (process_name) VALUES ('1password.exe');
+```
+
 ### Adjusting Sound Volume
-Edit respective handlers in `clip-card.tsx` and `page.tsx`:
+Edit the volume argument in component handlers:
 ```typescript
 playSound("/sounds/file.mp3", soundOn, 0.3)  // 0.0 to 1.0
 ```
@@ -345,23 +438,23 @@ playSound("/sounds/file.mp3", soundOn, 0.3)  // 0.0 to 1.0
 ### Modifying UI Colors
 Edit `frontend/src/index.css` and Tailwind classes in components.
 
-##  Contributing
+## Contributing
 
 Contributions are welcome! Feel free to submit issues and pull requests.
 
-##  Author
+## Author
 
 **Onyekwelu Jesse** ([@d3uceY](https://github.com/d3uceY))
 
-##  License
+## License
 
 This project is licensed under the MIT License.
 
-##  Acknowledgments
+## Acknowledgments
 
 - [Wails](https://wails.io/) for the amazing Go + Web framework
 - All open-source contributors whose libraries made this possible
 
 ---
 
-Made with 💜 by d3uceY
+Made with ðŸ’œ by d3uceY
