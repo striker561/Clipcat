@@ -346,7 +346,7 @@ export default function WindowControls() {
                             </button>
                             <button
                                 onClick={confirmEnableQuickPaste}
-                                className="rounded px-3 py-1 text-sm bg-foreground text-background hover:opacity-80 transition-opacity"
+                                className="rounded px-3 py-1 text-sm bg-foreground text-white hover:opacity-80 transition-opacity"
                             >
                                 Enable &amp; Hide
                             </button>
