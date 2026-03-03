@@ -4,6 +4,8 @@ import {main} from '../models';
 
 export function AddClip(arg1:string,arg2:boolean):Promise<void>;
 
+export function AddIgnoreEntry(arg1:string):Promise<void>;
+
 export function Delete(arg1:number):Promise<void>;
 
 export function DeleteAllClips():Promise<void>;
@@ -18,15 +20,27 @@ export function EnableStartup():Promise<void>;
 
 export function GetClips():Promise<Array<main.Clip>>;
 
+export function GetIgnoreList():Promise<Array<string>>;
+
 export function GetStorageLimit():Promise<number>;
 
 export function GetVersion():Promise<string>;
 
 export function IsMiniClip():Promise<boolean>;
 
+export function IsPaused():Promise<boolean>;
+
 export function IsStartupEnabled():Promise<boolean>;
 
 export function MakeMiniClip(arg1:boolean):Promise<void>;
+
+export function PasteToWindow(arg1:string):Promise<void>;
+
+export function PauseCapture():Promise<void>;
+
+export function RemoveIgnoreEntry(arg1:string):Promise<void>;
+
+export function ResumeCapture():Promise<void>;
 
 export function TogglePin(arg1:number):Promise<void>;
 

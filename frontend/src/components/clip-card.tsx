@@ -1,7 +1,7 @@
-import { Copy, Pin, Trash2, Pencil } from "lucide-react"
+import { Copy, Pin, Trash2, Pencil, ClipboardPaste } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import type { Clip } from '../../types/clip'
-import { TogglePin, Delete } from "../../wailsjs/go/main/App"
+import { TogglePin, Delete, PasteToWindow } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
 import { playSound } from "@/helpers/playSound"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -75,6 +75,18 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
         }).finally(() => {
             getClips()
         })
+    }
+
+    const handlePaste = async () => {
+        if (!clip.content) return
+        playSound("/sounds/paper-copy.wav", soundOn, 1)
+        try {
+            await PasteToWindow(clip.content)
+        } catch (err) {
+            // Fall back to regular copy if paste-back fails
+            console.error("PasteToWindow failed, falling back to copy:", err)
+            await navigator.clipboard.writeText(clip.content)
+        }
     }
 
     const handleDelete = async () => {
@@ -152,6 +164,15 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
                     >
                         <Copy className="h-4 w-4" />
                     </button>
+                    {clip.type !== "image" && (
+                        <button
+                            onClick={handlePaste}
+                            className="rounded p-1.5 bg-foreground/5 text-foreground transition-colors hover:bg-purple-100 hover:text-purple-700"
+                            title="Paste into previous window (open with Ctrl+Shift+V)"
+                        >
+                            <ClipboardPaste className="h-4 w-4" />
+                        </button>
+                    )}
                     {clip.type !== "image" && (
                         <EditClipDialog clip={clip}>
                             <button

@@ -7,7 +7,13 @@ import {
     IsMiniClip,
     IsStartupEnabled,
     EnableStartup,
-    DisableStartup
+    DisableStartup,
+    IsPaused,
+    PauseCapture,
+    ResumeCapture,
+    GetIgnoreList,
+    AddIgnoreEntry,
+    RemoveIgnoreEntry,
 } from "../../wailsjs/go/main/App"
 import { EventsOn } from "../../wailsjs/runtime"
 import type { Clip } from '../../types/clip'
@@ -24,6 +30,13 @@ interface ClipContextType {
     isStartup: boolean
     toggleStartup: () => Promise<void>
     toggleHideContent: () => void
+    // Capture pause
+    isPaused: boolean
+    togglePause: () => Promise<void>
+    // Ignore list
+    ignoreList: string[]
+    addIgnoreEntry: (name: string) => Promise<void>
+    removeIgnoreEntry: (name: string) => Promise<void>
 }
 
 const ClipContext = createContext<ClipContextType | undefined>(undefined)
@@ -34,7 +47,42 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     const [hideContent, setHideContent] = useState<boolean>(localStorage.getItem("hideContent") === "true" || false)
     const [isMiniClip, setIsMiniClip] = useState(false);
     const [isStartup, setIsStartup] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const [ignoreList, setIgnoreList] = useState<string[]>([]);
 
+
+    /* ===============================
+        CAPTURE PAUSE FUNCTIONS
+       ===============================
+    */
+    const togglePause = async () => {
+        if (isPaused) {
+            await ResumeCapture()
+            setIsPaused(false)
+        } else {
+            await PauseCapture()
+            setIsPaused(true)
+        }
+    }
+
+    /* ===============================
+        IGNORE LIST FUNCTIONS
+       ===============================
+    */
+    const loadIgnoreList = async () => {
+        const list = await GetIgnoreList()
+        setIgnoreList(list ?? [])
+    }
+
+    const addToIgnoreList = async (name: string) => {
+        await AddIgnoreEntry(name)
+        await loadIgnoreList()
+    }
+
+    const removeFromIgnoreList = async (name: string) => {
+        await RemoveIgnoreEntry(name)
+        await loadIgnoreList()
+    }
 
     /* ===============================
         STARTUP FUNCTIONS     
@@ -130,6 +178,8 @@ export function ClipProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         checkStartup()
         getClips()
+        IsPaused().then(setIsPaused)
+        loadIgnoreList()
         EventsOn("clipboard:changed", () => {
             getClips()
         })
@@ -181,7 +231,14 @@ export function ClipProvider({ children }: { children: ReactNode }) {
                 toggleMiniClip,
                 // STARTUP OPERATIONS
                 isStartup,
-                toggleStartup
+                toggleStartup,
+                // CAPTURE PAUSE
+                isPaused,
+                togglePause,
+                // IGNORE LIST
+                ignoreList,
+                addIgnoreEntry: addToIgnoreList,
+                removeIgnoreEntry: removeFromIgnoreList,
             }
         }>
             {children}

@@ -6,6 +6,10 @@ export function AddClip(arg1, arg2) {
   return window['go']['main']['App']['AddClip'](arg1, arg2);
 }
 
+export function AddIgnoreEntry(arg1) {
+  return window['go']['main']['App']['AddIgnoreEntry'](arg1);
+}
+
 export function Delete(arg1) {
   return window['go']['main']['App']['Delete'](arg1);
 }
@@ -34,6 +38,10 @@ export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
 
+export function GetIgnoreList() {
+  return window['go']['main']['App']['GetIgnoreList']();
+}
+
 export function GetStorageLimit() {
   return window['go']['main']['App']['GetStorageLimit']();
 }
@@ -46,12 +54,32 @@ export function IsMiniClip() {
   return window['go']['main']['App']['IsMiniClip']();
 }
 
+export function IsPaused() {
+  return window['go']['main']['App']['IsPaused']();
+}
+
 export function IsStartupEnabled() {
   return window['go']['main']['App']['IsStartupEnabled']();
 }
 
 export function MakeMiniClip(arg1) {
   return window['go']['main']['App']['MakeMiniClip'](arg1);
+}
+
+export function PasteToWindow(arg1) {
+  return window['go']['main']['App']['PasteToWindow'](arg1);
+}
+
+export function PauseCapture() {
+  return window['go']['main']['App']['PauseCapture']();
+}
+
+export function RemoveIgnoreEntry(arg1) {
+  return window['go']['main']['App']['RemoveIgnoreEntry'](arg1);
+}
+
+export function ResumeCapture() {
+  return window['go']['main']['App']['ResumeCapture']();
 }
 
 export function TogglePin(arg1) {

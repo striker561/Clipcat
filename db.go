@@ -39,6 +39,10 @@ func createTables() {
 		id INTEGER PRIMARY KEY CHECK (id = 0),
 		limit_count INTEGER DEFAULT 100
 	);
+
+	CREATE TABLE IF NOT EXISTS ignore_list (
+		process_name TEXT PRIMARY KEY
+	);
 	`
 
 	_, err := DB.Exec(query)

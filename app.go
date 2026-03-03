@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	gclip "golang.design/x/clipboard"
@@ -54,6 +55,11 @@ func (a *App) startup(ctx context.Context) {
 	createTables()
 	migrateClipsTable()
 
+	// Sync the ignore list from the DB into the in-memory clipboard filter.
+	if ignoreList, err := getIgnoreList(); err == nil {
+		clipboard.SetIgnoredProcesses(ignoreList)
+	}
+
 	// start clipboard listener
 	var lastImage []byte
 	clipboard.StartClipboardListener(func() {
@@ -94,8 +100,18 @@ func (a *App) startup(ctx context.Context) {
 		if a.ctx != nil {
 			runtime.EventsEmit(a.ctx, "clipboard:changed", text)
 		}
+	}, func() {
+		// Hotkey (Ctrl+Shift+V) fired — show Clipcat and bring it to the front.
+		if a.ctx == nil {
+			return
+		}
+		runtime.WindowShow(a.ctx)
+		runtime.WindowSetAlwaysOnTop(a.ctx, true)
+		time.Sleep(150 * time.Millisecond)
+		runtime.WindowSetAlwaysOnTop(a.ctx, false)
 	})
 }
+
 
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()
@@ -151,6 +167,72 @@ func (a *App) DeletePinnedClips() error {
 
 func (a *App) DeleteUnpinnedClips() error {
 	return deleteUnpinnedClips(a.ctx)
+}
+
+// --------------------------------------------------------------------------------
+// Capture Pause / Resume
+// --------------------------------------------------------------------------------
+
+func (a *App) PauseCapture() {
+	clipboard.PauseCapture()
+}
+
+func (a *App) ResumeCapture() {
+	clipboard.ResumeCapture()
+}
+
+func (a *App) IsPaused() bool {
+	return clipboard.IsPaused()
+}
+
+// --------------------------------------------------------------------------------
+// Ignore List
+// --------------------------------------------------------------------------------
+
+func (a *App) GetIgnoreList() ([]string, error) {
+	return getIgnoreList()
+}
+
+func (a *App) AddIgnoreEntry(name string) error {
+	if err := addIgnoreEntry(name); err != nil {
+		return err
+	}
+	// Keep the in-memory filter in sync.
+	if list, err := getIgnoreList(); err == nil {
+		clipboard.SetIgnoredProcesses(list)
+	}
+	return nil
+}
+
+func (a *App) RemoveIgnoreEntry(name string) error {
+	if err := removeIgnoreEntry(name); err != nil {
+		return err
+	}
+	if list, err := getIgnoreList(); err == nil {
+		clipboard.SetIgnoredProcesses(list)
+	}
+	return nil
+}
+
+// --------------------------------------------------------------------------------
+// Paste to Previous Window
+// --------------------------------------------------------------------------------
+//
+// Sets the clipboard to the given text, hides Clipcat, re-focuses the window
+// that was active when the hotkey was pressed, then simulates Ctrl+V.
+
+func (a *App) PasteToWindow(content string) error {
+	// Write content to the system clipboard.
+	gclip.Write(gclip.FmtText, []byte(content))
+
+	// Hide Clipcat so it gets out of the way before we paste.
+	runtime.WindowHide(a.ctx)
+	time.Sleep(120 * time.Millisecond)
+
+	// Restore focus to where the user was, then fire Ctrl+V.
+	clipboard.FocusPreviousWindow()
+	clipboard.SimulatePaste()
+	return nil
 }
 
 func (a *App) AddClip(content string, pinned bool) error {

@@ -12,8 +12,9 @@ import DeleteClipsDialog from "./delete-clips-dialog";
 
 export default function WindowControls() {
     const [fullScreen, setFullScreen] = useState<boolean>(false);
+    const [newIgnoreEntry, setNewIgnoreEntry] = useState("");
     const { soundOn, toggleSound, isMiniClip, toggleMiniClip, toggleStartup, isStartup } = useClips();
-    const { hideContent, toggleHideContent, clips } = useClips();
+    const { hideContent, toggleHideContent, clips, isPaused, togglePause, ignoreList, addIgnoreEntry, removeIgnoreEntry } = useClips();
     const settingBtnRef = useRef<HTMLButtonElement>(null);
     const settingDialogRef = useRef<HTMLDivElement>(null);
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -56,6 +57,13 @@ export default function WindowControls() {
             console.error("Failed to update storage limit:", error);
         }
     };
+
+    const handleAddIgnoreEntry = async () => {
+        const name = newIgnoreEntry.trim()
+        if (!name) return
+        await addIgnoreEntry(name)
+        setNewIgnoreEntry("")
+    }
 
     const MenuSwitch = (isOn: boolean, toggleFunction: () => void, disabled = false): React.JSX.Element => {
         const handleToggleFunction = () => {
@@ -218,9 +226,52 @@ export default function WindowControls() {
                             {MenuSwitch(soundOn, toggleSound)}
                         </div>
                         <Separator />
+                        <div className="flex items-center gap-3 justify-between py-2" title="Pause clipboard capture temporarily">
+                            <p className="sm:text-base text-sm p-0!">Pause Capture</p>
+                            {MenuSwitch(isPaused, togglePause)}
+                        </div>
+                        <Separator />
                         <div className="flex items-center gap-3 justify-between py-2" title="Enables or disables loading the app on system startup">
                             <p className="sm:text-base text-sm p-0!">Load on Startup</p>
                             {MenuSwitch(isStartup, toggleStartup)}
+                        </div>
+                        <Separator />
+                        {/* Ignore List */}
+                        <div className="py-2">
+                            <p className="sm:text-base text-sm mb-2">Blocked Apps</p>
+                            <div className="flex gap-1 mb-2">
+                                <input
+                                    type="text"
+                                    value={newIgnoreEntry}
+                                    onChange={(e) => setNewIgnoreEntry(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleAddIgnoreEntry()}
+                                    placeholder="e.g. 1password.exe"
+                                    className="flex-1 text-xs px-2 py-1 border-b border-current bg-transparent focus:outline-none placeholder-gray-400"
+                                />
+                                <button
+                                    onClick={handleAddIgnoreEntry}
+                                    className="text-xs px-2 font-bold hover:opacity-70 transition-opacity"
+                                    title="Add to block list"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            {ignoreList.length > 0 && (
+                                <ul className="space-y-1">
+                                    {ignoreList.map((entry) => (
+                                        <li key={entry} className="flex items-center justify-between text-xs">
+                                            <span className="truncate text-foreground/80">{entry}</span>
+                                            <button
+                                                onClick={() => removeIgnoreEntry(entry)}
+                                                className="ml-1 shrink-0 hover:text-red-600 transition-colors"
+                                                title="Remove"
+                                            >
+                                                ✕
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <Separator />
                         <DeleteClipsDialog>
