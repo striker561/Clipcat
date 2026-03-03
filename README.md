@@ -67,8 +67,12 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - <img width="1223" height="244" alt="image" src="https://github.com/user-attachments/assets/0d242347-2e1d-46bf-b57f-20255d7c4fd1" />
 
 - **Quick Paste** - A power-user workflow mode. When enabled, Clipcat hides to the system tray. Press `Ctrl+Shift+V` from any window to summon it, click the paste icon on a clip, and it fires directly into the window you were just using -- then vanishes again. When disabled, the paste button still lets you fire any clip into your last focused window without hiding the app.
+- <img width="331" height="283" alt="image" src="https://github.com/user-attachments/assets/65dcb9dd-a402-4699-97fa-3042f1a4a9aa" />
+
 
 - **System Tray** - Clipcat lives in the system tray and can be summoned or quit from there at any time, even when the window is hidden
+- <img width="211" height="108" alt="image" src="https://github.com/user-attachments/assets/078cf695-5af4-41f5-a357-2ac21d12fc95" />
+
 
 - **Global Hotkey** - `Ctrl+Shift+V` is a system-wide hotkey that brings Clipcat to the front from any application
 
@@ -78,6 +82,8 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - <img width="259" height="335" alt="image" src="https://github.com/user-attachments/assets/ca3ed1ef-8a44-4aa2-a759-37d025e0682b" />
 
 - **Pause Capture** - Temporarily suspend all clipboard monitoring without closing the app. Resume it any time from settings
+- <img width="252" height="233" alt="image" src="https://github.com/user-attachments/assets/2ce57fca-f3bc-49c1-bfde-0ef62338dcde" />
+
 
 - **Bulk Actions** - Quickly delete all clips, only pinned clips, or only unpinned clips via the settings menu -- all with a confirmation dialog
 - <img width="196" height="179" alt="image" src="https://github.com/user-attachments/assets/a6cb09b3-14fa-4bc7-884a-57fc0d17d561" />
