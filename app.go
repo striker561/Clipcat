@@ -112,7 +112,6 @@ func (a *App) startup(ctx context.Context) {
 	})
 }
 
-
 func getAppDataDir() (string, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
@@ -125,11 +124,9 @@ func getAppDataDir() (string, error) {
 	return appDir, err
 }
 
-//
 // --------------------------------------------------------------------------------
 // Storage Limit Functions
 // --------------------------------------------------------------------------------
-//
 func (a *App) GetStorageLimit() (int, error) {
 	return getStorageLimit()
 }
@@ -137,7 +134,6 @@ func (a *App) GetStorageLimit() (int, error) {
 func (a *App) UpdateStorageLimit(newLimit int) error {
 	return updateStorageLimit(newLimit)
 }
-
 
 // --------------------------------------------------------------------------------
 // Clip Management Functions
