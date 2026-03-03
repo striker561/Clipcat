@@ -239,7 +239,6 @@ func addImageClip(img []byte) error {
 	if err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}
-	DB.Exec(`VACUUM`)
 	return nil
 }
 
@@ -284,7 +283,6 @@ func togglePinClip(clipID int) error {
 func deleteClip(clipID int) error {
 	query := `DELETE FROM clips WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
-	DB.Exec(`VACUUM`)
 	if err != nil {
 		return fmt.Errorf("failed to delete clip: %v", err)
 	}
