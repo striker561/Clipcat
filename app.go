@@ -248,16 +248,19 @@ func (a *App) PasteToWindow(content string) error {
 	// Write content to the system clipboard.
 	gclip.Write(gclip.FmtText, []byte(content))
 
-	// If there is no previous window to paste into (e.g. Clipcat was opened
-	// directly rather than via the hotkey), just leave the content in the
-	// clipboard and keep the window visible so the user isn't left stranded.
+	// If there is no previous window to paste into, just leave the content in
+	// the clipboard and keep the window visible so the user isn't left stranded.
 	if !clipboard.HasPreviousWindow() {
 		return nil
 	}
 
-	// Hide Clipcat so it gets out of the way before we paste.
-	runtime.WindowHide(a.ctx)
-	time.Sleep(120 * time.Millisecond)
+	// Only hide the window when Quick Paste mode is active. In normal mode the
+	// app stays visible after the paste so the user can keep picking clips.
+	quickPaste, _ := getGhostMode()
+	if quickPaste {
+		runtime.WindowHide(a.ctx)
+		time.Sleep(120 * time.Millisecond)
+	}
 
 	// Restore focus to where the user was, then fire Ctrl+V.
 	clipboard.FocusPreviousWindow()
