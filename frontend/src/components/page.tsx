@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { Search } from "lucide-react"
 import ClipCard from "./clip-card"
 import { useClips } from "../context/ClipContext"
@@ -75,7 +75,7 @@ function PageContent() {
     }, [])
 
 
-    const filteredClips = () => {
+    const filteredClips = useMemo(() => {
         const query = searchQuery.toLowerCase()
 
         if (!query) {
@@ -95,7 +95,7 @@ function PageContent() {
                     clip?.content?.toLowerCase().includes(query),
             ),
         }
-    }
+    }, [searchQuery, clips])
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -171,7 +171,7 @@ function PageContent() {
 
             {/* // pussy cat image */}
             <div className="h-[20vh] min-h-25 max-h-50 pussy fixed bottom-0 -left-6 z-1">
-                {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 ?
+                {filteredClips.pinned.length === 0 && filteredClips.recent.length === 0 ?
                     (<img src="/pussy-nothing.png" alt="pussy" className="block h-full pussy-nothing" />)
                     :
                     !hideContent ?
@@ -208,12 +208,12 @@ function PageContent() {
                 </div>
 
                 {/* Pinned Section */}
-                {filteredClips().pinned.length > 0 && (
+                {filteredClips.pinned.length > 0 && (
                     <section className="mb-12">
                         <div className="flex items-center gap-8 mb-4">
                             <h2 className="sm:flex hidden items-center gap-2 text-2xl font-bold text-foreground">
                                 <span className="text-2xl">📌</span>
-                                <span className="italic">Pinned <span className="text-xl"> ({filteredClips().pinned.length}) </span></span>
+                                <span className="italic">Pinned <span className="text-xl"> ({filteredClips.pinned.length}) </span></span>
                             </h2>
                             <div className="sm:m-0 mx-auto mb-2">
                                 <AddClipDialog>
@@ -227,7 +227,7 @@ function PageContent() {
                             </div>
                         </div>
                         <div className="free-form-grid-container">
-                            {filteredClips().pinned.map((clip) => (
+                            {filteredClips.pinned.map((clip) => (
                                 <ClipCard key={clip.id} clip={clip} type="pinned" />
                             ))}
                         </div>
@@ -235,12 +235,12 @@ function PageContent() {
                 )}
 
                 {/* Recent Section */}
-                {filteredClips().recent.length > 0 && (
+                {filteredClips.recent.length > 0 && (
                     <section>
                         <div className="flex items-center gap-8 mb-4">
                             <h2 className=" sm:flex hidden items-center gap-2 text-2xl font-bold text-foreground">
                                 <span className="text-2xl">📝</span>
-                                <span className="italic">Recent <span className="text-xl"> ({filteredClips().recent.length}) </span></span>
+                                <span className="italic">Recent <span className="text-xl"> ({filteredClips.recent.length}) </span></span>
                             </h2>
                             <div>
                                 <AddClipDialog triggerClassName="sm:block hidden">
@@ -254,7 +254,7 @@ function PageContent() {
                             </div>
                         </div>
                         <div className="free-form-grid-container">
-                            {filteredClips().recent.map((clip) => (
+                            {filteredClips.recent.map((clip) => (
                                 <ClipCard key={clip.id} clip={clip} type="recent" />
                             ))}
                         </div>
@@ -262,7 +262,7 @@ function PageContent() {
                 )}
 
                 {/* Empty State */}
-                {filteredClips().pinned.length === 0 && filteredClips().recent.length === 0 && (
+                {filteredClips.pinned.length === 0 && filteredClips.recent.length === 0 && (
                     <div className="flex-col h-64 text-black flex items-center justify-center gap-2">
                         <p className="text-lg text-black text-center">
                             {searchQuery ? "No clips found matching your search" : "No clips yet. Start copying!"}

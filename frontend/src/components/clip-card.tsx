@@ -26,29 +26,38 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
-    const { getClips, soundOn, clips, hideContent, isMiniClip } = useClips()
+    const { getClips, soundOn, hideContent, isMiniClip } = useClips()
     const relativeTime = useRelativeTime(clip.createdAt)
 
 
     useEffect(() => {
+        const card = cardRef.current
+        if (!card) return
+
+        let rafId: number
+
         const updateRowSpan = () => {
-            if (cardRef.current) {
+            cancelAnimationFrame(rafId)
+            rafId = requestAnimationFrame(() => {
                 const rowHeight = 10 // Must match grid-auto-rows in CSS
                 const rowGap = 16 // Must match gap in CSS
-                const cardHeight = cardRef.current.getBoundingClientRect().height
+                const cardHeight = card.getBoundingClientRect().height
                 const rowSpan = Math.ceil((cardHeight + rowGap) / (rowHeight + rowGap))
-                cardRef.current.style.setProperty('--row-span', String(rowSpan))
-            }
+                card.style.setProperty('--row-span', String(rowSpan))
+            })
         }
 
-        // i want it to wait 50ms before updating the row span
-        // because of the clips that are images, hopefully, this is stable enough to not cause ISSUES lmao
-        wait(25).then(() => {
-            updateRowSpan()
-        })
-        window.addEventListener('resize', updateRowSpan)
-        return () => window.removeEventListener('resize', updateRowSpan)
-    }, [clips, isMiniClip])
+        const observer = new ResizeObserver(updateRowSpan)
+        observer.observe(card)
+
+        // Initial calculation after a short delay for image clips to settle
+        wait(25).then(updateRowSpan)
+
+        return () => {
+            observer.disconnect()
+            cancelAnimationFrame(rafId)
+        }
+    }, [isMiniClip])
 
 
     const handleCopy = async () => {
