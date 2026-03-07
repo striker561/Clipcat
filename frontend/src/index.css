@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "driver.js/dist/driver.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -581,4 +582,48 @@ select,
   background-color: #ffb6c1;
   width: 7px;
   height: 7px;
+}
+
+/* ── Driver.js onboarding tour customisation ── */
+.clipcat-tour .driver-popover-title {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.clipcat-tour.driver-popover {
+  background: #F9F5E6;
+  border: solid 2px #41403e;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  box-shadow: 20px 38px 34px -26px hsla(0, 0%, 0%, 0.2);
+  max-width: 280px;
+}
+
+.clipcat-tour .driver-popover-description {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.clipcat-tour .driver-popover-next-btn,
+.clipcat-tour .driver-popover-prev-btn,
+.clipcat-tour .driver-popover-done-btn {
+  background: #41403e;
+  color: #F9F5E6;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  padding: 4px 10px;
+}
+
+.clipcat-tour .driver-popover-next-btn:hover,
+.clipcat-tour .driver-popover-prev-btn:hover,
+.clipcat-tour .driver-popover-done-btn:hover {
+  opacity: 0.8;
+  color: black;
+  font-size: 0.78rem;
+}
+
+.clipcat-tour .driver-popover-progress-text {
+  font-size: 0.75rem;
+  color: #888;
 }

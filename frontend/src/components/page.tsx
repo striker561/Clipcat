@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react"
+import { startTour, hasSeenTour } from "@/helpers/onboarding"
 import { Search } from "lucide-react"
 import ClipCard from "./clip-card"
 import { useClips } from "../context/ClipContext"
@@ -72,6 +73,14 @@ function PageContent() {
 
     useEffect(() => {
         GetVersion().then(setVersion).catch(err => console.error("Failed to get version:", err))
+    }, [])
+
+    useEffect(() => {
+        if (!hasSeenTour()) {
+            // Small delay so the page entrance animation has finished
+            const t = setTimeout(startTour, 2200)
+            return () => clearTimeout(t)
+        }
     }, [])
 
 
@@ -184,7 +193,7 @@ function PageContent() {
             <div className="mx-auto max-w-6xl">
                 {/* Header */}
                 <div className="mb-10 sm:flex-row flex justify-center items-center sm:gap-8 sm:justify-between">
-                    <div className="items-center gap-2 sm:flex hidden">
+                    <div id="tour-about" className="items-center gap-2 sm:flex hidden">
                         <h1 className="font-serif text-xl font-bold italic text-foreground ">About</h1>
                         {
                             version &&
@@ -196,6 +205,7 @@ function PageContent() {
                         <div className="tape-1 absolute -top-3 left-0 h-12 w-4 bg-yellow-200/40 rotate-45 rounded-sm shadow-sm"></div>
                         <div className="tape-2 absolute -top-3 right-0 h-12 w-4 bg-yellow-200/40 -rotate-45 rounded-sm shadow-sm"></div>
                         <input
+                            id="tour-search"
                             ref={searchInputRef}
                             type="text"
                             placeholder="Search (Ctrl+F)"
@@ -215,7 +225,7 @@ function PageContent() {
                                 <span className="text-2xl">📌</span>
                                 <span className="italic">Pinned <span className="text-xl"> ({filteredClips.pinned.length}) </span></span>
                             </h2>
-                            <div className="sm:m-0 mx-auto mb-2">
+                            <div id="tour-add-clip" className="sm:m-0 mx-auto mb-2">
                                 <AddClipDialog>
                                     <button className="hover:scale-95 sm:p-2 p-4 rounded-lg! h-auto bg-amber-100 transition-transform hand-drawn-btn dashed thin" title="Add new clip">
                                         <div className="flex items-center sm:gap-2 gap-1 font-bold">
@@ -227,8 +237,8 @@ function PageContent() {
                             </div>
                         </div>
                         <div className="free-form-grid-container">
-                            {filteredClips.pinned.map((clip) => (
-                                <ClipCard key={clip.id} clip={clip} type="pinned" />
+                            {filteredClips.pinned.map((clip, i) => (
+                                <ClipCard key={clip.id} clip={clip} type="pinned" tourId={i === 0 ? "tour-clip-card" : undefined} />
                             ))}
                         </div>
                     </section>
@@ -254,8 +264,8 @@ function PageContent() {
                             </div>
                         </div>
                         <div className="free-form-grid-container">
-                            {filteredClips.recent.map((clip) => (
-                                <ClipCard key={clip.id} clip={clip} type="recent" />
+                            {filteredClips.recent.map((clip, i) => (
+                                <ClipCard key={clip.id} clip={clip} type="recent" tourId={i === 0 && filteredClips.pinned.length === 0 ? "tour-clip-card" : undefined} />
                             ))}
                         </div>
                     </section>

@@ -19,9 +19,10 @@ import { LogPrint } from "../../wailsjs/runtime/runtime"
 interface ClipCardProps {
     clip: Clip
     type: "pinned" | "recent"
+    tourId?: string
 }
 
-export default function ClipCard({ clip, type }: ClipCardProps) {
+export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
@@ -135,6 +136,7 @@ export default function ClipCard({ clip, type }: ClipCardProps) {
 
     return (
         <div
+            id={tourId}
             ref={cardRef}
             className={"hand-drawn lined thin p-3 bg-[#F9F5E6] relative group"}
         >   {/* Header with icon and timestamp */}

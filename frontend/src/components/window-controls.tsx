@@ -217,7 +217,7 @@ export default function WindowControls() {
     return (
         <div className="flex flex-row-reverse items-center fixed z-10 top-0 right-0 md:mr-[2%] md:pt-3 pt-2 mr-2 gap-6">
             <div className="mt-1 relative z-10">
-                <button onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
+                <button id="tour-settings" onClick={handleSettingsClick} ref={settingBtnRef} className="relative z-10">
                     <img src="/settings.png" alt="close" className="h-5 shadow-md/30" />
                 </button>
                 <div ref={settingDialogRef} className="setting-dialog absolute min-w-56  -right-1 top-5">
