@@ -14,6 +14,10 @@ var assets embed.FS
 const AppVersion = "v0.8.1"
 
 func main() {
+	if !ensureSingleInstance() {
+		return
+	}
+
 	// Create an instance of the app structure
 	app := NewApp()
 
