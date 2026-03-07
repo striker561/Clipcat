@@ -1,7 +1,7 @@
 import { driver } from "driver.js"
 import "driver.js/dist/driver.css"
 
-const STORAGE_KEY = "clipcat_tour_"
+const STORAGE_KEY = "clipcat_tour_done"
 
 export function hasSeenTour(): boolean {
     return localStorage.getItem(STORAGE_KEY) === "true"
