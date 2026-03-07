@@ -89,9 +89,6 @@ The app is safe and [open source](https://github.com/d3uceY/Clipcat) - you can v
 - <img width="196" height="179" alt="image" src="https://github.com/user-attachments/assets/a6cb09b3-14fa-4bc7-884a-57fc0d17d561" />
 - <img width="467" height="193" alt="image" src="https://github.com/user-attachments/assets/a78a8a32-0d91-4920-ba4a-4100bb8d8cca" />
 
-- **Full Content View** - Click any clip to open a scrollable dialog showing the complete content
-- <img width="572" height="552" alt="image" src="https://github.com/user-attachments/assets/d85b3231-0380-4643-952a-e8d5dfcc71c4" />
-
 - **Hyperlink Detection** - URLs inside clip text are automatically rendered as clickable links that open in your default browser
 
 - **Relative Timestamps** - Each clip shows a live-updating relative time (e.g. "2 minutes ago", "yesterday")
