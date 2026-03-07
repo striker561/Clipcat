@@ -43,7 +43,8 @@ export default function AboutDialog({ version }: AboutDialogProps) {
                 const latestVersion = data.tag_name;
                 //  LogPrint(`Current version: ${version}, Latest version: ${latestVersion}`); 
                 // Compare versions
-                if (latestVersion !== version || version.endsWith("-dev") || version.endsWith("-beta") || version.endsWith("-alpha")) {
+                const verNotProd = version.endsWith("-dev") || version.endsWith("-beta") || version.endsWith("-alpha");
+                if (latestVersion !== version || verNotProd) {
                     setUpdateAvailable({
                         version: latestVersion,
                         releaseUrl: data.html_url,
