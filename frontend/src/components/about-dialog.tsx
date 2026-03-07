@@ -65,7 +65,7 @@ export default function AboutDialog({ version }: AboutDialogProps) {
         <Dialog>
             <DialogTrigger asChild>
                 <button
-                    className={`heartbeat info text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold about-btn ${updateAvailable || isBirthday ? "indicator" : ""}`}
+                    className={`heartbeat info min-[400px]:block hidden sm:text-2xl hover:opacity-70 transition-opacity cursor-pointer font-bold about-btn ${updateAvailable || isBirthday ? "indicator" : ""}`}
                     title="About"
                 >
                     ⓘ
