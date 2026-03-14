@@ -55,6 +55,11 @@ func (a *App) startup(ctx context.Context) {
 	createTables()
 	migrateClipsTable()
 	migrateSettingsTable()
+	migrateEncryptionColumns()
+	if err := initEncryption(); err != nil {
+		panic(err)
+	}
+	migrateEncryptOldClips()
 
 	// Sync the ignore list from the DB into the in-memory clipboard filter.
 	if ignoreList, err := getIgnoreList(); err == nil {

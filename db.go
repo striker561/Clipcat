@@ -68,3 +68,75 @@ func migrateClipsTable() {
 func migrateSettingsTable() {
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (id, ghost_mode) VALUES (0, 0)`)
 }
+
+// migrateEncryptionColumns adds the columns and table required for at-rest
+// encryption.  Safe to call repeatedly — ALTER TABLE and CREATE TABLE IF NOT
+// EXISTS are idempotent.
+func migrateEncryptionColumns() {
+	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN encrypted INTEGER DEFAULT 0`)
+	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN content_hash TEXT`)
+	_, _ = DB.Exec(`
+		CREATE TABLE IF NOT EXISTS encryption_meta (
+			id          INTEGER PRIMARY KEY CHECK (id = 0),
+			machine_key TEXT NOT NULL
+		)
+	`)
+}
+
+// migrateEncryptOldClips re-encrypts every pre-existing unencrypted row so
+// that all clip data at rest is protected after the first run of a new version.
+// Rows that fail to encrypt are left untouched (they will still be readable as
+// plaintext via the backward-compatibility path in getClips).
+func migrateEncryptOldClips() {
+	type legacyRow struct {
+		id       int
+		content  sql.NullString
+		image    []byte
+		clipType string
+	}
+
+	rows, err := DB.Query(`SELECT id, content, image, type FROM clips WHERE encrypted = 0`)
+	if err != nil {
+		return
+	}
+
+	var clips []legacyRow
+	for rows.Next() {
+		var r legacyRow
+		if err := rows.Scan(&r.id, &r.content, &r.image, &r.clipType); err == nil {
+			clips = append(clips, r)
+		}
+	}
+	rows.Close()
+
+	for _, c := range clips {
+		switch c.clipType {
+		case "text":
+			if !c.content.Valid || c.content.String == "" {
+				continue
+			}
+			enc, err := encryptText(c.content.String)
+			if err != nil {
+				continue
+			}
+			hash := hashContent([]byte(c.content.String))
+			_, _ = DB.Exec(
+				`UPDATE clips SET content = ?, content_hash = ?, encrypted = 1 WHERE id = ?`,
+				enc, hash, c.id,
+			)
+		case "image":
+			if len(c.image) == 0 {
+				continue
+			}
+			enc, err := encryptData(c.image)
+			if err != nil {
+				continue
+			}
+			hash := hashContent(c.image)
+			_, _ = DB.Exec(
+				`UPDATE clips SET image = ?, content_hash = ?, encrypted = 1 WHERE id = ?`,
+				enc, hash, c.id,
+			)
+		}
+	}
+}
