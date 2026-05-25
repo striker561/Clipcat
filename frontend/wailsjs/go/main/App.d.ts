@@ -18,6 +18,8 @@ export function DisableStartup():Promise<void>;
 
 export function EnableStartup():Promise<void>;
 
+export function GetClipImage(arg1:number):Promise<string>;
+
 export function GetClips():Promise<Array<store.Clip>>;
 
 export function GetGhostMode():Promise<boolean>;

@@ -159,7 +159,7 @@ export function ClipProvider({ children }: { children: ReactNode }) {
 
     const addClip = async (content: string, pinned: boolean) => {
         await AddClip(content, pinned)
-        await getClips()
+        // getClips() is triggered by the clipboard:changed event emitted from Go.
     }
 
 
@@ -197,7 +197,24 @@ export function ClipProvider({ children }: { children: ReactNode }) {
         IsPaused().then(setIsPaused)
         loadIgnoreList()
         GetGhostMode().then((v) => setIsGhostMode(v ?? false)).catch(() => {})
-        EventsOn("clipboard:changed", () => {
+        EventsOn("clipboard:changed", (text?: string) => {
+            if (text) {
+                // Text clip — prepend locally without a full Go round-trip.
+                const optimistic: Clip = {
+                    id: `clip_-${Date.now()}`,
+                    type: "text",
+                    content: text,
+                    isPinned: false,
+                    createdAt: new Date().toISOString(),
+                    length: text.length,
+                }
+                setClips(prev => ({
+                    pinned: prev.pinned,
+                    recent: [optimistic, ...prev.recent],
+                }))
+                return
+            }
+            // Image clip or unknown — fall back to a full fetch.
             getClips()
         })
     }, [])

@@ -1,19 +1,26 @@
 package store
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
+	"image"
+	"image/jpeg"
+	_ "image/png"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/image/draw"
+
+	_ "golang.org/x/image/webp"
 )
 
 type Clip struct {
 	ID        string  `json:"id"`
 	Type      string  `json:"type"`
 	Content   *string `json:"content,omitempty"`
-	Image     *string `json:"image,omitempty"` // base64 PNG
+	Image     *string `json:"image,omitempty"`     // base64 — thumbnail for list, full-res on demand
 	Length    int     `json:"length"`
 	Pinned    bool    `json:"isPinned"`
 	CreatedAt string  `json:"createdAt"`
@@ -48,7 +55,7 @@ func UpdateStorageLimit(newLimit int) error {
 
 func GetClips() ([]Clip, error) {
 	query := `
-		SELECT id, content, image, type, pinned, created_at, encrypted
+		SELECT id, content, image, thumbnail, type, pinned, created_at, encrypted
 		FROM clips
 		ORDER BY pinned DESC, created_at DESC
 	`
@@ -66,13 +73,14 @@ func GetClips() ([]Clip, error) {
 			id        int
 			content   sql.NullString
 			image     []byte
+			thumbnail []byte
 			clipType  string
 			pinned    bool
 			createdAt string
 			encrypted bool
 		)
 
-		err := rows.Scan(&id, &content, &image, &clipType, &pinned, &createdAt, &encrypted)
+		err := rows.Scan(&id, &content, &image, &thumbnail, &clipType, &pinned, &createdAt, &encrypted)
 		if err != nil {
 			return nil, err
 		}
@@ -101,15 +109,22 @@ func GetClips() ([]Clip, error) {
 		}
 
 		if clipType == "image" {
-			imgBytes := image
-			if encrypted {
-				if dec, err := decryptData(image); err == nil {
-					imgBytes = dec
+			// Decrypt thumbnail if needed; fall back to full image for
+			// clips inserted before the thumbnail column was added.
+			thumbBytes := thumbnail
+			if len(thumbBytes) == 0 {
+				thumbBytes = image
+			}
+			if encrypted && len(thumbBytes) > 0 {
+				if dec, err := decryptData(thumbBytes); err == nil {
+					thumbBytes = dec
 				}
 			}
-			encoded := base64.StdEncoding.EncodeToString(imgBytes)
-			clip.Image = &encoded
-			clip.Length = len(imgBytes)
+			if len(thumbBytes) > 0 {
+				encoded := base64.StdEncoding.EncodeToString(thumbBytes)
+				clip.Image = &encoded
+				clip.Length = len(thumbBytes)
+			}
 		}
 
 		clips = append(clips, clip)
@@ -160,21 +175,7 @@ func AddClip(content string, clipType string) error {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
 
-	limit, err := GetStorageLimit()
-	if err != nil {
-		return fmt.Errorf("failed to get storage limit: %v", err)
-	}
-
-	deleteQuery := `
-		DELETE FROM clips
-		WHERE id NOT IN (
-			SELECT id FROM clips
-			ORDER BY pinned DESC, created_at DESC
-			LIMIT ?
-		)
-	`
-	_, err = DB.Exec(deleteQuery, limit)
-	if err != nil {
+	if err := pruneExcessClips(); err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}
 
@@ -201,21 +202,7 @@ func AddManualClip(content string, pinned bool) error {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
 
-	limit, err := GetStorageLimit()
-	if err != nil {
-		return fmt.Errorf("failed to get storage limit: %v", err)
-	}
-
-	deleteQuery := `
-		DELETE FROM clips
-		WHERE id NOT IN (
-			SELECT id FROM clips
-			ORDER BY pinned DESC, created_at DESC
-			LIMIT ?
-		)
-	`
-	_, err = DB.Exec(deleteQuery, limit)
-	if err != nil {
+	if err := pruneExcessClips(); err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}
 
@@ -236,30 +223,124 @@ func AddImageClip(img []byte) error {
 		return fmt.Errorf("failed to encrypt image clip: %v", err)
 	}
 	hash := hashContent(img)
-	query := `INSERT INTO clips (image, content_hash, type, encrypted, created_at) VALUES (?, ?, ?, 1, datetime('now'))`
-	_, err = DB.Exec(query, enc, hash, "image")
+
+	// Generate a small thumbnail so GetClips never transmits full images.
+	thumb, err := generateThumbnail(img)
+	if err != nil {
+		// Non-fatal: store without thumbnail and GetClips will fall back
+		// to serving the full image for this row.
+		thumb = nil
+	}
+	var encThumb []byte
+	if len(thumb) > 0 {
+		encThumb, _ = encryptData(thumb)
+	}
+
+	query := `INSERT INTO clips (image, thumbnail, content_hash, type, encrypted, created_at) VALUES (?, ?, ?, ?, 1, datetime('now'))`
+	_, err = DB.Exec(query, enc, encThumb, hash, "image")
 	if err != nil {
 		return fmt.Errorf("failed to insert image clip: %v", err)
 	}
 
-	limit, err := GetStorageLimit()
-	if err != nil {
-		return fmt.Errorf("failed to get storage limit: %v", err)
-	}
-
-	deleteQuery := `
-		DELETE FROM clips
-		WHERE id NOT IN (
-			SELECT id FROM clips
-			ORDER BY pinned DESC, created_at DESC
-			LIMIT ?
-		)
-	`
-	_, err = DB.Exec(deleteQuery, limit)
-	if err != nil {
+	if err := pruneExcessClips(); err != nil {
 		return fmt.Errorf("failed to delete old clips: %v", err)
 	}
 	return nil
+}
+
+// generateThumbnail resizes img to at most 200px wide (keeping aspect ratio)
+// and returns a JPEG thumbnail.  Input can be PNG, JPEG, or WebP.
+func generateThumbnail(img []byte) ([]byte, error) {
+	src, _, err := image.Decode(bytes.NewReader(img))
+	if err != nil {
+		return nil, fmt.Errorf("thumbnail decode: %w", err)
+	}
+
+	const maxWidth = 200
+	bounds := src.Bounds()
+	w, h := bounds.Dx(), bounds.Dy()
+	if w <= maxWidth {
+		// Already small enough — just re-encode as JPEG (usually smaller).
+		var buf bytes.Buffer
+		if err := jpeg.Encode(&buf, src, &jpeg.Options{Quality: 75}); err != nil {
+			return nil, fmt.Errorf("thumbnail encode: %w", err)
+		}
+		return buf.Bytes(), nil
+	}
+
+	newH := h * maxWidth / w
+	dst := image.NewRGBA(image.Rect(0, 0, maxWidth, newH))
+	draw.ApproxBiLinear.Scale(dst, dst.Bounds(), src, bounds, draw.Src, nil)
+
+	var buf bytes.Buffer
+	if err := jpeg.Encode(&buf, dst, &jpeg.Options{Quality: 75}); err != nil {
+		return nil, fmt.Errorf("thumbnail encode: %w", err)
+	}
+	return buf.Bytes(), nil
+}
+
+// pruneExcessClips removes the oldest clips when the table exceeds the
+// storage limit.  It only runs when the row count is genuinely over the
+// limit, so the common case (under the limit) is a single cheap COUNT(*).
+func pruneExcessClips() error {
+	limit, err := GetStorageLimit()
+	if err != nil {
+		return err
+	}
+
+	var count int
+	if err := DB.QueryRow(`SELECT COUNT(*) FROM clips`).Scan(&count); err != nil {
+		return fmt.Errorf("prune: count: %w", err)
+	}
+	if count <= limit {
+		return nil
+	}
+
+	excess := count - limit
+	// Delete the oldest unpinned clips first, then the oldest pinned.
+	// This is semantically identical to the old "NOT IN (SELECT ... LIMIT ?)"
+	// pattern but only executes when there is actual work to do.
+	_, err = DB.Exec(`
+		DELETE FROM clips
+		WHERE id IN (
+			SELECT id FROM clips
+			ORDER BY pinned ASC, created_at ASC
+			LIMIT ?
+		)
+	`, excess)
+	if err != nil {
+		return fmt.Errorf("prune: delete: %w", err)
+	}
+	return nil
+}
+
+// GetClipImage returns the full-resolution base64-encoded image for a
+// single clip.  Use this for the detail dialog — never for the list view.
+func GetClipImage(clipID int) (string, error) {
+	var (
+		image     []byte
+		clipType  string
+		encrypted bool
+	)
+	err := DB.QueryRow(
+		`SELECT image, type, encrypted FROM clips WHERE id = ?`, clipID,
+	).Scan(&image, &clipType, &encrypted)
+	if err != nil {
+		return "", fmt.Errorf("getClipImage: %w", err)
+	}
+	if clipType != "image" {
+		return "", fmt.Errorf("getClipImage: clip %d is not an image", clipID)
+	}
+
+	if encrypted {
+		dec, err := decryptData(image)
+		if err != nil {
+			return "", fmt.Errorf("getClipImage decrypt: %w", err)
+		}
+		image = dec
+	}
+
+	return base64.StdEncoding.EncodeToString(image), nil
 }
 
 func UpdateClipContent(clipID int, newContent string) error {

@@ -101,6 +101,12 @@ func MigrateEncryptionColumns() {
 	`)
 }
 
+// MigrateThumbnailColumn adds a thumbnail BLOB column for image clips
+// so GetClips never needs to transmit full-resolution images.
+func MigrateThumbnailColumn() {
+	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN thumbnail BLOB`)
+}
+
 // MigrateEncryptOldClips re-encrypts every pre-existing unencrypted row so
 // that all clip data at rest is protected after the first run of a new version.
 func MigrateEncryptOldClips() {

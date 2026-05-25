@@ -38,6 +38,10 @@ export function GetClips() {
   return window['go']['main']['App']['GetClips']();
 }
 
+export function GetClipImage(arg1) {
+  return window['go']['main']['App']['GetClipImage'](arg1);
+}
+
 export function GetGhostMode() {
   return window['go']['main']['App']['GetGhostMode']();
 }

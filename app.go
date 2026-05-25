@@ -65,6 +65,7 @@ func (a *App) startup(ctx context.Context) {
 	store.MigrateSettingsTable()
 	store.MigrateEncryptionColumns()
 	store.MigrateIndexes()
+	store.MigrateThumbnailColumn()
 	if err := store.InitEncryption(); err != nil {
 		panic(err)
 	}
@@ -185,6 +186,11 @@ func (a *App) TogglePin(clipID int) error {
 func (a *App) Delete(clipID int) error {
 	return store.DeleteClip(clipID)
 }
+
+func (a *App) GetClipImage(clipID int) (string, error) {
+	return store.GetClipImage(clipID)
+}
+
 func (a *App) DeleteAllClips() error {
 	return store.DeleteAllClips(a.ctx)
 }
