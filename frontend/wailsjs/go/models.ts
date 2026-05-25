@@ -1,4 +1,4 @@
-export namespace main {
+export namespace store {
 	
 	export class Clip {
 	    id: string;
