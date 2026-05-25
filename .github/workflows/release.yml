@@ -3,54 +3,100 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
+  validate-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      is_stable: ${{ steps.check.outputs.is_stable }}
+    steps:
+      - name: Validate stable release tag
+        id: check
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "is_stable=true" >> "$GITHUB_OUTPUT"
+            echo "Stable release tag detected: $TAG"
+          else
+            echo "is_stable=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping release workflow for pre-release/non-stable tag: $TAG"
+          fi
 
   build-windows-amd64:
     runs-on: windows-latest
+    needs: validate-tag
+    if: needs.validate-tag.outputs.is_stable == 'true'
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: "1.23"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Add NSIS to PATH
+        shell: pwsh
         run: |
-          choco install nsis -y
-          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $candidates = @(
+            "$env:ChocolateyInstall\bin",
+            "${env:ProgramFiles(x86)}\NSIS",
+            "$env:ProgramFiles\NSIS"
+          )
+          foreach ($candidate in $candidates) {
+            if (Test-Path $candidate) {
+              Add-Content -Path $env:GITHUB_PATH -Value $candidate
+              $env:PATH = "$candidate;$env:PATH"
+            }
+          }
+          $makensis = Get-Command makensis -ErrorAction SilentlyContinue
+          if (-not $makensis) {
+            throw "makensis not found after NSIS installation"
+          }
+          Write-Host "Using makensis at $($makensis.Source)"
 
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
 
       - name: Install frontend dependencies
         run: npm install
         working-directory: frontend
 
       - name: Build
-        run: wails build -nsis
+        run: wails build -clean -nsis -o Clipcat-windows-amd64
 
       - name: Rename Windows outputs
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path build\bin\renamed
-          Move-Item build\bin\Clipcat.exe build\bin\renamed\Clipcat-windows-amd64.exe
-          $installer = Get-ChildItem build\bin\*installer.exe -ErrorAction SilentlyContinue
-          if ($installer) {
-            Move-Item $installer.FullName build\bin\renamed\Clipcat-windows-installer.exe
+          if (Test-Path build\bin\Clipcat-windows-amd64.exe) {
+            Move-Item build\bin\Clipcat-windows-amd64.exe build\bin\renamed\Clipcat-windows-amd64.exe
           }
+          $installer = Get-ChildItem build\bin\*installer.exe -ErrorAction SilentlyContinue | Where-Object { $_.Name -like '*Clipcat-windows-amd64*' -or $_.Name -like '*installer*' } | Select-Object -First 1
+          if (-not $installer) {
+            throw "Windows installer not found in build/bin"
+          }
+          Move-Item $installer.FullName build\bin\renamed\Clipcat-windows-amd64-installer.exe
 
       - uses: actions/upload-artifact@v4
         with:
           name: binaries-windows-amd64
           path: build/bin/renamed/*
 
-
   release:
     runs-on: ubuntu-latest
     needs:
+      - validate-tag
       - build-windows-amd64
+    if: needs.validate-tag.outputs.is_stable == 'true'
     permissions:
       contents: write
     steps:
@@ -60,76 +106,72 @@ jobs:
 
       - name: Generate commit log
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CURR_TAG="${GITHUB_REF#refs/tags/}"
           PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v' | sed -n '2p')
-          REPO="${{ github.repository }}"
-
-          echo "## What's Changed" > commit_log.md
-          echo "" >> commit_log.md
 
           if [ -n "$PREV_TAG" ]; then
-            echo "Changes since \`${PREV_TAG}\`:" >> commit_log.md
-            echo "" >> commit_log.md
-
-            # Fetch compare data once and reuse it
-            COMPARE_JSON=$(gh api "repos/${REPO}/compare/${PREV_TAG}...${CURR_TAG}")
-
-            # Write commits with @username
-            echo "$COMPARE_JSON" | jq -r '
-              .commits[] |
-              select(.commit.message | startswith("Merge ") | not) |
-              "- " + (.commit.message | split("\n")[0]) + " (" + .sha[0:7] + ") @" + (.author.login // .commit.author.name)
-            ' >> commit_log.md
-
-            echo "" >> commit_log.md
-
-            # Detect new contributors
-            mapfile -t CURR_LOGINS < <(echo "$COMPARE_JSON" | jq -r '
-              [.commits[].author | select(. != null) | .login] | unique[]
-            ')
-
-            mapfile -t PREV_LOGINS < <(gh api "repos/${REPO}/commits?sha=${PREV_TAG}" \
-              --paginate \
-              --jq '[.[].author | select(. != null) | .login] | unique[]' \
-              | sort -u)
-
-            NEW_CONTRIBS=()
-            for login in "${CURR_LOGINS[@]}"; do
-              found=false
-              for prev in "${PREV_LOGINS[@]}"; do
-                if [ "$login" = "$prev" ]; then
-                  found=true
-                  break
-                fi
-              done
-              if [ "$found" = false ]; then
-                NEW_CONTRIBS+=("$login")
-              fi
-            done
-
-            if [ ${#NEW_CONTRIBS[@]} -gt 0 ]; then
-              echo "## New Contributors" >> commit_log.md
-              echo "" >> commit_log.md
-              for login in "${NEW_CONTRIBS[@]}"; do
-                echo "- @${login} made their first contribution!" >> commit_log.md
-              done
-              echo "" >> commit_log.md
-            fi
+            RANGE="${PREV_TAG}..${CURR_TAG}"
           else
-            # First release — GitHub compare API not available, fall back to git log with author name
-            git log "${CURR_TAG}" --pretty=format:"- %s (%h) @%an" --no-merges >> commit_log.md
+            RANGE="${CURR_TAG}"
+          fi
+
+          USERS_FILE=$(mktemp)
+
+          while IFS= read -r HASH; do
+            [ -z "$HASH" ] && continue
+            GH_LOGIN=$(curl -sf \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/commits/${HASH}" \
+              | jq -r '.author.login // empty' 2>/dev/null || echo "")
+            if [ -n "$GH_LOGIN" ]; then
+              echo "$GH_LOGIN" >> "$USERS_FILE"
+            fi
+          done < <(git log "$RANGE" --pretty=format:"%H" --no-merges)
+
+          > commit_log.md
+
+          if [ -s "$USERS_FILE" ]; then
+            echo "### Contributors" >> commit_log.md
+            echo "" >> commit_log.md
+            echo "<table><tr>" >> commit_log.md
+            for USER in $(sort -u "$USERS_FILE"); do
+              printf '  <td align="center"><a href="https://github.com/%s"><img src="https://github.com/%s.png?size=72" width="72" height="72" style="border-radius:50%%" /><br /><b>@%s</b></a></td>\n' \
+                "$USER" "$USER" "$USER" >> commit_log.md
+            done
+            echo "</tr></table>" >> commit_log.md
             echo "" >> commit_log.md
           fi
+
+          rm -f "$USERS_FILE"
+
+          echo "### Commits" >> commit_log.md
+          echo "" >> commit_log.md
+          git log "$RANGE" --pretty=format:"- %s ([\`%h\`](https://github.com/${{ github.repository }}/commit/%H))" --no-merges >> commit_log.md
+          echo "" >> commit_log.md
 
       - uses: actions/download-artifact@v4
         with:
           path: binaries
           merge-multiple: true
 
+      - name: Verify release artifacts
+        run: |
+          test -f binaries/Clipcat-linux-amd64
+          test -f binaries/Clipcat-macos-arm64.dmg
+          test -f binaries/Clipcat-macos-amd64.dmg
+          test -f binaries/Clipcat-windows-amd64-installer.exe
+
+      - name: Generate checksums
+        run: |
+          cd binaries
+          sha256sum Clipcat-* > SHA256SUMS.txt
+
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          append_body: true
           body_path: commit_log.md
           files: binaries/*

@@ -1,5 +1,5 @@
 import { Copy, Pin, Trash2, Pencil, ClipboardPaste } from "lucide-react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import type { Clip } from '../../types/clip'
 import { TogglePin, Delete, PasteToWindow } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
@@ -9,7 +9,7 @@ import { useRelativeTime } from "@/hooks/use-relative-time"
 import { ScrollArea } from "./ui/scroll-area-white"
 import { ScrollArea as ScrollAreaPencil } from "./ui/scroll-area-pencil"
 import { copyBase64ImageToClipboard } from "@/helpers/copyBase64Image"
-import { wait } from "@/helpers/wait"
+import { useCardRowSpan } from "@/hooks/use-card-row-span"
 import EditClipDialog from "./edit-clip-dialog"
 import { insertLinks } from "@/helpers/insertLinks"
 import { BrowserOpenURL } from "../../wailsjs/runtime/runtime"
@@ -31,34 +31,7 @@ export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
     const relativeTime = useRelativeTime(clip.createdAt)
 
 
-    useEffect(() => {
-        const card = cardRef.current
-        if (!card) return
-
-        let rafId: number
-
-        const updateRowSpan = () => {
-            cancelAnimationFrame(rafId)
-            rafId = requestAnimationFrame(() => {
-                const rowHeight = 10 // Must match grid-auto-rows in CSS
-                const rowGap = 16 // Must match gap in CSS
-                const cardHeight = card.getBoundingClientRect().height
-                const rowSpan = Math.ceil((cardHeight + rowGap) / (rowHeight + rowGap))
-                card.style.setProperty('--row-span', String(rowSpan))
-            })
-        }
-
-        const observer = new ResizeObserver(updateRowSpan)
-        observer.observe(card)
-
-        // Initial calculation after a short delay for image clips to settle
-        wait(25).then(updateRowSpan)
-
-        return () => {
-            observer.disconnect()
-            cancelAnimationFrame(rafId)
-        }
-    }, [isMiniClip])
+    useCardRowSpan(cardRef, isMiniClip)
 
 
     const handleCopy = async () => {
