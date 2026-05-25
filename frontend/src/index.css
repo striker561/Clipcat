@@ -3,8 +3,8 @@
 @import "driver.js/dist/driver.css";
 
 @font-face {
-  font-family: 'IndieFlower';
-  src: url('/fonts/IndieFlower-Regular.ttf') format('truetype');
+  font-family: 'PlaypenSans';
+  src: url('/fonts/PlaypenSans-VariableFont_wght.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -206,7 +206,8 @@ body:before {
 .page {
   position: relative;
   box-sizing: border-box;
-  font-family: 'IndieFlower', cursive;
+  font-family: 'PlaypenSans', cursive;
+  font-weight: normal;
   font-size: 20px;
   border-radius: 10px;
   background: #fff;
