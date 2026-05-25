@@ -54,8 +54,9 @@ const sharedObserver = new ResizeObserver((entries) => {
     }
 })
 
-export function useCardRowSpan(ref: RefObject<HTMLElement | null>, isMiniClip: boolean): void {
+export function useCardRowSpan(ref: RefObject<HTMLElement | null>, isMiniClip: boolean, enabled = true): void {
     useEffect(() => {
+        if (!enabled) return
         const el = ref.current
         if (!el) return
 
@@ -66,5 +67,5 @@ export function useCardRowSpan(ref: RefObject<HTMLElement | null>, isMiniClip: b
             sharedObserver.unobserve(el)
             pendingElements.delete(el)
         }
-    }, [isMiniClip]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isMiniClip, enabled]) // eslint-disable-line react-hooks/exhaustive-deps
 }

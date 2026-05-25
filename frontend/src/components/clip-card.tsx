@@ -1,5 +1,5 @@
 import { Copy, Pin, Trash2, Pencil, ClipboardPaste } from "lucide-react"
-import { useState, useRef, useMemo, memo } from "react"
+import { useState, useRef, useMemo, memo, useEffect } from "react"
 import type { Clip } from '../../types/clip'
 import { TogglePin, Delete, PasteToWindow } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
@@ -20,19 +20,47 @@ interface ClipCardProps {
     clip: Clip
     type: "pinned" | "recent"
     tourId?: string
+    initialVisible?: boolean
 }
 
-function ClipCard({ clip, type, tourId }: ClipCardProps) {
+function ClipCard({ clip, type, tourId, initialVisible = true }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
+    const [isVisible, setIsVisible] = useState(initialVisible)
+    const cachedRowSpanRef = useRef(10) // matches CSS default span
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, hideContent, isMiniClip } = useClips()
     const relativeTime = useRelativeTime(clip.createdAt)
     const linkedContent = useMemo(() => insertLinks(clip.content), [clip.content])
 
+    useCardRowSpan(cardRef, isMiniClip, isVisible)
 
-    useCardRowSpan(cardRef, isMiniClip)
+    useEffect(() => {
+        const el = cardRef.current
+        if (!el) return
+        let observer: IntersectionObserver | null = null
+        // Delay setup so initial batch measurements (~41 ms) complete first.
+        // Cards that started invisible have no measurement race — they render
+        // as placeholders immediately and get measured when scrolled into view.
+        const timerId = setTimeout(() => {
+            observer = new IntersectionObserver(
+                ([entry]) => {
+                    if (!entry.isIntersecting) {
+                        const span = parseInt(el.style.getPropertyValue('--row-span'))
+                        if (span > 0) cachedRowSpanRef.current = span
+                    }
+                    setIsVisible(entry.isIntersecting)
+                },
+                { rootMargin: '500px' }
+            )
+            observer.observe(el)
+        }, 150)
+        return () => {
+            clearTimeout(timerId)
+            observer?.disconnect()
+        }
+    }, [])
 
 
     const handleCopy = async () => {
@@ -107,6 +135,14 @@ function ClipCard({ clip, type, tourId }: ClipCardProps) {
     }
 
     if (isDeleted) return null
+
+    // Placeholder for off-screen cards — keeps the grid cell the right size
+    // without rendering the full React subtree.
+    // No inline style needed: CSS uses --row-span (last measured value, or
+    // the default of 10) so the cell stays correctly sized with no JS override.
+    if (!isVisible) {
+        return <div id={tourId} ref={cardRef} />
+    }
 
     return (
         <div
@@ -188,46 +224,48 @@ function ClipCard({ clip, type, tourId }: ClipCardProps) {
                 </div>
             </div>
 
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                {
-                    clip.type === "image" && clip.image ? (
-                        <DialogContent className="px-3 border-0 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover h-screen!  sm:h-[90vh]! max-h-125">
-                            {/* clip image */}
-                            <ScrollArea className=" overflow-auto ">
-                                <img
-                                    src={`data:image/png;base64,${clip.image}`}
-                                    alt="Clip image"
-                                    className={`w-full h-auto object-contain rounded ${hideContent ? "hard-to-read" : ""}`}
-                                />
-                            </ScrollArea>
-                        </DialogContent>
+            {dialogOpen && (
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    {
+                        clip.type === "image" && clip.image ? (
+                            <DialogContent className="px-3 border-0 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover h-screen!  sm:h-[90vh]! max-h-125">
+                                {/* clip image */}
+                                <ScrollArea className=" overflow-auto ">
+                                    <img
+                                        src={`data:image/png;base64,${clip.image}`}
+                                        alt="Clip image"
+                                        className={`w-full h-auto object-contain rounded ${hideContent ? "hard-to-read" : ""}`}
+                                    />
+                                </ScrollArea>
+                            </DialogContent>
 
-                    )
-
-                        :
-
-                        (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-screen!  sm:h-[90vh]! max-h-125">
-                            {/* clip image */}
-                            <div className="w-fit hidden sm:block absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
-                                <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
-                                <img src="/clip.png" className="h-full" alt="" />
-                            </div>
-
-                            <div className="page rounded-none! overflow-x-scroll overflow-y-hidden shadow-md/50">
-                                <div className="margin"></div>
-                                <DialogHeader className="sm:pt-7">
-                                    <DialogTitle>Clip Content</DialogTitle>
-                                    <DialogDescription>Created {relativeTime}</DialogDescription>
-                                    <img src="/seperator.png" alt="" className="w-full " />
-                                </DialogHeader>
-                                <ScrollAreaPencil className=" max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
-                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: linkedContent }} />
-                                </ScrollAreaPencil>
-                            </div>
-                        </DialogContent>
                         )
-                }
-            </Dialog>
+
+                            :
+
+                            (<DialogContent className="px-3 rounded-sm max-w-2xl bg-[url(/board-texture.avif)] bg-cover border-0 h-screen!  sm:h-[90vh]! max-h-125">
+                                {/* clip image */}
+                                <div className="w-fit hidden sm:block absolute h-[20%] top-[-7%] left-0 mx-auto right-0 z-10">
+                                    <div className="absolute border-black h-2 left-0 right-0 w-[90%] mx-auto bottom-0 shadow-md/65"></div>
+                                    <img src="/clip.png" className="h-full" alt="" />
+                                </div>
+
+                                <div className="page rounded-none! overflow-x-scroll overflow-y-hidden shadow-md/50">
+                                    <div className="margin"></div>
+                                    <DialogHeader className="sm:pt-7">
+                                        <DialogTitle>Clip Content</DialogTitle>
+                                        <DialogDescription>Created {relativeTime}</DialogDescription>
+                                        <img src="/seperator.png" alt="" className="w-full " />
+                                    </DialogHeader>
+                                    <ScrollAreaPencil className=" max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
+                                            <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: linkedContent }} />
+                                    </ScrollAreaPencil>
+                                </div>
+                            </DialogContent>
+                            )
+                    }
+                </Dialog>
+            )}
         </div>
     )
 }
@@ -238,5 +276,6 @@ export default memo(ClipCard, (prev, next) =>
     prev.clip.image === next.clip.image &&
     prev.clip.isPinned === next.clip.isPinned &&
     prev.type === next.type &&
-    prev.tourId === next.tourId
+    prev.tourId === next.tourId &&
+    prev.initialVisible === next.initialVisible
 )

@@ -238,7 +238,7 @@ function PageContent() {
                         </div>
                         <div className="free-form-grid-container">
                             {filteredClips.pinned.map((clip, i) => (
-                                <ClipCard key={clip.id} clip={clip} type="pinned" tourId={i === 0 ? "tour-clip-card" : undefined} />
+                                <ClipCard key={clip.id} clip={clip} type="pinned" initialVisible={i < 25} tourId={i === 0 ? "tour-clip-card" : undefined} />
                             ))}
                         </div>
                     </section>
@@ -265,7 +265,7 @@ function PageContent() {
                         </div>
                         <div className="free-form-grid-container">
                             {filteredClips.recent.map((clip, i) => (
-                                <ClipCard key={clip.id} clip={clip} type="recent" tourId={i === 0 && filteredClips.pinned.length === 0 ? "tour-clip-card" : undefined} />
+                                <ClipCard key={clip.id} clip={clip} type="recent" initialVisible={i < 25} tourId={i === 0 && filteredClips.pinned.length === 0 ? "tour-clip-card" : undefined} />
                             ))}
                         </div>
                     </section>
