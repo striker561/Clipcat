@@ -324,17 +324,31 @@ func DeleteClip(clipID int) error {
 	return nil
 }
 
-func DeleteAllClips(ctx context.Context) error {
+func confirmDestructiveDelete(ctx context.Context, title string, message string) (bool, error) {
 	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 		Type:          runtime.QuestionDialog,
-		Title:         "Delete All Clips?",
-		Message:       "Are you sure you want to delete all clips? This action cannot be undone.",
+		Title:         title,
+		Message:       message,
+		Buttons:       []string{"Yes", "No"},
 		DefaultButton: "Yes",
+		CancelButton:  "No",
 	})
 	if err != nil {
-		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+		return false, fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
-	if res != "Yes" {
+
+	return res == "Yes", nil
+}
+
+func DeleteAllClips(ctx context.Context) error {
+	confirmed, err := confirmDestructiveDelete(ctx,
+		"Delete All Clips?",
+		"Are you sure you want to delete all clips? This action cannot be undone.",
+	)
+	if err != nil {
+		return err
+	}
+	if !confirmed {
 		return nil
 	}
 
@@ -347,16 +361,14 @@ func DeleteAllClips(ctx context.Context) error {
 }
 
 func DeletePinnedClips(ctx context.Context) error {
-	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
-		Title:         "Delete Pinned Clips?",
-		Message:       "Are you sure you want to delete all pinned clips? This action cannot be undone.",
-		DefaultButton: "Yes",
-	})
+	confirmed, err := confirmDestructiveDelete(ctx,
+		"Delete Pinned Clips?",
+		"Are you sure you want to delete all pinned clips? This action cannot be undone.",
+	)
 	if err != nil {
-		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+		return err
 	}
-	if res != "Yes" {
+	if !confirmed {
 		return nil
 	}
 
@@ -369,16 +381,14 @@ func DeletePinnedClips(ctx context.Context) error {
 }
 
 func DeleteUnpinnedClips(ctx context.Context) error {
-	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
-		Type:          runtime.QuestionDialog,
-		Title:         "Delete Unpinned Clips?",
-		Message:       "Are you sure you want to delete all unpinned clips? This action cannot be undone.",
-		DefaultButton: "Yes",
-	})
+	confirmed, err := confirmDestructiveDelete(ctx,
+		"Delete Unpinned Clips?",
+		"Are you sure you want to delete all unpinned clips? This action cannot be undone.",
+	)
 	if err != nil {
-		return fmt.Errorf("failed to show confirmation dialog: %v", err)
+		return err
 	}
-	if res != "Yes" {
+	if !confirmed {
 		return nil
 	}
 

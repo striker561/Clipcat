@@ -46,6 +46,10 @@ export function GetIgnoreList() {
   return window['go']['main']['App']['GetIgnoreList']();
 }
 
+export function GetPlatform() {
+  return window['go']['main']['App']['GetPlatform']();
+}
+
 export function GetStorageLimit() {
   return window['go']['main']['App']['GetStorageLimit']();
 }

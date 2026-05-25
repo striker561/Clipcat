@@ -4,7 +4,7 @@ import { useClips } from "@/context/ClipContext";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { playSound } from "@/helpers/playSound";
-import { UpdateStorageLimit, GetStorageLimit } from "../../wailsjs/go/main/App";
+import { UpdateStorageLimit, GetStorageLimit, GetPlatform } from "../../wailsjs/go/main/App";
 import { GetClips } from "../../wailsjs/go/main/App";
 import { ScrollArea } from "./ui/scroll-area";
 import DeleteButton from "./delete-button";
@@ -21,6 +21,11 @@ export default function WindowControls() {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [limit, setLimit] = useState(100)
     const [showQuickPasteConfirm, setShowQuickPasteConfirm] = useState(false)
+    const [platform, setPlatform] = useState<string>("")
+
+    useEffect(() => {
+        GetPlatform().then(setPlatform).catch(() => setPlatform(""))
+    }, [])
 
     const handleQuickPasteToggle = () => {
         if (isGhostMode) {
@@ -306,7 +311,7 @@ export default function WindowControls() {
             </div>
 
             {
-                !isMiniClip && (
+                !isMiniClip && platform === "windows" && (
                     <div className=" flex items-center gap-1" style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}>
                         <button onClick={() => WindowMinimise()}>
                             <img src="/minimize.png" alt="minimize" className="h-5 shadow-md/30" />

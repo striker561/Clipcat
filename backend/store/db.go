@@ -54,6 +54,34 @@ func CreateTables() {
 	}
 }
 
+// MigrateIndexes creates performance indexes on the clips table.
+// Uses IF NOT EXISTS so it is safe to call on every startup.
+func MigrateIndexes() {
+	indexes := []string{
+		// Main listing query: ORDER BY pinned DESC, created_at DESC
+		`CREATE INDEX IF NOT EXISTS idx_clips_pinned_created
+		 ON clips(pinned DESC, created_at DESC)`,
+
+		// Duplicate detection: WHERE content_hash = ?
+		`CREATE INDEX IF NOT EXISTS idx_clips_content_hash
+		 ON clips(content_hash)`,
+
+		// Delete-by-type queries (DeletePinnedClips, DeleteUnpinnedClips)
+		`CREATE INDEX IF NOT EXISTS idx_clips_pinned
+		 ON clips(pinned)`,
+
+		// Encrypted column is used in migration queries
+		`CREATE INDEX IF NOT EXISTS idx_clips_encrypted
+		 ON clips(encrypted)`,
+	}
+
+	for _, idx := range indexes {
+		if _, err := DB.Exec(idx); err != nil {
+			fmt.Printf("index warning: %v\n", err)
+		}
+	}
+}
+
 func MigrateClipsTable() {
 	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN image BLOB`)
 }

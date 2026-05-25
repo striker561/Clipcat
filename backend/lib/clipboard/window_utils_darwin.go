@@ -2,7 +2,16 @@
 
 package clipboard
 
+/*
+#cgo LDFLAGS: -framework Carbon -framework ApplicationServices
+
+// Declared in clipboard_darwin.c
+extern void sendPasteDarwin(void);
+*/
+import "C"
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"sync"
@@ -16,23 +25,67 @@ import (
 var (
 	prevAppBundleID string
 	prevAppMu       sync.Mutex
-	ourPID          uint32
+	ourBundleID     string // detected at startup
 )
 
-// SetOurProcessID stores this process's PID (not heavily used on macOS, but
-// kept for API compatibility).
+// SetOurProcessID detects our own bundle ID and process name so the focus
+// tracker never captures Clipcat itself as the paste target.
 func SetOurProcessID(pid uint32) {
-	ourPID = pid
+	ourBundleID = detectOwnBundleID()
+	fmt.Printf("[Clipcat] own bundle ID: %q\n", ourBundleID)
 }
 
-// StartFocusTracker polls the frontmost application every 150 ms and stores
-// its bundle ID. The polled value is used by FocusPreviousWindow.
+// detectOwnBundleID tries several methods to determine our identity.
+func detectOwnBundleID() string {
+	// Method 1: Read from the app bundle's Info.plist.
+	if bid := os.Getenv("CLIPCAT_BUNDLE_ID"); bid != "" {
+		return bid
+	}
+
+	// Method 2: Use osascript to get our own bundle ID via PID.
+	pid := os.Getpid()
+	out, err := exec.Command("osascript", "-e",
+		fmt.Sprintf(`tell application "System Events" to get bundle identifier of first application process whose unix id is %d`, pid),
+	).Output()
+	if err == nil {
+		bid := strings.TrimSpace(string(out))
+		if bid != "" && bid != "missing value" {
+			return bid
+		}
+	}
+
+	// Method 3: Use our process name as the exclusion key.
+	return fmt.Sprintf("clipcat-%d", pid)
+}
+
+// isOurOwnApp returns true if the given bundle ID / process identifier
+// belongs to Clipcat itself.
+func isOurOwnApp(name string) bool {
+	if name == "" {
+		return false
+	}
+	name = strings.ToLower(name)
+
+	// Direct bundle ID match.
+	if ourBundleID != "" && strings.EqualFold(name, ourBundleID) {
+		return true
+	}
+
+	// Common Clipcat identifiers from Wails builds.
+	if strings.Contains(name, "clipcat") || strings.Contains(name, "com.wails.") {
+		return true
+	}
+
+	return false
+}
+
+// StartFocusTracker polls the frontmost app every 300 ms, excluding Clipcat.
 func StartFocusTracker() {
 	go func() {
 		for {
-			time.Sleep(150 * time.Millisecond)
+			time.Sleep(300 * time.Millisecond)
 			name := getForegroundAppNameDarwin()
-			if name != "" {
+			if name != "" && !isOurOwnApp(name) {
 				prevAppMu.Lock()
 				prevAppBundleID = name
 				prevAppMu.Unlock()
@@ -41,10 +94,10 @@ func StartFocusTracker() {
 	}()
 }
 
-// capturePreviousAppDarwin snapshots the current frontmost app bundle ID.
+// capturePreviousAppDarwin snapshots the frontmost app (called by hotkey handler).
 func capturePreviousAppDarwin() {
 	name := getForegroundAppNameDarwin()
-	if name != "" {
+	if name != "" && !isOurOwnApp(name) {
 		prevAppMu.Lock()
 		prevAppBundleID = name
 		prevAppMu.Unlock()
@@ -58,7 +111,7 @@ func HasPreviousWindow() bool {
 	return prevAppBundleID != ""
 }
 
-// FocusPreviousWindow activates the previously tracked application via osascript.
+// FocusPreviousWindow activates the previously tracked app via open -b.
 func FocusPreviousWindow() {
 	prevAppMu.Lock()
 	id := prevAppBundleID
@@ -67,25 +120,20 @@ func FocusPreviousWindow() {
 	if id == "" {
 		return
 	}
-	exec.Command("osascript", "-e",
-		`tell application id "`+id+`" to activate`,
-	).Run()
+
+	exec.Command("open", "-b", id).Run()
 }
 
-// SimulatePaste sends a Cmd+V keystroke via osascript.
+// SimulatePaste fires Cmd+V using CGEvents (implemented in clipboard_darwin.c).
+// Requires Accessibility permissions granted to Clipcat in System Settings.
 func SimulatePaste() {
-	time.Sleep(80 * time.Millisecond)
-	exec.Command("osascript", "-e",
-		`tell application "System Events" to keystroke "v" using command down`,
-	).Run()
+	C.sendPasteDarwin()
 }
 
 //
 // Process ignore list – macOS implementation
 //
 
-// isForegroundProcessIgnored returns true if the frontmost app's bundle ID
-// matches any entry in the ignore list.
 func isForegroundProcessIgnored() bool {
 	ignoredProcessesMu.RLock()
 	defer ignoredProcessesMu.RUnlock()

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"Clipcat/backend/lib"
 	"Clipcat/backend/lib/clipboard"
 	"Clipcat/backend/lib/startup"
 	"Clipcat/backend/store"
+	"Clipcat/backend/tray"
 	"context"
 	"fmt"
 	"os"
@@ -28,6 +30,11 @@ func NewApp() *App {
 // exposes app version to frontend
 func (a *App) GetVersion() string {
 	return AppVersion
+}
+
+// GetPlatform returns the current OS: "darwin", "linux", or "windows".
+func (a *App) GetPlatform() string {
+	return lib.GetPlatform()
 }
 
 // startup is called when the app starts. The context is saved
@@ -57,6 +64,7 @@ func (a *App) startup(ctx context.Context) {
 	store.MigrateClipsTable()
 	store.MigrateSettingsTable()
 	store.MigrateEncryptionColumns()
+	store.MigrateIndexes()
 	if err := store.InitEncryption(); err != nil {
 		panic(err)
 	}
@@ -128,6 +136,7 @@ func (a *App) startup(ctx context.Context) {
 		if a.ctx == nil {
 			return
 		}
+		tray.Activate()
 		runtime.WindowShow(a.ctx)
 		runtime.WindowSetAlwaysOnTop(a.ctx, true)
 		time.Sleep(150 * time.Millisecond)
@@ -250,7 +259,8 @@ func (a *App) RemoveIgnoreEntry(name string) error {
 // --------------------------------------------------------------------------------
 //
 // Sets the clipboard to the given text, hides Clipcat, re-focuses the window
-// that was active when the hotkey was pressed, then simulates Ctrl+V.
+// that was active when the hotkey was pressed, then simulates paste
+// (Ctrl+V on Windows/Linux, Cmd+V on macOS).
 
 func (a *App) PasteToWindow(content string) error {
 	// Write content to the system clipboard.
@@ -267,11 +277,17 @@ func (a *App) PasteToWindow(content string) error {
 	quickPaste, _ := store.GetGhostMode()
 	if quickPaste {
 		runtime.WindowHide(a.ctx)
-		time.Sleep(120 * time.Millisecond)
 	}
 
-	// Restore focus to where the user was, then fire Ctrl+V.
+	// Give the window manager time to hide Clipcat before we refocus.
+	time.Sleep(80 * time.Millisecond)
+
+	// Restore focus to where the user was, then fire the paste keystroke.
 	clipboard.FocusPreviousWindow()
+
+	// Give the target app time to come to the foreground.
+	time.Sleep(100 * time.Millisecond)
+
 	clipboard.SimulatePaste()
 	return nil
 }

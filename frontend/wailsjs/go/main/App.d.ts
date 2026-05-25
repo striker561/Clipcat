@@ -24,6 +24,8 @@ export function GetGhostMode():Promise<boolean>;
 
 export function GetIgnoreList():Promise<Array<string>>;
 
+export function GetPlatform():Promise<string>;
+
 export function GetStorageLimit():Promise<number>;
 
 export function GetVersion():Promise<string>;
