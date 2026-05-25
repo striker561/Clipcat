@@ -5,10 +5,8 @@ export const useRelativeTime = (dateString: string) => {
     const [time, setTime] = useState(() => formatTime(dateString))
 
     useEffect(() => {
-        // Update immediately
-        setTime(formatTime(dateString))
-
-        // Then update every minute
+        // Initial value is already set correctly by useState above.
+        // Only set up the interval for future minute-tick updates.
         const interval = setInterval(() => {
             setTime(formatTime(dateString))
         }, 60000)

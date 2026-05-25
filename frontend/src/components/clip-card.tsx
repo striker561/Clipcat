@@ -1,5 +1,5 @@
 import { Copy, Pin, Trash2, Pencil, ClipboardPaste } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useMemo, memo } from "react"
 import type { Clip } from '../../types/clip'
 import { TogglePin, Delete, PasteToWindow } from "../../wailsjs/go/main/App"
 import { useClips } from "@/context/ClipContext"
@@ -22,13 +22,14 @@ interface ClipCardProps {
     tourId?: string
 }
 
-export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
+function ClipCard({ clip, type, tourId }: ClipCardProps) {
     const [copied, setCopied] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [isDeleted, setIsDeleted] = useState(false)
     const cardRef = useRef<HTMLDivElement>(null)
     const { getClips, soundOn, hideContent, isMiniClip } = useClips()
     const relativeTime = useRelativeTime(clip.createdAt)
+    const linkedContent = useMemo(() => insertLinks(clip.content), [clip.content])
 
 
     useCardRowSpan(cardRef, isMiniClip)
@@ -132,7 +133,7 @@ export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
                         className="w-full h-auto object-contain max-h-48 rounded"
                     />
                 ) : (
-                    <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`} dangerouslySetInnerHTML={{ __html: insertLinks(clip.content) }}></p>
+                    <p className={`line-clamp-4 text-sm text-foreground md:line-clamp-8`} dangerouslySetInnerHTML={{ __html: linkedContent }}></p>
                 )}
             </div>
 
@@ -220,7 +221,7 @@ export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
                                     <img src="/seperator.png" alt="" className="w-full " />
                                 </DialogHeader>
                                 <ScrollAreaPencil className=" max-h-[60vh] pr-4 overflow-x-hidden" onClick={handleLinkClick}>
-                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: insertLinks(clip.content) }} />
+                                        <p className={`whitespace-pre-wrap wrap-break-word text-sm ${hideContent ? "hard-to-read" : ""}`} dangerouslySetInnerHTML={{ __html: linkedContent }} />
                                 </ScrollAreaPencil>
                             </div>
                         </DialogContent>
@@ -230,3 +231,12 @@ export default function ClipCard({ clip, type, tourId }: ClipCardProps) {
         </div>
     )
 }
+
+export default memo(ClipCard, (prev, next) =>
+    prev.clip.id === next.clip.id &&
+    prev.clip.content === next.clip.content &&
+    prev.clip.image === next.clip.image &&
+    prev.clip.isPinned === next.clip.isPinned &&
+    prev.type === next.type &&
+    prev.tourId === next.tourId
+)

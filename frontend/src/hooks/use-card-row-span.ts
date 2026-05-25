@@ -3,24 +3,54 @@ import { useEffect, type RefObject } from "react"
 const ROW_HEIGHT = 10 // Must match grid-auto-rows in CSS
 const ROW_GAP = 16    // Must match gap in CSS
 
-const rafMap = new WeakMap<HTMLElement, number>()
+// ---------------------------------------------------------------------------
+// Batched read/write cycle: accumulate all pending elements, then in one rAF
+// read all heights first (single forced layout) and write all spans after.
+// This eliminates the read-write-read-write layout thrash that happens when
+// 500 cards all update in the same frame.
+// ---------------------------------------------------------------------------
+let batchRafId: number | null = null
+const pendingElements = new Set<HTMLElement>()
 
-function updateRowSpan(el: HTMLElement): void {
-    const cardHeight = el.getBoundingClientRect().height
-    const rowSpan = Math.ceil((cardHeight + ROW_GAP) / (ROW_HEIGHT + ROW_GAP))
-    el.style.setProperty('--row-span', String(rowSpan))
+function scheduleBatchUpdate(el: HTMLElement): void {
+    pendingElements.add(el)
+    if (batchRafId !== null) return
+    batchRafId = requestAnimationFrame(() => {
+        batchRafId = null
+        // 1. Batch all reads (one forced layout)
+        const measurements: [HTMLElement, number][] = []
+        for (const el of pendingElements) {
+            measurements.push([el, el.getBoundingClientRect().height])
+        }
+        pendingElements.clear()
+        // 2. Batch all writes (no interleaved layouts)
+        for (const [el, height] of measurements) {
+            const rowSpan = Math.ceil((height + ROW_GAP) / (ROW_HEIGHT + ROW_GAP))
+            el.style.setProperty('--row-span', String(rowSpan))
+        }
+    })
+}
+
+// ---------------------------------------------------------------------------
+// Initial measurement: all cards that mount within the same 25ms window are
+// batched into a single scheduleBatchUpdate call instead of 500 separate ones.
+// ---------------------------------------------------------------------------
+let initialTimerId: ReturnType<typeof setTimeout> | null = null
+const initialQueue: HTMLElement[] = []
+
+function queueInitialMeasure(el: HTMLElement): void {
+    initialQueue.push(el)
+    if (initialTimerId !== null) return
+    initialTimerId = setTimeout(() => {
+        initialTimerId = null
+        const batch = initialQueue.splice(0)
+        for (const el of batch) scheduleBatchUpdate(el)
+    }, 25)
 }
 
 const sharedObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
-        const el = entry.target as HTMLElement
-        const existing = rafMap.get(el)
-        if (existing !== undefined) cancelAnimationFrame(existing)
-        const id = requestAnimationFrame(() => {
-            updateRowSpan(el)
-            rafMap.delete(el)
-        })
-        rafMap.set(el, id)
+        scheduleBatchUpdate(entry.target as HTMLElement)
     }
 })
 
@@ -30,18 +60,11 @@ export function useCardRowSpan(ref: RefObject<HTMLElement | null>, isMiniClip: b
         if (!el) return
 
         sharedObserver.observe(el)
-
-        // Initial calculation after a short delay for image clips to settle
-        const timerId = setTimeout(() => updateRowSpan(el), 25)
+        queueInitialMeasure(el)
 
         return () => {
             sharedObserver.unobserve(el)
-            clearTimeout(timerId)
-            const rafId = rafMap.get(el)
-            if (rafId !== undefined) {
-                cancelAnimationFrame(rafId)
-                rafMap.delete(el)
-            }
+            pendingElements.delete(el)
         }
     }, [isMiniClip]) // eslint-disable-line react-hooks/exhaustive-deps
 }
