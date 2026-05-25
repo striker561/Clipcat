@@ -1,8 +1,9 @@
 package main
 
 import (
-	"Clipcat/internal/clipboard"
-	"Clipcat/internal/startup"
+	"Clipcat/backend/lib/clipboard"
+	"Clipcat/backend/lib/startup"
+	"Clipcat/backend/store"
 	"context"
 	"fmt"
 	"os"
@@ -47,24 +48,24 @@ func (a *App) startup(ctx context.Context) {
 
 	dbPath := filepath.Join(appDir, "gyatt.db")
 
-	err = InitDB(dbPath)
+	err = store.InitDB(dbPath)
 	if err != nil {
 		panic(err)
 	}
 
-	createTables()
-	migrateClipsTable()
-	migrateSettingsTable()
-	migrateEncryptionColumns()
-	if err := initEncryption(); err != nil {
+	store.CreateTables()
+	store.MigrateClipsTable()
+	store.MigrateSettingsTable()
+	store.MigrateEncryptionColumns()
+	if err := store.InitEncryption(); err != nil {
 		panic(err)
 	}
-	migrateEncryptOldClips()
+	store.MigrateEncryptOldClips()
 
-	// SeedTestClips(500) // PERF TEST: uncomment to insert 500 test clips on startup
+	// store.SeedTestClips(500) // PERF TEST: uncomment to insert 500 test clips on startup
 
 	// Sync the ignore list from the DB into the in-memory clipboard filter.
-	if ignoreList, err := getIgnoreList(); err == nil {
+	if ignoreList, err := store.GetIgnoreList(); err == nil {
 		clipboard.SetIgnoredProcesses(ignoreList)
 	}
 
@@ -78,7 +79,7 @@ func (a *App) startup(ctx context.Context) {
 
 	// If Ghost Mode was left on from the last session, hide into the tray
 	// immediately so the user never sees the window on startup.
-	if ghostMode, err := getGhostMode(); err == nil && ghostMode {
+	if ghostMode, err := store.GetGhostMode(); err == nil && ghostMode {
 		runtime.WindowHide(a.ctx)
 	}
 
@@ -97,7 +98,7 @@ func (a *App) startup(ctx context.Context) {
 
 			// new image, save it
 			*lastImagePtr = img
-			err := addImageClip(img)
+			err := store.AddImageClip(img)
 			if err != nil {
 				fmt.Println("failed to save image:", err)
 			}
@@ -113,7 +114,7 @@ func (a *App) startup(ctx context.Context) {
 			return
 		}
 
-		err := addClip(text, "text")
+		err := store.AddClip(text, "text")
 		if err != nil {
 			fmt.Println("failed to save text:", err)
 			return
@@ -150,41 +151,41 @@ func getAppDataDir() (string, error) {
 // Storage Limit Functions
 // --------------------------------------------------------------------------------
 func (a *App) GetStorageLimit() (int, error) {
-	return getStorageLimit()
+	return store.GetStorageLimit()
 }
 
 func (a *App) UpdateStorageLimit(newLimit int) error {
-	return updateStorageLimit(newLimit)
+	return store.UpdateStorageLimit(newLimit)
 }
 
 // --------------------------------------------------------------------------------
 // Clip Management Functions
 // --------------------------------------------------------------------------------
-func (a *App) GetClips() ([]Clip, error) {
-	return getClips()
+func (a *App) GetClips() ([]store.Clip, error) {
+	return store.GetClips()
 }
 
 func (a *App) UpdateClipContent(clipID int, newContent string) error {
-	return updateClipContent(clipID, newContent)
+	return store.UpdateClipContent(clipID, newContent)
 }
 
 func (a *App) TogglePin(clipID int) error {
-	return togglePinClip(clipID)
+	return store.TogglePinClip(clipID)
 }
 
 func (a *App) Delete(clipID int) error {
-	return deleteClip(clipID)
+	return store.DeleteClip(clipID)
 }
 func (a *App) DeleteAllClips() error {
-	return deleteAllClips(a.ctx)
+	return store.DeleteAllClips(a.ctx)
 }
 
 func (a *App) DeletePinnedClips() error {
-	return deletePinnedClips(a.ctx)
+	return store.DeletePinnedClips(a.ctx)
 }
 
 func (a *App) DeleteUnpinnedClips() error {
-	return deleteUnpinnedClips(a.ctx)
+	return store.DeleteUnpinnedClips(a.ctx)
 }
 
 // --------------------------------------------------------------------------------
@@ -208,11 +209,11 @@ func (a *App) IsPaused() bool {
 // --------------------------------------------------------------------------------
 
 func (a *App) GetGhostMode() (bool, error) {
-	return getGhostMode()
+	return store.GetGhostMode()
 }
 
 func (a *App) SetGhostMode(enabled bool) error {
-	return setGhostMode(enabled)
+	return store.SetGhostMode(enabled)
 }
 
 // --------------------------------------------------------------------------------
@@ -220,25 +221,25 @@ func (a *App) SetGhostMode(enabled bool) error {
 // --------------------------------------------------------------------------------
 
 func (a *App) GetIgnoreList() ([]string, error) {
-	return getIgnoreList()
+	return store.GetIgnoreList()
 }
 
 func (a *App) AddIgnoreEntry(name string) error {
-	if err := addIgnoreEntry(name); err != nil {
+	if err := store.AddIgnoreEntry(name); err != nil {
 		return err
 	}
 	// Keep the in-memory filter in sync.
-	if list, err := getIgnoreList(); err == nil {
+	if list, err := store.GetIgnoreList(); err == nil {
 		clipboard.SetIgnoredProcesses(list)
 	}
 	return nil
 }
 
 func (a *App) RemoveIgnoreEntry(name string) error {
-	if err := removeIgnoreEntry(name); err != nil {
+	if err := store.RemoveIgnoreEntry(name); err != nil {
 		return err
 	}
-	if list, err := getIgnoreList(); err == nil {
+	if list, err := store.GetIgnoreList(); err == nil {
 		clipboard.SetIgnoredProcesses(list)
 	}
 	return nil
@@ -263,7 +264,7 @@ func (a *App) PasteToWindow(content string) error {
 
 	// Only hide the window when Quick Paste mode is active. In normal mode the
 	// app stays visible after the paste so the user can keep picking clips.
-	quickPaste, _ := getGhostMode()
+	quickPaste, _ := store.GetGhostMode()
 	if quickPaste {
 		runtime.WindowHide(a.ctx)
 		time.Sleep(120 * time.Millisecond)
@@ -276,7 +277,7 @@ func (a *App) PasteToWindow(content string) error {
 }
 
 func (a *App) AddClip(content string, pinned bool) error {
-	err := addManualClip(content, pinned)
+	err := store.AddManualClip(content, pinned)
 	if err != nil {
 		return err
 	}

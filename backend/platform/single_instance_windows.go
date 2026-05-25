@@ -1,6 +1,6 @@
 //go:build windows
 
-package main
+package platform
 
 import (
 	"syscall"
@@ -23,10 +23,10 @@ const (
 	swShow           = 5
 )
 
-// ensureSingleInstance returns true if this is the only running instance.
+// EnsureSingleInstance returns true if this is the only running instance.
 // If another instance is already running it brings that window to the
 // foreground and returns false, so main() can exit immediately.
-func ensureSingleInstance() bool {
+func EnsureSingleInstance() bool {
 	mutexName, _ := syscall.UTF16PtrFromString("Local\\ClipCatSingleInstanceMutex_v1")
 	_, _, lastErr := procCreateMutexW.Call(
 		0,
@@ -34,17 +34,12 @@ func ensureSingleInstance() bool {
 		uintptr(unsafe.Pointer(mutexName)),
 	)
 	if lastErr != errAlreadyExists {
-		// We are the first instance – keep the mutex open for the lifetime
-		// of this process so the next launch can detect us.
 		return true
 	}
 
-	// Another instance is already running. Find its window by title and
-	// bring it to the foreground.
 	title, _ := syscall.UTF16PtrFromString("Clipcat")
 	hwnd, _, _ := procFindWindowW.Call(0, uintptr(unsafe.Pointer(title)))
 	if hwnd != 0 {
-		// If minimised, restore it first.
 		iconic, _, _ := procIsIconic.Call(hwnd)
 		if iconic != 0 {
 			procShowWindow.Call(hwnd, swRestore)

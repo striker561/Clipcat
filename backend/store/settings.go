@@ -1,7 +1,6 @@
-package main
+package store
 
-// getGhostMode reads the ghost_mode flag from the settings table.
-func getGhostMode() (bool, error) {
+func GetGhostMode() (bool, error) {
 	var v int
 	err := DB.QueryRow(`SELECT ghost_mode FROM settings WHERE id = 0`).Scan(&v)
 	if err != nil {
@@ -10,8 +9,7 @@ func getGhostMode() (bool, error) {
 	return v == 1, nil
 }
 
-// setGhostMode persists the ghost_mode flag.
-func setGhostMode(enabled bool) error {
+func SetGhostMode(enabled bool) error {
 	val := 0
 	if enabled {
 		val = 1

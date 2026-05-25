@@ -10,7 +10,6 @@ import (
 )
 
 func getShortcutPath() (string, error) {
-
 	appData := os.Getenv("APPDATA")
 	if appData == "" {
 		return "", errors.New("APPDATA environment variable not set")
@@ -25,7 +24,6 @@ func getShortcutPath() (string, error) {
 	return shortcut, nil
 }
 
-
 func RemoveStartupWindows() error {
 	shortcut, err := getShortcutPath()
 	if err != nil {
@@ -39,7 +37,6 @@ func RemoveStartupWindows() error {
 
 	return nil
 }
-
 
 func IsStartupEnabledWindows() (bool, error) {
 	shortcut, err := getShortcutPath()
@@ -56,15 +53,12 @@ func IsStartupEnabledWindows() (bool, error) {
 	return true, nil
 }
 
-
 func EnableStartupWindows() error {
-	// exe path
 	exePath, err := os.Executable()
 	if err != nil {
 		return err
 	}
 
-	// shortcut path
 	shortcut, err := getShortcutPath()
 	if err != nil {
 		return err
@@ -78,8 +72,6 @@ $Shortcut.Save()
 `, shortcut, exePath)
 
 	cmd := exec.Command("powershell", "-NoProfile", "-Command", ps)
-	// hides the powershell window, it prevents that flash thing that normally happens
-	// that thing where people see and think it is a virus
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		HideWindow: true,
 	}

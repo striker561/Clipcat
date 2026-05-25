@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"crypto/aes"
@@ -12,13 +12,12 @@ import (
 	"io"
 )
 
-// encKey is the 32-byte AES-256 key loaded at startup via initEncryption.
 var encKey []byte
 
-// initEncryption loads (or generates on first run) the per-installation
+// InitEncryption loads (or generates on first run) the per-installation
 // encryption key from the encryption_meta table.
-// Must be called after InitDB, createTables, and migrateEncryptionColumns.
-func initEncryption() error {
+// Must be called after InitDB, CreateTables, and MigrateEncryptionColumns.
+func InitEncryption() error {
 	key, err := getOrCreateEncryptionKey()
 	if err != nil {
 		return fmt.Errorf("encryption init: %w", err)
@@ -27,9 +26,6 @@ func initEncryption() error {
 	return nil
 }
 
-// getOrCreateEncryptionKey reads the stored key from the DB.
-// If none exists it generates a cryptographically random 32-byte key,
-// stores it, and returns it.
 func getOrCreateEncryptionKey() ([]byte, error) {
 	var encoded string
 	err := DB.QueryRow(`SELECT machine_key FROM encryption_meta WHERE id = 0`).Scan(&encoded)
@@ -44,7 +40,6 @@ func getOrCreateEncryptionKey() ([]byte, error) {
 		return key, nil
 	}
 
-	// No key yet — generate one.
 	key := make([]byte, 32)
 	if _, err := io.ReadFull(rand.Reader, key); err != nil {
 		return nil, fmt.Errorf("generate key: %w", err)
@@ -56,8 +51,6 @@ func getOrCreateEncryptionKey() ([]byte, error) {
 	return key, nil
 }
 
-// encryptData encrypts plaintext with AES-256-GCM.
-// Output layout: nonce (12 bytes) || ciphertext+GCM-tag.
 func encryptData(plaintext []byte) ([]byte, error) {
 	block, err := aes.NewCipher(encKey)
 	if err != nil {
@@ -74,7 +67,6 @@ func encryptData(plaintext []byte) ([]byte, error) {
 	return gcm.Seal(nonce, nonce, plaintext, nil), nil
 }
 
-// decryptData reverses encryptData.
 func decryptData(data []byte) ([]byte, error) {
 	block, err := aes.NewCipher(encKey)
 	if err != nil {
@@ -91,8 +83,6 @@ func decryptData(data []byte) ([]byte, error) {
 	return gcm.Open(nil, data[:nonceSize], data[nonceSize:], nil)
 }
 
-// encryptText encrypts a string and returns a base64 string suitable for
-// storage in a SQLite TEXT column (avoids null-byte issues with binary data).
 func encryptText(plaintext string) (string, error) {
 	ct, err := encryptData([]byte(plaintext))
 	if err != nil {
@@ -101,7 +91,6 @@ func encryptText(plaintext string) (string, error) {
 	return base64.StdEncoding.EncodeToString(ct), nil
 }
 
-// decryptText reverses encryptText.
 func decryptText(encoded string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(encoded)
 	if err != nil {
@@ -114,9 +103,6 @@ func decryptText(encoded string) (string, error) {
 	return string(pt), nil
 }
 
-// hashContent returns an HMAC-SHA256 hex digest of data, keyed with the
-// encryption key.  Used as a deterministic deduplication token so we can
-// search for duplicates without storing or comparing plaintext.
 func hashContent(data []byte) string {
 	mac := hmac.New(sha256.New, encKey)
 	mac.Write(data)

@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"database/sql"
@@ -6,8 +6,6 @@ import (
 
 	_ "modernc.org/sqlite"
 )
-
-// to install sqlite, use cli command <<< go get modernc.org/sqlite >>>
 
 var DB *sql.DB
 
@@ -20,11 +18,10 @@ func InitDB(path string) error {
 
 	fmt.Println("DB initialized on Bro")
 
-	// ping this shit
 	return DB.Ping()
 }
 
-func createTables() {
+func CreateTables() {
 	query := `
 	CREATE TABLE IF NOT EXISTS clips (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,22 +54,15 @@ func createTables() {
 	}
 }
 
-// this function adds the image column to the clips table if it doesn't exist
-// if it already exists, it does nothing
-func migrateClipsTable() {
+func MigrateClipsTable() {
 	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN image BLOB`)
 }
 
-// migrateSettingsTable seeds the single-row settings record for users whose
-// DB was created before the settings table was introduced.
-func migrateSettingsTable() {
+func MigrateSettingsTable() {
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (id, ghost_mode) VALUES (0, 0)`)
 }
 
-// migrateEncryptionColumns adds the columns and table required for at-rest
-// encryption.  Safe to call repeatedly — ALTER TABLE and CREATE TABLE IF NOT
-// EXISTS are idempotent.
-func migrateEncryptionColumns() {
+func MigrateEncryptionColumns() {
 	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN encrypted INTEGER DEFAULT 0`)
 	_, _ = DB.Exec(`ALTER TABLE clips ADD COLUMN content_hash TEXT`)
 	_, _ = DB.Exec(`
@@ -83,11 +73,9 @@ func migrateEncryptionColumns() {
 	`)
 }
 
-// migrateEncryptOldClips re-encrypts every pre-existing unencrypted row so
+// MigrateEncryptOldClips re-encrypts every pre-existing unencrypted row so
 // that all clip data at rest is protected after the first run of a new version.
-// Rows that fail to encrypt are left untouched (they will still be readable as
-// plaintext via the backward-compatibility path in getClips).
-func migrateEncryptOldClips() {
+func MigrateEncryptOldClips() {
 	type legacyRow struct {
 		id       int
 		content  sql.NullString

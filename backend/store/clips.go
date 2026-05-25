@@ -1,4 +1,4 @@
-package main
+package store
 
 import (
 	"context"
@@ -19,12 +19,11 @@ type Clip struct {
 	CreatedAt string  `json:"createdAt"`
 }
 
-func getStorageLimit() (int, error) {
+func GetStorageLimit() (int, error) {
 	query := `SELECT limit_count FROM clip_storage_limit WHERE id = 0`
 	var limit int
 	err := DB.QueryRow(query).Scan(&limit)
 	if err != nil {
-		// If no limit is set, insert default of 100 and return it
 		insertQuery := `INSERT OR IGNORE INTO clip_storage_limit (id, limit_count) VALUES (0, 100)`
 		_, insertErr := DB.Exec(insertQuery)
 		if insertErr != nil {
@@ -35,11 +34,10 @@ func getStorageLimit() (int, error) {
 	return limit, nil
 }
 
-func updateStorageLimit(newLimit int) error {
+func UpdateStorageLimit(newLimit int) error {
 	if newLimit < 1 {
 		return fmt.Errorf("storage limit must be at least 1")
 	}
-
 	query := `INSERT OR REPLACE INTO clip_storage_limit (id, limit_count) VALUES (0, ?)`
 	_, err := DB.Exec(query, newLimit)
 	if err != nil {
@@ -48,7 +46,7 @@ func updateStorageLimit(newLimit int) error {
 	return nil
 }
 
-func getClips() ([]Clip, error) {
+func GetClips() ([]Clip, error) {
 	query := `
 		SELECT id, content, image, type, pinned, created_at, encrypted
 		FROM clips
@@ -59,7 +57,6 @@ func getClips() ([]Clip, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	var clips []Clip
@@ -94,8 +91,6 @@ func getClips() ([]Clip, error) {
 					clip.Content = &plaintext
 					clip.Length = len(plaintext)
 				} else {
-					// Decryption failed — fall back to raw value so the row
-					// is still visible rather than silently dropped.
 					clip.Content = &content.String
 					clip.Length = len(content.String)
 				}
@@ -125,8 +120,6 @@ func getClips() ([]Clip, error) {
 
 func clipExists(content string) (bool, error) {
 	hash := hashContent([]byte(content))
-	// Match new encrypted clips by their HMAC hash, or legacy unencrypted rows
-	// by their plaintext content (backward compatibility).
 	query := `SELECT COUNT(*) FROM clips WHERE content_hash = ? OR (encrypted = 0 AND content = ?)`
 	var count int
 	err := DB.QueryRow(query, hash, content).Scan(&count)
@@ -138,8 +131,6 @@ func clipExists(content string) (bool, error) {
 
 func imageClipExists(image []byte) (bool, error) {
 	hash := hashContent(image)
-	// Match new encrypted clips by their HMAC hash, or legacy unencrypted rows
-	// by their raw image bytes (backward compatibility).
 	query := `SELECT COUNT(*) FROM clips WHERE content_hash = ? OR (encrypted = 0 AND image = ?)`
 	var count int
 	err := DB.QueryRow(query, hash, image).Scan(&count)
@@ -149,14 +140,12 @@ func imageClipExists(image []byte) (bool, error) {
 	return count > 0, nil
 }
 
-func addClip(content string, clipType string) error {
-	// Check if content already exists
+func AddClip(content string, clipType string) error {
 	exists, err := clipExists(content)
 	if err != nil {
 		return fmt.Errorf("failed to check for duplicate: %v", err)
 	}
 	if exists {
-		// Content already exists, skip insertion
 		return nil
 	}
 
@@ -171,13 +160,11 @@ func addClip(content string, clipType string) error {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
 
-	// Get the storage limit from database
-	limit, err := getStorageLimit()
+	limit, err := GetStorageLimit()
 	if err != nil {
 		return fmt.Errorf("failed to get storage limit: %v", err)
 	}
 
-	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
 	deleteQuery := `
 		DELETE FROM clips
 		WHERE id NOT IN (
@@ -194,14 +181,12 @@ func addClip(content string, clipType string) error {
 	return nil
 }
 
-func addManualClip(content string, pinned bool) error {
-	// Check if content already exists
+func AddManualClip(content string, pinned bool) error {
 	exists, err := clipExists(content)
 	if err != nil {
 		return fmt.Errorf("failed to check for duplicate: %v", err)
 	}
 	if exists {
-		// Content already exists, skip insertion
 		return nil
 	}
 
@@ -216,13 +201,11 @@ func addManualClip(content string, pinned bool) error {
 		return fmt.Errorf("failed to insert clip: %v", err)
 	}
 
-	// Get the storage limit from database
-	limit, err := getStorageLimit()
+	limit, err := GetStorageLimit()
 	if err != nil {
 		return fmt.Errorf("failed to get storage limit: %v", err)
 	}
 
-	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
 	deleteQuery := `
 		DELETE FROM clips
 		WHERE id NOT IN (
@@ -239,15 +222,12 @@ func addManualClip(content string, pinned bool) error {
 	return nil
 }
 
-func addImageClip(img []byte) error {
-
-	// Check if image already exists
+func AddImageClip(img []byte) error {
 	exists, err := imageClipExists(img)
 	if err != nil {
 		return fmt.Errorf("failed to check for duplicate image: %v", err)
 	}
 	if exists {
-		// Image already exists, skip insertion
 		return nil
 	}
 
@@ -262,13 +242,11 @@ func addImageClip(img []byte) error {
 		return fmt.Errorf("failed to insert image clip: %v", err)
 	}
 
-	// Get the storage limit from database
-	limit, err := getStorageLimit()
+	limit, err := GetStorageLimit()
 	if err != nil {
 		return fmt.Errorf("failed to get storage limit: %v", err)
 	}
 
-	// Delete old clips, keeping only the most recent up to the limit (prioritizing pinned)
 	deleteQuery := `
 		DELETE FROM clips
 		WHERE id NOT IN (
@@ -284,7 +262,7 @@ func addImageClip(img []byte) error {
 	return nil
 }
 
-func updateClipContent(clipID int, newContent string) error {
+func UpdateClipContent(clipID int, newContent string) error {
 	enc, err := encryptText(newContent)
 	if err != nil {
 		return fmt.Errorf("failed to encrypt updated content: %v", err)
@@ -308,7 +286,7 @@ func updateClipContent(clipID int, newContent string) error {
 	return nil
 }
 
-func togglePinClip(clipID int) error {
+func TogglePinClip(clipID int) error {
 	query := `UPDATE clips SET pinned = NOT pinned WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
 	if err != nil {
@@ -327,7 +305,7 @@ func togglePinClip(clipID int) error {
 	return nil
 }
 
-func deleteClip(clipID int) error {
+func DeleteClip(clipID int) error {
 	query := `DELETE FROM clips WHERE id = ?`
 	result, err := DB.Exec(query, clipID)
 	if err != nil {
@@ -346,25 +324,21 @@ func deleteClip(clipID int) error {
 	return nil
 }
 
-func deleteAllClips(context context.Context) error {
-	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+func DeleteAllClips(ctx context.Context) error {
+	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 		Type:          runtime.QuestionDialog,
 		Title:         "Delete All Clips?",
 		Message:       "Are you sure you want to delete all clips? This action cannot be undone.",
 		DefaultButton: "Yes",
-	},
-	)
-
+	})
 	if err != nil {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
-
 	if res != "Yes" {
 		return nil
 	}
 
-	query := `DELETE FROM clips`
-	_, err = DB.Exec(query)
+	_, err = DB.Exec(`DELETE FROM clips`)
 	if err != nil {
 		return fmt.Errorf("failed to delete all clips: %v", err)
 	}
@@ -372,25 +346,21 @@ func deleteAllClips(context context.Context) error {
 	return nil
 }
 
-func deletePinnedClips(context context.Context) error {
-	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+func DeletePinnedClips(ctx context.Context) error {
+	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 		Type:          runtime.QuestionDialog,
 		Title:         "Delete Pinned Clips?",
 		Message:       "Are you sure you want to delete all pinned clips? This action cannot be undone.",
 		DefaultButton: "Yes",
-	},
-	)
-
+	})
 	if err != nil {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
-
 	if res != "Yes" {
 		return nil
 	}
 
-	query := `DELETE FROM clips WHERE pinned = 1`
-	_, err = DB.Exec(query)
+	_, err = DB.Exec(`DELETE FROM clips WHERE pinned = 1`)
 	if err != nil {
 		return fmt.Errorf("failed to delete pinned clips: %v", err)
 	}
@@ -398,25 +368,21 @@ func deletePinnedClips(context context.Context) error {
 	return nil
 }
 
-func deleteUnpinnedClips(context context.Context) error {
-	res, err := runtime.MessageDialog(context, runtime.MessageDialogOptions{
+func DeleteUnpinnedClips(ctx context.Context) error {
+	res, err := runtime.MessageDialog(ctx, runtime.MessageDialogOptions{
 		Type:          runtime.QuestionDialog,
 		Title:         "Delete Unpinned Clips?",
 		Message:       "Are you sure you want to delete all unpinned clips? This action cannot be undone.",
 		DefaultButton: "Yes",
-	},
-	)
-
+	})
 	if err != nil {
 		return fmt.Errorf("failed to show confirmation dialog: %v", err)
 	}
-
 	if res != "Yes" {
 		return nil
 	}
 
-	query := `DELETE FROM clips WHERE pinned = 0`
-	_, err = DB.Exec(query)
+	_, err = DB.Exec(`DELETE FROM clips WHERE pinned = 0`)
 	if err != nil {
 		return fmt.Errorf("failed to delete unpinned clips: %v", err)
 	}

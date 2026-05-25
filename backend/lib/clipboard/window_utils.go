@@ -39,15 +39,10 @@ const (
 //
 // Previous window tracking
 //
-// prevHWND is kept up-to-date by two sources:
-//   1. The Ctrl+Shift+V hotkey handler (instant, authoritative)
-//   2. StartFocusTracker – a background poller that watches for focus changes
-//      so the paste button works even without ever pressing the hotkey.
-//
 
 var (
 	prevHWND uintptr
-	ourPID   uint32 // this process's PID; focus tracker ignores our own windows
+	ourPID   uint32
 )
 
 // SetOurProcessID stores the host process PID so StartFocusTracker can tell
@@ -67,7 +62,6 @@ func StartFocusTracker() {
 			if hwnd == 0 {
 				continue
 			}
-			// Skip our own window so we never overwrite prevHWND with Clipcat.
 			var pid uint32
 			procGetWindowThreadProcessId.Call(hwnd, uintptr(unsafe.Pointer(&pid)))
 			if pid != 0 && pid != ourPID {
@@ -106,7 +100,7 @@ func FocusPreviousWindow() {
 // SimulatePaste sends a Ctrl+V keystroke sequence to the focused window.
 // Caller should ensure the right window is focused before calling this.
 func SimulatePaste() {
-	time.Sleep(80 * time.Millisecond) // let SetForegroundWindow take effect
+	time.Sleep(80 * time.Millisecond)
 	procKeybdEvent.Call(VK_CONTROL, 0, 0, 0)
 	procKeybdEvent.Call(VK_V, 0, 0, 0)
 	procKeybdEvent.Call(VK_V, 0, KEYEVENTF_KEYUP, 0)
