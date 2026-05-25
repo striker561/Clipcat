@@ -101,7 +101,10 @@ func StartClipboardListener(onChange func(), onHotkey func()) {
 		if win.RegisterClassEx(&wc) == 0 {
 			panic("clipboard: failed to register window class")
 		}
-
+        // this is an invisible window. omo 
+		// on mac, i have to use a different approach
+		// to listen for clipboard changes since there are no
+		// window addresses in registry 😭😭
 		hwnd := win.CreateWindowEx(
 			0, className, nil, 0,
 			0, 0, 0, 0,
