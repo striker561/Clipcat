@@ -107,11 +107,11 @@ func (a *App) startup(ctx context.Context) {
 
 			// new image, save it
 			*lastImagePtr = img
-			err := store.AddImageClip(img)
+			inserted, err := store.AddImageClip(img)
 			if err != nil {
 				fmt.Println("failed to save image:", err)
 			}
-			if a.ctx != nil {
+			if a.ctx != nil && inserted {
 				runtime.EventsEmit(a.ctx, "clipboard:changed")
 			}
 			return
@@ -123,13 +123,13 @@ func (a *App) startup(ctx context.Context) {
 			return
 		}
 
-		err := store.AddClip(text, "text")
+		inserted, err := store.AddClip(text, "text")
 		if err != nil {
 			fmt.Println("failed to save text:", err)
 			return
 		}
 
-		if a.ctx != nil {
+		if a.ctx != nil && inserted {
 			runtime.EventsEmit(a.ctx, "clipboard:changed", text)
 		}
 	}, func() {
@@ -299,11 +299,11 @@ func (a *App) PasteToWindow(content string) error {
 }
 
 func (a *App) AddClip(content string, pinned bool) error {
-	err := store.AddManualClip(content, pinned)
+	inserted, err := store.AddManualClip(content, pinned)
 	if err != nil {
 		return err
 	}
-	if a.ctx != nil {
+	if a.ctx != nil && inserted {
 		runtime.EventsEmit(a.ctx, "clipboard:changed")
 	}
 	return nil
