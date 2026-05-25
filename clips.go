@@ -423,3 +423,44 @@ func deleteUnpinnedClips(context context.Context) error {
 	DB.Exec(`VACUUM`)
 	return nil
 }
+
+// SeedTestClips inserts n test clips directly into the DB, bypassing duplicate
+// checks and storage-limit pruning. Intended for performance testing only.
+func SeedTestClips(n int) error {
+	samples := []string{
+		"Short test clip #%d",
+		"This is a medium-length test clip number %d with some extra text to make it a bit more realistic.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Test clip #%d.",
+		"package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello from clip #%d\")\n}",
+		"https://example.com/test/%d?query=value&page=1",
+		"Line one\nLine two\nLine three\nLine four\nLine five\nClip #%d",
+	}
+
+	tx, err := DB.Begin()
+	if err != nil {
+		return fmt.Errorf("seedTestClips: begin tx: %w", err)
+	}
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(`INSERT INTO clips (content, content_hash, type, pinned, encrypted, created_at)
+		VALUES (?, ?, 'text', 0, 1, datetime('now', ?))`)
+	if err != nil {
+		return fmt.Errorf("seedTestClips: prepare: %w", err)
+	}
+	defer stmt.Close()
+
+	for i := 0; i < n; i++ {
+		content := fmt.Sprintf(samples[i%len(samples)], i+1)
+		enc, err := encryptText(content)
+		if err != nil {
+			return fmt.Errorf("seedTestClips: encrypt clip %d: %w", i+1, err)
+		}
+		hash := hashContent([]byte(content))
+		offset := fmt.Sprintf("-%d seconds", i)
+		if _, err := stmt.Exec(enc, hash, offset); err != nil {
+			return fmt.Errorf("seedTestClips: insert clip %d: %w", i+1, err)
+		}
+	}
+
+	return tx.Commit()
+}

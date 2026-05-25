@@ -61,6 +61,8 @@ func (a *App) startup(ctx context.Context) {
 	}
 	migrateEncryptOldClips()
 
+	// SeedTestClips(500) // PERF TEST: uncomment to insert 500 test clips on startup
+
 	// Sync the ignore list from the DB into the in-memory clipboard filter.
 	if ignoreList, err := getIgnoreList(); err == nil {
 		clipboard.SetIgnoredProcesses(ignoreList)
