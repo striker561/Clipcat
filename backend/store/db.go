@@ -16,6 +16,11 @@ func InitDB(path string) error {
 		return err
 	}
 
+	// SQLite is single-writer; a single connection avoids contention
+	// and keeps the memory footprint minimal.
+	DB.SetMaxOpenConns(1)
+	DB.SetMaxIdleConns(1)
+
 	fmt.Println("DB initialized on Bro")
 
 	return DB.Ping()

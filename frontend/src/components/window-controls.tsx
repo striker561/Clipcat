@@ -135,9 +135,11 @@ export default function WindowControls() {
         })
     }, [])
 
-    const tl = gsap.timeline();
+    const tlRef = useRef(gsap.timeline());
 
     const handleSettingsClick = () => {
+        const tl = tlRef.current;
+        tl.clear();
         if (!dialogOpen) {
             setDialogOpen(true)
             tl.to(settingBtnRef.current, {

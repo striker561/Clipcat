@@ -34,12 +34,12 @@ export function EnableStartup() {
   return window['go']['main']['App']['EnableStartup']();
 }
 
-export function GetClips() {
-  return window['go']['main']['App']['GetClips']();
-}
-
 export function GetClipImage(arg1) {
   return window['go']['main']['App']['GetClipImage'](arg1);
+}
+
+export function GetClips() {
+  return window['go']['main']['App']['GetClips']();
 }
 
 export function GetGhostMode() {
