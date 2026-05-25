@@ -13,7 +13,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const AppVersion = "v0.8.3"
+const AppVersion = "v0.8.4"
 
 func main() {
 	if !platform.EnsureSingleInstance() {
