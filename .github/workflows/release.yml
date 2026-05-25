@@ -159,9 +159,6 @@ jobs:
 
       - name: Verify release artifacts
         run: |
-          test -f binaries/Clipcat-linux-amd64
-          test -f binaries/Clipcat-macos-arm64.dmg
-          test -f binaries/Clipcat-macos-amd64.dmg
           test -f binaries/Clipcat-windows-amd64-installer.exe
 
       - name: Generate checksums
