@@ -75,7 +75,9 @@ function ClipCard({ clip, type, tourId, initialVisible = true }: ClipCardProps) 
         playSound("/sounds/paper-copy.wav", soundOn, 1)
         try {
             if (clip.type === "image") {
-                copyBase64ImageToClipboard(`data:image/png;base64,${clip.image}`)
+                const clipId = Number(clip.id.replace('clip_', ''))
+                const imageData = await GetClipImage(clipId)
+                copyBase64ImageToClipboard(`data:image/png;base64,${imageData}`)
                 return
             }
             if (clip.content === undefined) return

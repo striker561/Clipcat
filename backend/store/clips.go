@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	_ "image/png"
+	"image/png"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"golang.org/x/image/draw"
@@ -121,6 +121,9 @@ func GetClips() ([]Clip, error) {
 				}
 			}
 			if len(thumbBytes) > 0 {
+				if normalized, err := normalizeImageToPNG(thumbBytes); err == nil {
+					thumbBytes = normalized
+				}
 				encoded := base64.StdEncoding.EncodeToString(thumbBytes)
 				clip.Image = &encoded
 				clip.Length = len(thumbBytes)
@@ -279,6 +282,19 @@ func generateThumbnail(img []byte) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func normalizeImageToPNG(img []byte) ([]byte, error) {
+	decoded, _, err := image.Decode(bytes.NewReader(img))
+	if err != nil {
+		return nil, fmt.Errorf("normalize image: %w", err)
+	}
+
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, decoded); err != nil {
+		return nil, fmt.Errorf("encode png: %w", err)
+	}
+	return buf.Bytes(), nil
+}
+
 // pruneExcessClips removes the oldest clips when the table exceeds the
 // storage limit.  It only runs when the row count is genuinely over the
 // limit, so the common case (under the limit) is a single cheap COUNT(*).
@@ -338,6 +354,10 @@ func GetClipImage(clipID int) (string, error) {
 			return "", fmt.Errorf("getClipImage decrypt: %w", err)
 		}
 		image = dec
+	}
+
+	if normalized, err := normalizeImageToPNG(image); err == nil {
+		image = normalized
 	}
 
 	return base64.StdEncoding.EncodeToString(image), nil
